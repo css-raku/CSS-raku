@@ -1,0 +1,20 @@
+unit class CSS::Selectors;
+
+use CSS::Selector::To::XPath;
+
+has $.ast is required;
+has Version $!specificity;
+has CSS::Selector::To::XPath $!to-xml .= new;
+
+method specificity {
+    $!specificity //= do {
+        my $id    = 0;
+        my $class = 0;
+        my $pseudo = 0;
+        Version.new: ($id, $class, $pseudo).join: '.';
+    }
+}
+
+method xpath {
+    $!to-xml.xpath($!ast);
+}

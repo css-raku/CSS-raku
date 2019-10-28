@@ -1,0 +1,32 @@
+unit class CSS::Stylesheet;
+
+use CSS::Module:CSS3;
+use CSS::Ruleset;
+
+has CSS::Module $.module = CSS::Module::CSS3.module; #| associated CSS module
+has CSS::Ruleset %.at-rules;
+has CSS::Ruleset @.rules;
+
+multi method load(:stylesheet($_)!) {
+    $.load(|$_) for .list;
+}
+
+multi method load(:at-rule($_)!) {
+    warn .perl;
+    warn "todo at-rule: \@{.<at-keyw>}...";
+}
+
+multi method load(:ruleset($_)!) {
+    @!rules.push: CSS::Ruleset.new: :ast($_);
+}
+
+multi method load($_) is default { warn .perl }
+
+method parse(:$css!) {
+    my $actions = $!module.actions.new;
+    given $!module.parse($css, :rule<stylesheet>, :$actions) {
+        my $ast = .ast;
+        $.load(|$ast);
+    }
+    self;
+}
