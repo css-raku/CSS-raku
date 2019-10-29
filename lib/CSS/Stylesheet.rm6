@@ -6,14 +6,22 @@ use CSS::Ruleset;
 has CSS::Module $.module = CSS::Module::CSS3.module; #| associated CSS module
 has CSS::Ruleset %.at-rules;
 has CSS::Ruleset @.rules;
+has Str $.charset = 'utf-8';
 
 multi method load(:stylesheet($_)!) {
     $.load(|$_) for .list;
 }
 
+multi method at-rule('charset', :string($_)!) {
+    $!charset = .lc;
+}
+
+multi method at-rule($rule, |c) is default {
+    warn "ignoring \@$rule \{...\}";
+}
+
 multi method load(:at-rule($_)!) {
-    warn .perl;
-    warn "todo at-rule: \@{.<at-keyw>}...";
+    $.at-rule(.<at-keyw>, |$_);
 }
 
 multi method load(:ruleset($_)!) {

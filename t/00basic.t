@@ -1,7 +1,7 @@
 use v6;
 use Test;
 use CSS::Stylesheet;
-plan 3;
+plan 4;
 
 my $css = q:to<END>;
  @charset "utf-8";
@@ -35,4 +35,5 @@ my CSS::Stylesheet $stylesheet .= new.parse(:$css);
 is $stylesheet.rules[0].xpath, '//html | //body';
 is $stylesheet.rules[1].properties, "font-family:Arial, Helvetica, sans-serif; font-size:em;"; 
 is $stylesheet.rules.[3].xpath, '//h1';
+is $stylesheet.rules.tail.xpath, "//a[css-pseudo('active')]";
 done-testing();
