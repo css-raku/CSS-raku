@@ -6,6 +6,7 @@
     "depends"     : [ "LibXML", "CSS::Module", "CSS::Properties", "CSS::Selector::To::XPath" ],
     "source-url"  : "git://github.com/p6-css/CSS-Stylesheet-raku.git",
     "provides"    : {
+        "CSS::DOM" : "lib/CSS/DOM.rm6",
         "CSS::Ruleset" : "lib/CSS/Ruleset.rm6",
         "CSS::Selectors" : "lib/CSS/Selectors.rm6",
         "CSS::Stylesheet" : "lib/CSS/Stylesheet.rm6"

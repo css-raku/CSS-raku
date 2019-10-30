@@ -1,0 +1,45 @@
+unit class CSS::DOM;
+
+# maintains associations between CSS Selectors and a XML/HTML DOM
+# no lazyness or other optimisations yet
+
+use CSS::Stylesheet;
+use CSS::Properties;
+use LibXML::Document :HTML;
+use LibXML::Node;
+
+subset MediaType of Str where 'braille'|'embossed'|'handheld'|'print'|'projection'|'screen'|'speech'|'tty'|'tv';
+
+has MediaType $.media;
+has LibXML::Document:D $.doc is required;
+has CSS::Stylesheet $!stylesheet;
+has Array %.props;
+
+# apply selectors (no inheritance)
+method !build {
+    for $!stylesheet.rules.grep({.media ~~ $!media|'all'}) {
+        for $!doc.findnodes(.xpath) {
+            %!props{.nodePath}.push: $_;
+        }
+    }
+}
+
+multi submethod TWEAK(CSS::Stylesheet :style($!stylesheet)!) {
+    self!build();
+}
+
+multi submethod TWEAK(Str:D :style($string)!) {
+    $!stylesheet .= parse($string);
+    self!build();
+}
+
+multi submethod TWEAK(HTML :doc($)!) {
+    my $string = '';
+    given $!doc<html/head/style> {
+        $string = .to-literal
+            if $_;
+    }
+    $!stylesheet .= parse($string);
+    self!build();
+}
+

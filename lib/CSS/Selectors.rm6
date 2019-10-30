@@ -22,23 +22,23 @@ class Specificity {
     }
 
     multi method calc(:simple-selector($_)!) {
-        $.calc(|$_) for .list; 
+        $.calc(|$_) for .list;
     }
 
     multi method calc(:selector($_)!) {
-        $.calc(|$_) for .list; 
+        $.calc(|$_) for .list;
     }
 
     multi method calc(:selectors($_)!) {
-        $.calc(|$_) for .list; 
+        $.calc(|$_) for .list;
         Version.new: ($!id, $!class, $!type).join: '.';
     }
 
-    multi method calc(:attrib($)!)        { $!class++ }
-    multi method calc(:class($)!)         { $!class++ }
-    multi method calc(:pseudo-class($_)!) { $!class++ }
-    multi method calc(:pseudo-elem($_)!)  { $!class++ }
-    multi method calc(:pseudo-func($_)!)  {
+    multi method calc(:attrib($)!)       { $!class++ }
+    multi method calc(:class($)!)        { $!class++ }
+    multi method calc(:pseudo-class($)!) { $!class++ }
+    multi method calc(:pseudo-elem($)!)  { $!class++ }
+    multi method calc(:pseudo-func($_)!) {
         with .<expr> {
             $.calc(|$_) for .list;
         }

@@ -6,6 +6,7 @@ use CSS::Module::CSS3;
 
 has CSS::Selectors $.selectors handles <xpath>;
 has CSS::Properties $.properties;
+has $.media = 'all';
 
 submethod TWEAK(:%ast!) {
     $!properties .= new: :ast(%ast<declarations>:delete);    

@@ -30,11 +30,13 @@ multi method load(:ruleset($_)!) {
 
 multi method load($_) is default { warn .perl }
 
-method parse(:$css!) {
-    my $actions = $!module.actions.new;
-    given $!module.parse($css, :rule<stylesheet>, :$actions) {
+method parse($css!) {
+    my $obj = self;
+    $_ .= new without $obj;
+    my $actions = $obj.module.actions.new;
+    given $obj.module.parse($css, :rule<stylesheet>, :$actions) {
         my $ast = .ast;
-        $.load(|$ast);
+        $obj.load(|$ast);
     }
-    self;
+    $obj;
 }
