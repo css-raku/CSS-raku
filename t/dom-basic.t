@@ -18,6 +18,7 @@ p    {color: red;}
 
 <h1>This is a heading</h1>
 <p>This is a paragraph.</p>
+<div style="color:green">This is a div</div>
 
 </body>
 </html>
@@ -26,6 +27,6 @@ p    {color: red;}
 my LibXML::Document $doc .= parse: :$string, :html;
 my CSS::DOM $css-dom .= new: :$doc;
 
-is $css-dom.props.keys.sort.join(','), '/html/body,/html/body/h1,/html/body/p';
+is $css-dom.props.keys.sort.join(','), '/html/body,/html/body/div,/html/body/h1,/html/body/p';
 
 done-testing();

@@ -14,12 +14,23 @@ has MediaType $.media;
 has LibXML::Document:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
 has Array %.props;
+has Bool $.inline;
 
 # apply selectors (no inheritance)
 method !build {
+    $!doc.indexElements;
     for $!stylesheet.rules.grep({.media ~~ $!media|'all'}) {
         for $!doc.findnodes(.xpath) {
             %!props{.nodePath}.push: $_;
+        }
+    }
+    $!inline //= ?($!doc ~~ HTML);
+    if $!inline {
+        # locate and parse inline styles
+        for $!doc.findnodes('//@style') {
+            my $path = .ownerElement.nodePath;
+            my $style = .value;
+            %!props{$path}.push: CSS::Properties.new(:$style);
         }
     }
 }
@@ -35,11 +46,8 @@ multi submethod TWEAK(Str:D :style($string)!) {
 
 multi submethod TWEAK(HTML :doc($)!) {
     my $string = '';
-    given $!doc<html/head/style> {
-        $string = .to-literal
-            if $_;
-    }
-    $!stylesheet .= parse($string);
+    my @styles = $!doc<html/head/style>.map(*.textContent);
+    $!stylesheet .= parse(@styles.join: "\n");
     self!build();
 }
 
