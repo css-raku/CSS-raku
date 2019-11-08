@@ -5,12 +5,12 @@ unit class CSS::DOM;
 
 use CSS::Stylesheet;
 use CSS::Properties;
+use CSS::Properties::Units :px;
+use CSS::Media;
 use LibXML::Document :HTML;
 use LibXML::Node;
 
-subset MediaType of Str where 'braille'|'embossed'|'handheld'|'print'|'projection'|'screen'|'speech'|'tty'|'tv';
-
-has MediaType $.media;
+has CSS::Media $.media .= new: :type<tty>, :width(480px), :height(640px);
 has LibXML::Document:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
 has Array %.props;
@@ -19,7 +19,8 @@ has Bool $.inline;
 # apply selectors (no inheritance)
 method !build {
     $!doc.indexElements;
-    for $!stylesheet.rules.grep({.media ~~ $!media|'all'}) {
+    # todo - proper media selection;
+    for $!stylesheet.rules.grep({.media ~~ $!media.type|'all'}) {
         for $!doc.findnodes(.xpath) {
             %!props{.nodePath}.push: $_;
         }
@@ -49,5 +50,9 @@ multi submethod TWEAK(HTML :doc($)!) {
     my @styles = $!doc<html/head/style>.map(*.textContent);
     $!stylesheet .= parse(@styles.join: "\n");
     self!build();
+}
+
+# compute the style of an individual element
+method style(LibXML::Element $elem) {
 }
 

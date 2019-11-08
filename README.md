@@ -1,5 +1,6 @@
-Work in Progress on Raku classes:
+Work in Progress on neophytic Raku CSS classes:
 
+ - CSS::Media - media selectors and representation
  - CSS::Stylesheet - overall stylesheet
  - CSS::Ruleset - a single CSS rule (selectors + properties)
  - CSS::Selectors - selector component of rulesets

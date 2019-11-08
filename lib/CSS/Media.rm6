@@ -1,0 +1,28 @@
+unit class CSS::Media;
+use CSS::Properties::Units :Resolution, :Length;
+
+subset Len of Numeric where {!.defined || $_ ~~ Length}
+subset Res of Numeric where {!.defined || $_ ~~ Resolution}
+subset MediaType of Str where 'braille'|'embossed'|'handheld'|'print'|'projection'|'screen'|'speech'|'tty'|'tv'|'all';
+has MediaType $.type = 'all';
+has Res $.resolution;
+has Len $.width is required;
+has Len $.height is required;
+has Len $.device-width;
+has Len $.device-height;
+
+method device-width { $!device-width // $!width }
+method device-height { $!device-height // $!height }
+
+method orientation {
+    $!height > $!width.scale($!height) ?? 'portrait' !! 'landscape'
+}
+
+method aspect-ratio {
+    $!width / $!height.scale($!width);
+}
+
+method device-aspect-ratio {
+    my $dev-width := $.device-width;
+    $dev-width / $.device-height.scale($dev-width);
+}
