@@ -1,6 +1,6 @@
 use v6;
 use Test;
-plan 10;
+plan 14;
 use CSS::Media;
 use CSS::Properties::Units :dpi, :px;
 
@@ -17,8 +17,11 @@ is $media.orientation, 'landscape', 'media.orientation';
 ok $media.query('all');
 ok $media.query('screen');
 nok $media.query('tty');
-#ok $media.query('screen and (max-width: 900px)');
-#ok $media.query('screen and (orientation: landscape)'); 
-#nok $media.query('screen and (orientation: portrait)'); 
+
+ok $media.query('screen and (max-width: 900px)');
+nok $media.query('screen and (max-width: 600px)');
+
+ok $media.query('screen and (orientation: landscape)'); 
+nok $media.query('screen and (orientation: portrait)'); 
 
 done-testing();

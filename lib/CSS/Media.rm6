@@ -1,4 +1,5 @@
 unit class CSS::Media;
+use CSS::Properties;
 use CSS::Properties::Units :Resolution, :Length;
 use CSS::Module::CSS3;
 
@@ -29,7 +30,21 @@ method device-aspect-ratio {
     $dev-width / $.device-height.scale($dev-width);
 }
 
-multi method query(:@property!) { ... }
+multi method have('orientation', $val) {
+    $.orientation eq $val
+}
+
+multi method have('max-width', $val) {
+    $!width <= $val.scale($!width);
+}
+
+multi method have($prop, $v) is default {
+    die "todo: $prop media property";
+}
+
+multi method query(:property(%)! ( :$ident!, :$expr )) {
+    $.have($ident, CSS::Properties.from-ast($expr));
+}
 
 multi method query(:media-query(@)! (% ( :keyw($_)! ), $term)) {
     when 'only' { $.query(|$term); }
@@ -37,15 +52,19 @@ multi method query(:media-query(@)! (% ( :keyw($_)! ), $term)) {
     default { fail "unhandled media selection prefix $_"; }
 }
 
-multi method query(:media-query(@)! ($term1, % ( :keyw($_)!), $term2)  ) {
-warn :$term1.perl;
-warn :$term2.perl;
-    when 'and' { $.query(|$term1) && $.query(|$term2); }
+multi method query( :media(%)! ( :$ident! ) ) {
+    $ident ~~ $!type | 'all'
+}
+
+multi method query(:media-query(@)! ($media, % ( :keyw($_)!), $term)  ) {
+    when 'and' {
+        $.query(:$media) && $.query(|$term);
+    }
     default { fail "unhandled media selection infix $_"; }
 }
 
-multi method query(:media-query(@)! (% ( :$ident! ), *@expr)) {
-    $ident ~~ $!type | 'all' && ! @expr.first({ ! $.query(|$_) });
+multi method query(:media-query(@)! ($media, *@expr)) {
+     $.query(:$media) && ! @expr.first({ ! $.query(|$_) });
 }
 
 multi method query(:@media-list!) {
@@ -56,5 +75,6 @@ multi method query(Str:D $query) {
     my $actions = $!module.actions;
     my $p = $!module.parse($query, :rule<media-list>, :$actions)
         // fail "unable to parse media query: $_";
-    $.query(|$p.ast[0]);
+    my $media-list = $p.ast;
+    $.query(:$media-list);
 }
