@@ -1,16 +1,18 @@
 unit class CSS::Media;
 use CSS::Properties::Units :Resolution, :Length;
+use CSS::Module::CSS3;
 
 subset Len of Numeric where {!.defined || $_ ~~ Length}
 subset Res of Numeric where {!.defined || $_ ~~ Resolution}
 subset MediaType of Str where 'braille'|'embossed'|'handheld'|'print'|'projection'|'screen'|'speech'|'tty'|'tv'|'all';
-has MediaType $.type = 'all';
+has MediaType $.type is required;
 has Res $.resolution;
 has Len $.width is required;
 has Len $.height is required;
 has Len $.device-width;
 has Len $.device-height;
-
+has $!units = 'px';
+has $!module = CSS::Module::CSS3.module;
 method device-width { $!device-width // $!width }
 method device-height { $!device-height // $!height }
 
@@ -25,4 +27,34 @@ method aspect-ratio {
 method device-aspect-ratio {
     my $dev-width := $.device-width;
     $dev-width / $.device-height.scale($dev-width);
+}
+
+multi method query(:@property!) { ... }
+
+multi method query(:media-query(@)! (% ( :keyw($_)! ), $term)) {
+    when 'only' { $.query(|$term); }
+    when 'not'  { ! $.query(|$term); }
+    default { fail "unhandled media selection prefix $_"; }
+}
+
+multi method query(:media-query(@)! ($term1, % ( :keyw($_)!), $term2)  ) {
+warn :$term1.perl;
+warn :$term2.perl;
+    when 'and' { $.query(|$term1) && $.query(|$term2); }
+    default { fail "unhandled media selection infix $_"; }
+}
+
+multi method query(:media-query(@)! (% ( :$ident! ), *@expr)) {
+    $ident ~~ $!type | 'all' && ! @expr.first({ ! $.query(|$_) });
+}
+
+multi method query(:@media-list!) {
+    @media-list.first({ $.query(|$_) });
+}
+
+multi method query(Str:D $query) {
+    my $actions = $!module.actions;
+    my $p = $!module.parse($query, :rule<media-list>, :$actions)
+        // fail "unable to parse media query: $_";
+    $.query(|$p.ast[0]);
 }
