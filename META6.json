@@ -4,7 +4,7 @@
     "version"     : "0.0.1",
     "description" : "CSS Stylesheet processing",
     "depends"     : [ "LibXML", "CSS::Module", "CSS::Properties", "CSS::Selector::To::XPath" ],
-    "source-url"  : "git://github.com/p6-css/CSS-Stylesheet-raku.git",
+    "source-url"  : "git://github.com/p6-css/CSS-raku.git",
     "provides"    : {
         "CSS::DOM" : "lib/CSS/DOM.rm6",
         "CSS::Media" : "lib/CSS/Media.rm6",
