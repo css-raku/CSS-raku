@@ -10,13 +10,15 @@ my $string = q:to<\_(ツ)_/>;
 <head>
 <style>
 body {background-color: powderblue;}
-h1   {color: blue;}
+@media screen { h1 {color: blue;} }
+@media print { h2 {color: green;} }
 p    {color: red;}
 </style>
 </head>
 <body>
 
 <h1>This is a heading</h1>
+<h2>This is a sub-heading</h2>
 <p>This is a paragraph.</p>
 <div style="color:green">This is a div</div>
 

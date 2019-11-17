@@ -100,7 +100,8 @@ multi method have('resolution', $val) {
 }
 
 multi method have($prop, $v) is default {
-    die "todo: $prop media property";
+    warn "ignoring $prop media property";
+    True;
 }
 
 multi method query(:property(%)! ( :$ident!, :$expr )) {
@@ -115,7 +116,6 @@ multi method query(:property(%)! ( :$ident!, :$expr )) {
 multi method query(:media-query(@)! (% ( :keyw($_)! ), $media)) {
     when 'only' { $.query(:$media); }
     when 'not'  { ! $.query(:$media); }
-    when 'and'  { die 42 }
     default { fail "unhandled media selection prefix $_"; }
 }
 

@@ -5,12 +5,9 @@ unit class CSS::DOM;
 
 use CSS::Stylesheet;
 use CSS::Properties;
-use CSS::Properties::Units :px;
-use CSS::Media;
 use LibXML::Document :HTML;
 use LibXML::Node;
 
-has CSS::Media $.media .= new: :type<tty>, :width(480px), :height(640px);
 has LibXML::Document:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
 has Array %.props;
@@ -20,7 +17,7 @@ has Bool $.inline;
 method !build {
     $!doc.indexElements;
     # todo - proper media selection;
-    for $!stylesheet.rules.grep({.media ~~ $!media.type|'all'}) {
+    for $!stylesheet.rules {
         for $!doc.findnodes(.xpath) {
             %!props{.nodePath}.push: $_;
         }
