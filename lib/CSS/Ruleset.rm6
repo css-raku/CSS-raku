@@ -4,7 +4,7 @@ use CSS::Properties;
 use CSS::Selectors;
 use CSS::Module::CSS3;
 
-has CSS::Selectors $.selectors handles <xpath>;
+has CSS::Selectors $.selectors handles <xpath specificity>;
 has CSS::Properties $.properties;
 has $.media = 'all';
 

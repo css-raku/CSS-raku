@@ -5,21 +5,25 @@ unit class CSS::DOM;
 
 use CSS::Stylesheet;
 use CSS::Properties;
+use CSS::Ruleset;
 use LibXML::Document :HTML;
 use LibXML::Node;
+use LibXML::XPath::Expression;
 
 has LibXML::Document:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
-has Array %.props;
+has CSS::Properties %.props;
+has Array %.rulesets;
+has %.style;
 has Bool $.inline;
 
 # apply selectors (no inheritance)
 method !build {
     $!doc.indexElements;
     # todo - proper media selection;
-    for $!stylesheet.rules {
-        for $!doc.findnodes(.xpath) {
-            %!props{.nodePath}.push: $_;
+    for $!stylesheet.rules -> CSS::Ruleset $rule {
+        for $!doc.findnodes($rule.xpath) {
+            %!rulesets{.nodePath}.push: $rule;
         }
     }
     $!inline //= ?($!doc ~~ HTML);
@@ -28,7 +32,7 @@ method !build {
         for $!doc.findnodes('//@style') {
             my $path = .ownerElement.nodePath;
             my $style = .value;
-            %!props{$path}.push: CSS::Properties.new(:$style);
+            %!props{$path} = CSS::Properties.new(:$style);
         }
     }
 }
@@ -50,6 +54,42 @@ multi submethod TWEAK(HTML :doc($)!) {
 }
 
 # compute the style of an individual element
-method style(LibXML::Element $elem) {
+# ** unoptimised **
+multi method style(LibXML::Element $elem) {
+    my $path = $elem.nodePath;
+    %!style{$path} //= do {
+        my CSS::Properties @prop-sets = .sort(*.specificity).map(*.properties)
+            with %!rulesets{$path};
+        my CSS::Properties $style = do with %!props{$path} { .clone } else { CSS::Properties.new };
+        my %seen = $style.properties.map(* => 1);
+
+        # Apply CSS Selector styles
+        for @prop-sets -> CSS::Properties $prop-set {
+            for $prop-set.properties {
+                $style."$_"() = $prop-set."$_"()
+                    unless %seen{$_}++;
+            }
+        }
+
+        # Apply inherited styles; Work down the DOM
+        my @path = $path.split('/');
+        @path.pop;
+        my $subpath = '';
+
+        for 0 ..^  @path.elems -> $n {
+            $subpath ~= @path[$n];
+            if ($n) {
+                $style.inherit($_)
+                    with self.style($subpath);
+            }
+            $subpath ~= '/';
+        }
+
+        $style;
+    };
+}
+
+multi method style(Str:D $xpath) {
+    self.style: $!doc.first($xpath);
 }
 
