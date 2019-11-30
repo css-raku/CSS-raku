@@ -6,11 +6,11 @@
     "depends"     : [ "LibXML", "CSS::Module", "CSS::Properties", "CSS::Selector::To::XPath" ],
     "source-url"  : "git://github.com/p6-css/CSS-raku.git",
     "provides"    : {
-        "CSS::DOM" : "lib/CSS/DOM.rm6",
-        "CSS::Media" : "lib/CSS/Media.rm6",
-        "CSS::Ruleset" : "lib/CSS/Ruleset.rm6",
-        "CSS::Selectors" : "lib/CSS/Selectors.rm6",
-        "CSS::Stylesheet" : "lib/CSS/Stylesheet.rm6"
+        "CSS::DOM" : "lib/CSS/DOM.pm6",
+        "CSS::Media" : "lib/CSS/Media.pm6",
+        "CSS::Ruleset" : "lib/CSS/Ruleset.pm6",
+        "CSS::Selectors" : "lib/CSS/Selectors.pm6",
+        "CSS::Stylesheet" : "lib/CSS/Stylesheet.pm6"
     },
     "tags" : [
         "xml", "html", "xpath", "css"
