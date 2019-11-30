@@ -7,6 +7,7 @@ use CSS::Stylesheet;
 use CSS::Properties;
 use CSS::Ruleset;
 use LibXML::Document :HTML;
+use LibXML::Element;
 use LibXML::Node;
 use LibXML::XPath::Expression;
 
@@ -71,18 +72,10 @@ multi method style(LibXML::Element $elem) {
             }
         }
 
-        # Apply inherited styles; Work down the DOM
-        my @path = $path.split('/');
-        @path.pop;
-        my $subpath = '';
-
-        for 0 ..^  @path.elems -> $n {
-            $subpath ~= @path[$n];
-            if ($n) {
-                $style.inherit($_)
-                    with self.style($subpath);
-            }
-            $subpath ~= '/';
+        my LibXML::Element @ancestors = $elem.find('ancestor::*');
+        for @ancestors {
+            $style.inherit($_)
+                with self.style($_);
         }
 
         $style;
