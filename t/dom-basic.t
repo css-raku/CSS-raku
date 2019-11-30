@@ -13,6 +13,7 @@ body {background-color: powderblue; font-size: 12pt}
 @media screen { h1:first-child {color: blue;} }
 @media print { h2 {color: green;} }
 p    {color: red;}
+div {font-size: 10pt }
 </style>
 </head>
 <body>
