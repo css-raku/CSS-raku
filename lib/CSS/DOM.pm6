@@ -15,7 +15,9 @@ has LibXML::Document:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
 has CSS::Properties %.props;
 has Array %.rulesets;
+has %.raw-style;
 has %.style;
+has $.tag-set;
 has Bool $.inline;
 
 # apply selectors (no inheritance)
@@ -56,11 +58,12 @@ multi submethod TWEAK(HTML :doc($)!) {
 
 # compute the style of an individual element
 # ** unoptimised **
-multi method style(LibXML::Element $elem) {
+method !raw-style(LibXML::Element $elem) {
     my $path = $elem.nodePath;
-    %!style{$path} //= do {
+    %!raw-style{$path} //= do {
         my CSS::Properties @prop-sets = .sort(*.specificity).map(*.properties)
             with %!rulesets{$path};
+        # merge in inline styles
         my CSS::Properties $style = do with %!props{$path} { .clone } else { CSS::Properties.new };
         my %seen = $style.properties.map(* => 1);
 
@@ -80,6 +83,29 @@ multi method style(LibXML::Element $elem) {
 
         $style;
     };
+}
+
+multi method style(LibXML::Element $elem) {
+    my CSS::Properties $raw-style = self!raw-style($elem);
+    my CSS::Properties $style;
+    my $node-path;
+
+    with $!tag-set {
+        # apply tag style properties in isolation, as they don't inherit
+        my CSS::Properties $tag-style = .tag-style($elem.tag);
+        for $tag-style.properties {
+            unless $raw-style.property-exists($_) {
+                # copy the raw style on write
+                $node-path //= $elem.nodePath;
+                $style = $_ with %!style{$node-path};
+                %!style{$node-path} = ($style = $raw-style.clone)
+                    unless $style.defined;
+
+                $style."$_"() = $tag-style."$_"()
+            }
+        }
+    }
+    $style // $raw-style;
 }
 
 multi method style(Str:D $xpath) {

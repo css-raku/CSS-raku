@@ -7,6 +7,7 @@
     "source-url"  : "git://github.com/p6-css/CSS-raku.git",
     "provides"    : {
         "CSS::DOM" : "lib/CSS/DOM.pm6",
+        "CSS::TagSet::HTML" : "lib/CSS/TagSet/HTML.pm6",
         "CSS::Media" : "lib/CSS/Media.pm6",
         "CSS::Ruleset" : "lib/CSS/Ruleset.pm6",
         "CSS::Selectors" : "lib/CSS/Selectors.pm6",
@@ -14,6 +15,8 @@
     },
     "tags" : [
         "xml", "html", "xpath", "css"
-    ]
+    ],
+    "resources" : [ "xhtml.css" ]
+
 }
 

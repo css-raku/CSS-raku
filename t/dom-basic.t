@@ -3,6 +3,7 @@ use Test;
 plan 7;
 use LibXML::Document;
 use CSS::DOM;
+use CSS::TagSet::HTML;
 
 my $string = q:to<\_(ツ)_/>;
 <!DOCTYPE html>
@@ -28,16 +29,17 @@ div {font-size: 10pt }
 </html>
 \_(ツ)_/
 
+my CSS::TagSet::HTML $tag-set .= new();
 my LibXML::Document $doc .= parse: :$string, :html;
-my CSS::DOM $css-dom .= new: :$doc;
+my CSS::DOM $css-dom .= new: :$doc, :$tag-set;
 
 is $css-dom.rulesets.keys.sort.join(','), '/html/body,/html/body/div,/html/body/h1[1],/html/body/p';
 is $css-dom.props.keys.sort.join(','), '/html/body/div,/html/body/h2';
 
 is $css-dom.props</html/body/div>, 'color:green;';
-is $css-dom.style('/html/body'), 'background-color:powderblue; font-size:12pt;';
-is $css-dom.style('/html/body/h1[1]'), 'color:blue; font-size:12pt;';
-is $css-dom.style('/html/body/div'), 'color:green; font-size:10pt;';
-is $css-dom.style('/html/body/h2[1]'), 'font-size:9pt;';
+is $css-dom.style('/html/body'), 'background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;';
+is $css-dom.style('/html/body/h1[1]'), 'color:blue; display:block; font-size:12pt; font-weight:bolder; margin-bottom:0.67em; margin-top:0.67em; unicode-bidi:embed;';
+is $css-dom.style('/html/body/div'), 'color:green; display:block; font-size:10pt; unicode-bidi:embed;';
+is $css-dom.style('/html/body/h2[1]'), 'display:block; font-size:9pt; font-weight:bolder; margin-bottom:0.75em; margin-top:0.75em; unicode-bidi:embed;';
 
 done-testing();
