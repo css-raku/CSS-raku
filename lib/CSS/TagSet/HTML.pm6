@@ -33,13 +33,17 @@ class CSS::TagSet::HTML {
 
     method declarations { %Tags }
 
-    method !build-property(Str $_) {
-        my $ast = %Tags{.lc} // fail "unknown XHTML tag: {.lc}";
-        CSS::Properties.new(declarations => $ast);
+    method !base-property(Str $prop) {
+        %!css{$prop} //= do {
+            my $ast = %Tags{$prop} // fail "unknown XHTML tag: $prop";
+            CSS::Properties.new(declarations => $ast);
+        }
     }
 
-    method tag-style(Str $_) {
-        %!css{.lc} //= self!build-property(.lc);
+    method tag-style(Str $tag, :%attrs) {
+        my $css = self!base-property($tag).clone;
+        $css.direction = $_ with %attrs<dir>;
+        $css;
     }
 
 }

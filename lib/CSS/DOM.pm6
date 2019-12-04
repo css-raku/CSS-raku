@@ -85,21 +85,20 @@ method !raw-style(LibXML::Element $elem) {
     };
 }
 
-multi method style(LibXML::Element $elem) {
+
+
+multi method style(LibXML::Element:D $elem) {
     my CSS::Properties $raw-style = self!raw-style($elem);
     my CSS::Properties $style;
-    my $node-path;
 
     with $!tag-set {
-        # apply tag style properties in isolation, as they don't inherit
-        my CSS::Properties $tag-style = .tag-style($elem.tag);
+        # apply tag style properties in isolation; they don't inherit
+        my %attrs = $elem.properties.map: { .tag => .value };
+        my CSS::Properties $tag-style = .tag-style($elem.tag, :%attrs);
         for $tag-style.properties {
             unless $raw-style.property-exists($_) {
-                # copy the raw style on write
-                $node-path //= $elem.nodePath;
-                $style = $_ with %!style{$node-path};
-                %!style{$node-path} = ($style = $raw-style.clone)
-                    unless $style.defined;
+                # copy the raw style, if it needs to be updated
+                $style //= (%!style{$elem.nodePath} //= $raw-style.clone);
 
                 $style."$_"() = $tag-style."$_"()
             }
@@ -107,6 +106,8 @@ multi method style(LibXML::Element $elem) {
     }
     $style // $raw-style;
 }
+
+multi method style(LibXML::Item:U) { CSS::Properties }
 
 multi method style(Str:D $xpath) {
     self.style: $!doc.first($xpath);
