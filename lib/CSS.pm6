@@ -1,4 +1,4 @@
-unit class CSS::DOM;
+unit class CSS;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
 # no lazyness or other optimisations yet
