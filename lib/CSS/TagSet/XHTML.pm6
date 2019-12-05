@@ -1,6 +1,6 @@
 use v6;
 
-class CSS::TagSet::HTML {
+class CSS::TagSet::XHTML {
     use CSS::Module;
     use CSS::Module::CSS3;
     use CSS::Properties;
@@ -40,9 +40,38 @@ class CSS::TagSet::HTML {
         }
     }
 
+    constant %AttrProp = %(
+        align => '-xhtml-align',
+        bidi-override => 'unicode-bidi',
+        dir   => 'direction',
+    );
+
+    constant %AttrTags = %(
+        'align' => 'applet'|'caption'|'col'|'colgroup'|'hr'|'iframe'|'img'|'table'|'tbody'|'td'|'tfoot'|'th'|'thead'|'tr',
+        'bdo' => 'bidi-override',
+        'dir' => Str, # applicable to all
+    );
+
+    constant %PropAlias = %(
+        '-xhtml-align' => 'text-align',
+    );
+
+    # any additional CSS styling based on HTML attributes
+    multi sub tweak-style('bdo', $css, %attrs) {
+        $css.unicode-bidi //= :keyw<bidi-override>;
+    }
+    multi sub tweak-style($, $, %) is default {
+    }
+
     method tag-style(Str $tag, :%attrs) {
         my $css = self!base-property($tag).clone;
-        $css.direction = $_ with %attrs<dir>;
+
+        for %attrs.keys.grep({%AttrTags{$_}:exists && $tag ~~ %AttrTags{$_}}) {
+            my $css-prop = %AttrProp{$_} // $_;
+            $css.alias(:name($css-prop), :like($_)) with %PropAlias{$css-prop};
+            $css."$css-prop"() = %attrs{$_};
+        }
+        tweak-style($tag, $css, %attrs);
         $css;
     }
 

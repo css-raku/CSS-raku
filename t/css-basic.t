@@ -1,8 +1,8 @@
 use v6;
 use Test;
-plan 8;
+plan 9;
 use CSS;
-use CSS::TagSet::HTML;
+use CSS::TagSet::XHTML;
 use LibXML::Document;
 
 my $string = q:to<\_(ツ)_/>;
@@ -24,13 +24,14 @@ div {font-size: 10pt }
 <h2 style="display:table" dir="rtl">This is a 2nd sub-heading</h2>
 <h1>This is another heading</h1>
 <p>This is a paragraph.</p>
+<hr align="center"/>
 <div style="color:green">This is a div</div>
 
 </body>
 </html>
 \_(ツ)_/
 
-my CSS::TagSet::HTML $tag-set .= new();
+my CSS::TagSet::XHTML $tag-set .= new();
 my LibXML::Document $doc .= parse: :$string, :html;
 my CSS $css .= new: :$doc, :$tag-set;
 
@@ -43,5 +44,6 @@ is $css.style('/html/body/h1[1]'), 'color:blue; display:block; font-size:12pt; f
 is $css.style('/html/body/div'), 'color:green; display:block; font-size:10pt; unicode-bidi:embed;';
 is $css.style('/html/body/h2[1]'), 'display:block; font-size:9pt; font-weight:bolder; margin-bottom:0.75em; margin-top:0.75em; unicode-bidi:embed;';
 is $css.style('/html/body/h2[2]'), 'direction:rtl; display:table; font-size:12pt; font-weight:bolder; margin-bottom:0.75em; margin-top:0.75em; unicode-bidi:embed;';
+is $css.style('/html/body/hr'), '-xhtml-align:center; border:1px inset; display:block; font-size:12pt; unicode-bidi:embed;';
 
 done-testing();

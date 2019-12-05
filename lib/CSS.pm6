@@ -99,7 +99,9 @@ multi method style(LibXML::Element:D $elem) {
             unless $raw-style.property-exists($_) {
                 # copy the raw style, if it needs to be updated
                 $style //= (%!style{$elem.nodePath} //= $raw-style.clone);
-
+                # inherit definitions for extension properties, e.g. -xhtml-align
+                $style.alias: |$raw-style.alias($_)
+                    if .starts-with('-');
                 $style."$_"() = $tag-style."$_"()
             }
         }

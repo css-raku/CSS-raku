@@ -4,7 +4,7 @@
 
 CSS is a module for parsing and applying stylesheets associated with HTML or XML documents.
 This module aims to be W3C complient and complete, including: stylesheets, media specific and
-inline styling and the application of HTML specific styling (based on tags and aattributes).
+inline styling and the application of HTML specific styling (based on tags and attributes).
 
 
     use CSS;
