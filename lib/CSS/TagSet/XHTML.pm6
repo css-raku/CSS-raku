@@ -41,7 +41,6 @@ class CSS::TagSet::XHTML {
     }
 
     constant %AttrProp = %(
-        align => '-xhtml-align',
         bidi-override => 'unicode-bidi',
         dir   => 'direction',
     );
@@ -67,7 +66,7 @@ class CSS::TagSet::XHTML {
         my $css = self!base-property($tag).clone;
 
         for %attrs.keys.grep({%AttrTags{$_}:exists && $tag ~~ %AttrTags{$_}}) {
-            my $css-prop = %AttrProp{$_} // $_;
+            my $css-prop = %AttrProp{$_} // '-xhtml-' ~ $_;
             $css.alias(:name($css-prop), :like($_)) with %PropAlias{$css-prop};
             $css."$css-prop"() = %attrs{$_};
         }

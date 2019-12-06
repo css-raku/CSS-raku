@@ -8,7 +8,7 @@ inline styling and the application of HTML specific styling (based on tags and a
 
 
     use CSS;
-    use CSS::TagSet::HTML;
+    use CSS::TagSet::XHTML;
     use LibXML::Document;
 
     my $string = q:to<\_(ツ)_/>;
@@ -36,10 +36,11 @@ inline styling and the application of HTML specific styling (based on tags and a
     my LibXML::Document $doc .= parse: :$string, :html;
     # define our media (this is the default media anyway)
     my CSS::Media $media .= new: :type<screen>, :width(480px), :height(640px), :color;
-    my CSS::TagSet::HTML $tag-set .= new(); # use HTML styling rules
+    my CSS::TagSet::XHTML $tag-set .= new(); # use XHTML styling rules
     my CSS $css .= new: :$doc, :$tag-set, :$media;
 
-    # show some computed styles, based on CSS Selectors, media and inline styles
+    # show some computed styles, based on CSS Selectors, media, inline styles and xhtml tags
+
     say $css.style('/html/body');
     # background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;
     say $css.style('/html/body/h1[1]');
@@ -51,9 +52,9 @@ Work in Progress on neophytic Raku CSS classes:
 
  - CSS::Media - media selectors and representation
  - CSS::Stylesheet - overall stylesheet
- - CSS::Ruleset - a single CSS rule (selectors + properties)
+ - CSS::Ruleset - a single CSS rule-set (selectors + properties)
  - CSS::Selectors - selector component of rulesets
- - CSS::TagSet::HTML - applies HTML specific styling
+ - CSS::TagSet::XHTML - adds XHTML specific styling based on tags and attributes
  - CSS - apply styling rules to CSS Documents
 
 Also uses the existing CSS::Properties module.

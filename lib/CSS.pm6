@@ -23,12 +23,15 @@ has Bool $.inline;
 # apply selectors (no inheritance)
 method !build {
     $!doc.indexElements;
-    # todo - proper media selection;
+
+    # evaluate selectors. associate rule-sets with nodes by path
     for $!stylesheet.rules -> CSS::Ruleset $rule {
         for $!doc.findnodes($rule.xpath) {
             %!rulesets{.nodePath}.push: $rule;
         }
     }
+
+    # find and evaluate inline styles (nodes with a style attribute)
     $!inline //= ?($!doc ~~ HTML);
     if $!inline {
         # locate and parse inline styles
@@ -85,31 +88,33 @@ method !raw-style(LibXML::Element $elem) {
     };
 }
 
-
-
+# finish the raw style; applying any tag-set styling
 multi method style(LibXML::Element:D $elem) {
     my CSS::Properties $raw-style = self!raw-style($elem);
     my CSS::Properties $style;
+    my $node-path = $elem.nodePath;
 
-    with $!tag-set {
-        # apply tag style properties in isolation; they don't inherit
-        my %attrs = $elem.properties.map: { .tag => .value };
-        my CSS::Properties $tag-style = .tag-style($elem.tag, :%attrs);
-        for $tag-style.properties {
-            unless $raw-style.property-exists($_) {
-                # copy the raw style, if it needs to be updated
-                $style //= (%!style{$elem.nodePath} //= $raw-style.clone);
-                # inherit definitions for extension properties, e.g. -xhtml-align
-                $style.alias: |$raw-style.alias($_)
-                    if .starts-with('-');
-                $style."$_"() = $tag-style."$_"()
+    with $!tag-set -> $tag-set {
+        without %!style{$node-path} -> $style is rw {
+            # apply tag style properties in isolation; they don't inherit
+            my %attrs = $elem.properties.map: { .tag => .value };
+            my CSS::Properties $tag-style = $tag-set.tag-style($elem.tag, :%attrs);
+            for $tag-style.properties {
+                unless $raw-style.property-exists($_) {
+                    # copy the raw style, on the first update
+                    $style //= $raw-style.clone;
+                    # inherit definitions for extension properties, e.g. -xhtml-align
+                    $style.alias: |$raw-style.alias($_)
+                        if .starts-with('-');
+                    $style."$_"() = $tag-style."$_"()
+                }
             }
         }
     }
-    $style // $raw-style;
+    %!style{$node-path} //= $raw-style;
 }
 
-multi method style(LibXML::Item:U) { CSS::Properties }
+multi method style(LibXML::Item) { CSS::Properties }
 
 multi method style(Str:D $xpath) {
     self.style: $!doc.first($xpath);
