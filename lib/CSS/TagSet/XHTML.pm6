@@ -41,14 +41,24 @@ class CSS::TagSet::XHTML {
     }
 
     constant %AttrProp = %(
-        bidi-override => 'unicode-bidi',
-        dir   => 'direction',
+        background    => 'background-image',
+        bgcolor       => 'background-color',
+        border        => 'border',
+        color         => 'color',
+        dir           => 'direction',
+        height        => 'height',
     );
 
     constant %AttrTags = %(
-        'align' => 'applet'|'caption'|'col'|'colgroup'|'hr'|'iframe'|'img'|'table'|'tbody'|'td'|'tfoot'|'th'|'thead'|'tr',
-        'bdo' => 'bidi-override',
-        'dir' => Str, # applicable to all
+        align            => 'applet'|'caption'|'col'|'colgroup'|'hr'|'iframe'|'img'|'table'|'tbody'|'td'|'tfoot'|'th'|'thead'|'tr',
+        background       => 'body'|'table'|'td'|'th', # obselete in HTML5
+        bgcolor          => 'body'|'col'|'colgroup'|'marquee'|'table'|'tbody'|'tfoot'|'td'|'th'|'tr',  # obselete in HTML5
+        border           => 'img'|'object'|'table',   # obselete in HTML5
+        color            => 'basefont'|'font'|'hr',   # obselete in HTML5
+        bdo              => 'bidi-override',
+        dir              => Str, # applicable to all
+        'height'|'width' => 'canvas'|'embed'|'iframe'|'img'|'input'|'object'|'video',
+        # hidden
     );
 
     constant %PropAlias = %(
@@ -64,6 +74,7 @@ class CSS::TagSet::XHTML {
 
     method tag-style(Str $tag, :%attrs) {
         my $css = self!base-property($tag).clone;
+        $css.display = :keyw<none> if %attrs<hidden>:exists;
 
         for %attrs.keys.grep({%AttrTags{$_}:exists && $tag ~~ %AttrTags{$_}}) {
             my $css-prop = %AttrProp{$_} // '-xhtml-' ~ $_;
