@@ -64,7 +64,7 @@ multi submethod TWEAK(HTML :doc($)!) {
 method !raw-style(LibXML::Element $elem) {
     my $path = $elem.nodePath;
     %!raw-style{$path} //= do {
-        my CSS::Properties @prop-sets = .sort(*.specificity).map(*.properties)
+        my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map(*.properties)
             with %!rulesets{$path};
         # merge in inline styles
         my CSS::Properties $style = do with %!props{$path} { .clone } else { CSS::Properties.new };

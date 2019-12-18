@@ -3,7 +3,7 @@
 **Under construction**
 
 CSS is a module for parsing and applying stylesheets associated with HTML or XML documents.
-This module aims to be W3C complient and complete, including: stylesheets, media specific and
+This module aims to be W3C compliant and complete, including: stylesheets, media specific and
 inline styling and the application of HTML specific styling (based on tags and attributes).
 
 
@@ -58,5 +58,3 @@ Work in Progress on neophytic Raku CSS classes:
  - CSS - apply styling rules to CSS Documents
 
 Also uses the existing CSS::Properties module.
-
-May break this up into modules; not sure yet.

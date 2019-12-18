@@ -27,4 +27,37 @@ for (
     }
 }
 
+# some practical tests that we're applying specificity properly
+
+my $string = q:to<END>;
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      h1 {color: blue;}
+      .c2 {color: purple }
+      h1.c2 {color: green;}
+      #id3 {color: red;}
+    </style>
+  </head>
+
+  <body>
+    <h1 id="id1" class="c1">Heading 1 (blue)</h1>
+    <h1 id="id2" class="c2">Heading 2 (green)</h1>
+    <h1 id="id3" class="c3">Heading 3 (red)</h1>
+  </body>
+
+</html>
+END
+
+use  LibXML::Document;
+use CSS;
+
+my LibXML::Document $doc .= parse: :$string, :html;
+my CSS $css .= new: :$doc;
+
+is $css.style('/html/body/h1[1]'), 'color:blue;';
+is $css.style('/html/body/h1[2]'), 'color:green;';
+is $css.style('/html/body/h1[3]'), 'color:red;';
+
 done-testing();

@@ -4,7 +4,7 @@ class CSS::TagSet::XHTML {
     use CSS::Module;
     use CSS::Module::CSS3;
     use CSS::Properties;
-    has %!css;
+    has CSS::Properties %!props;
 
     constant %Tags is export(:Tags) = do {
         my %asts;
@@ -34,7 +34,7 @@ class CSS::TagSet::XHTML {
     method declarations { %Tags }
 
     method !base-property(Str $prop) {
-        %!css{$prop} //= do {
+        %!props{$prop} //= do {
             my $ast = %Tags{$prop} // fail "unknown XHTML tag: $prop";
             CSS::Properties.new(declarations => $ast);
         }

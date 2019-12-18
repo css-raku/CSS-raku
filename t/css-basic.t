@@ -8,26 +8,26 @@ use LibXML::Document;
 my $string = q:to<\_(ツ)_/>;
 <!DOCTYPE html>
 <html>
-<head>
-<style>
-body {background-color: powderblue; font-size: 12pt}
-@media screen { h1:first-child {color: blue;} }
-@media print { h2 {color: green;} }
-p    {color: red;}
-div {font-size: 10pt }
-</style>
-</head>
-<body>
+  <head>
+    <style>
+      body {background-color: powderblue; font-size: 12pt}
+      @media screen { h1:first-child {color: blue;} }
+      @media print { h2 {color: green;} }
+      p    {color: red;}
+      div {font-size: 10pt }
+    </style>
+  </head>
 
-<h1>This is a heading</h1>
-<h2 style="font-size: 9pt">This is a sub-heading</h2>
-<h2 style="display:table" dir="rtl">This is a 2nd sub-heading</h2>
-<h1>This is another heading</h1>
-<p hidden>This is a hidden paragraph.</p>
-<hr align="center" />
-<div style="color:green">This is a div</div>
+  <body>
+    <h1>This is a heading</h1>
+    <h2 style="font-size: 9pt">This is a sub-heading</h2>
+    <h2 style="display:table" dir="rtl">This is a 2nd sub-heading</h2>
+    <h1>This is another heading</h1>
+    <p hidden>This is a hidden paragraph.</p>
+    <hr align="center" />
+    <div style="color:green">This is a div</div>
+  </body>
 
-</body>
 </html>
 \_(ツ)_/
 
