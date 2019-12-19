@@ -8,6 +8,8 @@ inline styling and the application of HTML specific styling (based on tags and a
 
 
     use CSS;
+    use CSS::Properties;
+    use CSS::Properties::Units :px; # define 'px' postfix operator
     use CSS::TagSet::XHTML;
     use LibXML::Document;
 
@@ -41,20 +43,55 @@ inline styling and the application of HTML specific styling (based on tags and a
 
     # show some computed styles, based on CSS Selectors, media, inline styles and xhtml tags
 
-    say $css.style('/html/body');
-    # background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;
+    my CSS::Properties $body-props = $css.style('/html/body');
+    say $body-props.font-size; # 12pt
+    say $body-props;           # background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;
     say $css.style('/html/body/h1[1]');
     # color:blue; display:block; font-size:12pt; font-weight:bolder; margin-bottom:0.67em; margin-top:0.67em; unicode-bidi:embed;
     say $css.style('/html/body/div');
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
 
-Work in Progress on neophytic Raku CSS classes:
+This module manages CSS stylesheets and their application to HTML and XML documents.
 
- - CSS::Media - media selectors and representation
- - CSS::Stylesheet - overall stylesheet
- - CSS::Ruleset - a single CSS rule-set (selectors + properties)
- - CSS::Selectors - selector component of rulesets
- - CSS::TagSet::XHTML - adds XHTML specific styling based on tags and attributes
- - CSS - apply styling rules to CSS Documents
+# Classess
+
+## CSS - apply styling rules to CSS Documents
+
+### CSS - Methods
+
+#### new
+
+Synopsis: `my CSS $css .= new: :$doc, :$tag-set, :$stylesheet, :%inline;`
+
+Options:
+
+- `LibXML::Document :$doc` - LibXML HTML or XML document to be styled.
+
+- `CSS::TagSet :$tag-set` - A tag-set manager that handles internal stylesheets, inline styles and styling of tags and attributes; for example to implement XHTML styling. 
+
+- `CSS::Stylesheet :$stylesheet` - provide an external stylesheet.
+
+- `CSS::Properties :%inline` provide additional styling on individual nodes by NodePath.
+
+## CSS::Media - media selectors and representation
+
+...
+
+## CSS::Stylesheet - overall stylesheet
+
+...
+
+## CSS::Ruleset - a single CSS rule-set (a selector and properties)
+
+...
+
+## CSS::Selectors - selector component of rulesets
+
+...
+
+## CSS::TagSet::XHTML - adds XHTML specific styling based on tags and attributes
+
+ For example the XHTML `em` tag implies `font-size: italic`.
+...
 
 Also uses the existing CSS::Properties module.

@@ -6,6 +6,7 @@ unit class CSS;
 use CSS::Stylesheet;
 use CSS::Properties;
 use CSS::Ruleset;
+use CSS::TagSet;
 use LibXML::Document :HTML;
 use LibXML::Element;
 use LibXML::Node;
@@ -13,16 +14,23 @@ use LibXML::XPath::Expression;
 
 has LibXML::Document:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
-has CSS::Properties %.props;
+method stylesheet { $!stylesheet }
+has CSS::Properties %.inline;
 has Array %.rulesets;
 has %.raw-style;
 has %.style;
-has $.tag-set;
-has Bool $.inline;
+has CSS::TagSet $.tag-set;
 
 # apply selectors (no inheritance)
 method !build {
     $!doc.indexElements;
+
+    $!stylesheet //= do with $!tag-set {
+        my @styles = $!doc.findnodes(.internal-stylesheets).map(*.textContent);
+        $!stylesheet.parse(@styles.join: "\n");
+    } else {
+        die "no :stylesheet or :tag-set provided";
+    }
 
     # evaluate selectors. associate rule-sets with nodes by path
     for $!stylesheet.rules -> CSS::Ruleset $rule {
@@ -31,31 +39,26 @@ method !build {
         }
     }
 
-    # find and evaluate inline styles (nodes with a style attribute)
-    $!inline //= ?($!doc ~~ HTML);
-    if $!inline {
-        # locate and parse inline styles
-        for $!doc.findnodes('//@style') {
+    with $!tag-set {
+        # locate and parse inline styles for the tag-set
+        for $!doc.findnodes(.inline-styles) {
             my $path = .ownerElement.nodePath;
             my $style = .value;
-            %!props{$path} = CSS::Properties.new(:$style);
+            %!inline{$path} = CSS::Properties.new(:$style);
         }
     }
 }
 
-multi submethod TWEAK(CSS::Stylesheet :style($!stylesheet)!) {
-    self!build();
-}
-
-multi submethod TWEAK(Str:D :style($string)!) {
+multi submethod TWEAK(Str:D :stylesheet($string)!) {
     $!stylesheet .= parse($string);
     self!build();
 }
 
+multi submethod TWEAK(CSS::Stylesheet :$!stylesheet!) {
+    self!build();
+}
+
 multi submethod TWEAK(HTML :doc($)!) {
-    my $string = '';
-    my @styles = $!doc<html/head/style>.map(*.textContent);
-    $!stylesheet .= parse(@styles.join: "\n");
     self!build();
 }
 
@@ -67,7 +70,7 @@ method !raw-style(LibXML::Element $elem) {
         my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map(*.properties)
             with %!rulesets{$path};
         # merge in inline styles
-        my CSS::Properties $style = do with %!props{$path} { .clone } else { CSS::Properties.new };
+        my CSS::Properties $style = do with %!inline{$path} { .clone } else { CSS::Properties.new };
         my %seen = $style.properties.map(* => 1);
 
         # Apply CSS Selector styles
@@ -99,14 +102,16 @@ multi method style(LibXML::Element:D $elem) {
             # apply tag style properties in isolation; they don't inherit
             my %attrs = $elem.properties.map: { .tag => .value };
             my CSS::Properties $tag-style = $tag-set.tag-style($elem.tag, :%attrs);
-            for $tag-style.properties {
-                unless $raw-style.property-exists($_) {
-                    # copy the raw style, on the first update
-                    $style //= $raw-style.clone;
-                    # inherit definitions for extension properties, e.g. -xhtml-align
-                    $style.alias: |$raw-style.alias($_)
-                        if .starts-with('-');
-                    $style."$_"() = $tag-style."$_"()
+            with $tag-style {
+                for .properties {
+                    unless $raw-style.property-exists($_) {
+                        # copy the raw style, on the first update
+                        $style //= $raw-style.clone;
+                        # inherit definitions for extension properties, e.g. -xhtml-align
+                        $style.alias: |$raw-style.alias($_)
+                            if .starts-with('-');
+                        $style."$_"() = $tag-style."$_"();
+                    }
                 }
             }
         }

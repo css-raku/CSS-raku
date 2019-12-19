@@ -1,6 +1,8 @@
 use v6;
 
-class CSS::TagSet::XHTML {
+use CSS::TagSet;
+
+class CSS::TagSet::XHTML does CSS::TagSet {
     use CSS::Module;
     use CSS::Module::CSS3;
     use CSS::Properties;
@@ -34,9 +36,12 @@ class CSS::TagSet::XHTML {
     method declarations { %Tags }
 
     method !base-property(Str $prop) {
-        %!props{$prop} //= do {
-            my $ast = %Tags{$prop} // fail "unknown XHTML tag: $prop";
-            CSS::Properties.new(declarations => $ast);
+        with %Tags{$prop} {
+            %!props{$prop} //= CSS::Properties.new(declarations => $_);
+        }
+        else {
+            warn  "unknown XHTML tag: $prop";
+            CSS::Properties;
         }
     }
 

@@ -37,8 +37,8 @@ my CSS $css .= new: :$doc, :$tag-set;
 
 is $css.rulesets.keys.sort.join(','), '/html/body,/html/body/div,/html/body/h1[1],/html/body/p';
 
-is $css.props.keys.sort.join(','), '/html/body/div,/html/body/h2[1],/html/body/h2[2]';
-is $css.props</html/body/div>, 'color:green;';
+is $css.inline.keys.sort.join(','), '/html/body/div,/html/body/h2[1],/html/body/h2[2]';
+is $css.inline</html/body/div>, 'color:green;';
 
 is $css.style('/html/body'), 'background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;';
 is $css.style('/html/body/h1[1]'), 'color:blue; display:block; font-size:12pt; font-weight:bolder; margin-bottom:0.67em; margin-top:0.67em; unicode-bidi:embed;';

@@ -52,9 +52,17 @@ END
 
 use  LibXML::Document;
 use CSS;
+use CSS::TagSet;
+use CSS::Properties;
+
+class DummyTagSet does CSS::TagSet {
+    method tag-style(|c) { CSS::Properties }
+}
+
+my DummyTagSet $tag-set .= new;
 
 my LibXML::Document $doc .= parse: :$string, :html;
-my CSS $css .= new: :$doc;
+my CSS $css .= new: :$doc, :$tag-set;
 
 is $css.style('/html/body/h1[1]'), 'color:blue;';
 is $css.style('/html/body/h1[2]'), 'color:green;';
