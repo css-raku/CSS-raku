@@ -50,7 +50,8 @@ my $string = q:to<END>;
 </html>
 END
 
-use  LibXML::Document;
+use LibXML;
+use LibXML::Document;
 use CSS;
 use CSS::TagSet;
 use CSS::Properties;

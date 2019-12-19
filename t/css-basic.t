@@ -3,6 +3,7 @@ use Test;
 plan 10;
 use CSS;
 use CSS::TagSet::XHTML;
+use LibXML;
 use LibXML::Document;
 
 my $string = q:to<\_(ツ)_/>;
