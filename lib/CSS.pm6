@@ -17,8 +17,8 @@ has CSS::Stylesheet $!stylesheet;
 method stylesheet { $!stylesheet }
 has CSS::Properties %.inline;
 has Array %.rulesets;
-has %.raw-style;
-has %.style;
+has CSS::Properties %.base-style; # styling, excluding tag-specific styling
+has CSS::Properties %.style;      # finished styling, including tags
 has CSS::TagSet $.tag-set;
 
 # apply selectors (no inheritance)
@@ -63,10 +63,8 @@ multi submethod TWEAK(HTML :doc($)!) {
 }
 
 # compute the style of an individual element
-# ** unoptimised **
-method !raw-style(LibXML::Element $elem) {
-    my $path = $elem.nodePath;
-    %!raw-style{$path} //= do {
+method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
+    %!base-style{$path} //= do {
         my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map(*.properties)
             with %!rulesets{$path};
         # merge in inline styles
@@ -81,34 +79,35 @@ method !raw-style(LibXML::Element $elem) {
             }
         }
 
-        my LibXML::Element @ancestors = $elem.find('ancestor::*');
-        for @ancestors {
-            $style.inherit($_)
-                with self.style($_);
+        with $elem.parent {
+            when LibXML::Element {
+                $style.inherit($_)
+                    with self!base-style($_);
+            }
         }
 
         $style;
     };
 }
 
-# finish the raw style; applying any tag-set styling
+# styling, including any tag-specific styling
 multi method style(LibXML::Element:D $elem) {
-    my CSS::Properties $raw-style = self!raw-style($elem);
+    my $path = $elem.nodePath;
+    my CSS::Properties $base-style = self!base-style($elem, :$path);
     my CSS::Properties $style;
-    my $node-path = $elem.nodePath;
 
     with $!tag-set -> $tag-set {
-        without %!style{$node-path} -> $style is rw {
+        without %!style{$path} -> $style is rw {
             # apply tag style properties in isolation; they don't inherit
             my %attrs = $elem.properties.map: { .tag => .value };
             my CSS::Properties $tag-style = $tag-set.tag-style($elem.tag, :%attrs);
             with $tag-style {
                 for .properties {
-                    unless $raw-style.property-exists($_) {
+                    unless $base-style.property-exists($_) {
                         # copy the raw style, on the first update
-                        $style //= $raw-style.clone;
+                        $style //= $base-style.clone;
                         # inherit definitions for extension properties, e.g. -xhtml-align
-                        $style.alias: |$raw-style.alias($_)
+                        $style.alias: |$base-style.alias($_)
                             if .starts-with('-');
                         $style."$_"() = $tag-style."$_"();
                     }
@@ -116,7 +115,7 @@ multi method style(LibXML::Element:D $elem) {
             }
         }
     }
-    %!style{$node-path} //= $raw-style;
+    %!style{$path} //= $base-style;
 }
 
 multi method style(LibXML::Item) { CSS::Properties }
