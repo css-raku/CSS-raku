@@ -7,9 +7,9 @@ use CSS::Stylesheet;
 use CSS::Properties;
 use CSS::Ruleset;
 use CSS::TagSet;
-use LibXML::Document :HTML;
+
+use LibXML::Document;
 use LibXML::Element;
-use LibXML::Node;
 use LibXML::XPath::Expression;
 
 has LibXML::Document:D $.doc is required;
@@ -58,24 +58,27 @@ multi submethod TWEAK(CSS::Stylesheet :$!stylesheet!) {
     self!build();
 }
 
-multi submethod TWEAK(HTML :doc($)!) {
+multi submethod TWEAK(LibXML::Document :doc($)!) {
     self!build();
 }
 
 # compute the style of an individual element
 method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
     %!base-style{$path} //= do {
+        fail "element does not belong to the DOM"
+            unless $!doc.native.isSameNode($elem.native.doc);
         my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map(*.properties)
             with %!rulesets{$path};
         # merge in inline styles
         my CSS::Properties $style = do with %!inline{$path} { .clone } else { CSS::Properties.new };
         my %seen = $style.properties.map(* => 1);
 
-        # Apply CSS Selector styles
+        # Apply CSS Selector styles. Lower precedence than inline rules
         for @prop-sets -> CSS::Properties $prop-set {
+            my %important = $prop-set.important;
             for $prop-set.properties {
                 $style."$_"() = $prop-set."$_"()
-                    unless %seen{$_}++;
+                    if !%seen{$_}++ || %important{$_};
             }
         }
 
