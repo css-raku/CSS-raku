@@ -91,3 +91,19 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     }
 
 }
+
+=begin pod
+
+=head1 NAME
+
+CSS::TagSet::XHTML
+
+=head1 DESCRIPTON
+
+adds XHTML specific styling based on tags and attributes
+
+ For example the XHTML `em` tag implies `font-size: italic`.
+...
+
+
+=end pod

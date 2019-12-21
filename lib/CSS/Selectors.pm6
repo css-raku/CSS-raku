@@ -62,3 +62,29 @@ method specificity {
 method xpath {
     $!to-xml.xpath(%!ast);
 }
+
+=begin pod
+
+=head1 NAME
+
+CSS::Selectors
+
+=head1 DESCIPTION
+
+selector component of rulesets
+
+=head1 METHODS
+
+=begin item
+xpath
+
+returns an xpath expression
+=end item
+
+=begin item
+specificity
+
+returns specificity (type Version) of the form v<id>.<class>.<type>
+=end item
+
+=end pod

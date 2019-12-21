@@ -49,3 +49,16 @@ method parse($css!, |c) {
     }
     $obj;
 }
+
+=begin pod
+
+=head1 NAME
+
+CSS::Stylesheet - overall stylesheet
+
+=head1 DESCRIPTION
+
+This class is used to parse stylesheets and load rulesets. It contains an associated
+media which is used to filter `@media` rule-sets.
+
+=end pod
