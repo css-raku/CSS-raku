@@ -6,7 +6,7 @@ use CSS::Properties::Units :px;
 use CSS::Media;
 
 has CSS::Media $.media .= new: :type<screen>, :width(480px), :height(640px), :color;
-has CSS::Module $.module = CSS::Module::CSS3.module; #| associated CSS module
+has CSS::Module $.module = CSS::Module::CSS3.module; # associated CSS module
 has CSS::Ruleset @.rules;
 has Str $.charset = 'utf-8';
 

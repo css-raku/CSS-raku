@@ -226,17 +226,17 @@ Also uses the existing CSS::Properties module.
 
 =head1 CLASSES
 
-=item [CSS::Media](https://github.com/p6-css/CSS-p6/blob/master/doc/Media.md) - CSS Media class
+=item [CSS::Media](https://github.com/p6-css/CSS-raku/blob/master/doc/Media.md) - CSS Media class
 
-=item [CSS::Ruleset](https://github.com/p6-css/CSS-p6/blob/master/doc/Ruleset.md) - CSS Ruleset class
+=item [CSS::Ruleset](https://github.com/p6-css/CSS-raku/blob/master/doc/Ruleset.md) - CSS Ruleset class
 
-=item [CSS::Selectors](https://github.com/p6-css/CSS-p6/blob/master/doc/Selectors.md) - CSS DOM attribute class
+=item [CSS::Selectors](https://github.com/p6-css/CSS-raku/blob/master/doc/Selectors.md) - CSS DOM attribute class
 
-=item [CSS::Stylesheet](https://github.com/p6-css/CSS-p6/blob/master/doc/Stylesheet.md) - CSS Stylesheet class
+=item [CSS::Stylesheet](https://github.com/p6-css/CSS-raku/blob/master/doc/Stylesheet.md) - CSS Stylesheet class
 
-=item [CSS::TagSet](https://github.com/p6-css/CSS-p6/blob/master/doc/TagSet.md) - CSS TagSet Role
+=item [CSS::TagSet](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet.md) - CSS TagSet Role
 
-=item [CSS::TagSet::XHTML](https://github.com/p6-css/CSS-p6/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
+=item [CSS::TagSet::XHTML](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
 
 =head1 TODO
 
@@ -246,6 +246,6 @@ Also uses the existing CSS::Properties module.
 
 - CSS imported stylesheets, e.g. `@import url("navigation.css")`
 
-- Other At-Rule variants (other than `@media` and `@import`) `@document`, `@page`, `@font-face` ...
+- Other At-Rule variants (in addition to `@media` and `@import`) `@document`, `@page`, `@font-face`
 
 =end pod

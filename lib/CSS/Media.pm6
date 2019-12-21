@@ -142,3 +142,15 @@ multi method query(Str:D $query) {
     my $media-list = $p.ast;
     $.query(:$media-list);
 }
+
+=begin pod
+
+=head1 NAME
+
+CSS::Media
+
+=head1 DESCIPTION
+
+Represents a target media for `@media` At-rules.
+
+=end pod

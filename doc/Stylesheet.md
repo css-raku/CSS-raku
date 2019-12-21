@@ -1,7 +1,3 @@
-### has Positional[CSS::Ruleset] @.rules
-
-associated CSS module
-
 NAME
 ====
 
