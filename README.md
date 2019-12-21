@@ -19,7 +19,7 @@ inline styling and the application of HTML specific styling (based on tags and a
       <head>
         <style>
           body {background-color: powderblue; font-size: 12pt}
-          @media screen { h1:first-child {color: blue;} }
+          @media screen { h1:first-child {color: blue !important;} }
           @media print { h2 {color: green;} }
           p    {color: red;}
           div {font-size: 10pt }
@@ -49,6 +49,9 @@ inline styling and the application of HTML specific styling (based on tags and a
     say $css.style('/html/body/h1[1]');
     # color:blue; display:block; font-size:12pt; font-weight:bolder; margin-bottom:0.67em; margin-top:0.67em; unicode-bidi:embed;
     say $css.style('/html/body/div');
+
+    # color:green; display:block; font-size:10pt; unicode-bidi:embed;
+    say $css.style($doc.first('/html/body/div'));
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
 
 This module manages CSS stylesheets and their application to HTML and XML documents.
@@ -75,19 +78,40 @@ Options:
 
 ## CSS::Media - media selectors and representation
 
-...
 
-## CSS::Stylesheet - overall stylesheet
+#### style
 
-...
+Synopsis: `my CSS::Properties $prop-style = $css.style($elem);
+$prop-style = $css.style($xpath);`
 
-## CSS::Ruleset - a single CSS rule-set (a selector and properties)
+Computes a style for an individual element
 
-...
+## CSS::Ruleset - contains a single CSS rule-set (a selector and properties)
+
+    use CSS::Ruleset;
+    my CSS::Ruleset $rules .= parse('h1 { font-size: 2em; margin: 3px; }');
+    say $css.properties; # font-size: 2em; margin: 3px;
+    say $css.selectors.xpath;       # '//h1'
+    say $css.selectors.specificity; #
+
+### Methods
+
+#### parse - parse a single rule-set
+
+### selectors - return selectors (type CSS::Ruleset)
+
+### properties - return properties (type CSS::Properties)
 
 ## CSS::Selectors - selector component of rulesets
 
-...
+### xpath - return an xpath expression
+
+### specificity - return specificity (type Version) v<id>.<class>.<type>
+
+## CSS::Stylesheet - overall stylesheet
+
+This class is used to parse stylesheets and load rulesets. It contains an associated
+media which is used to filter `@media` rule-sets.
 
 ## CSS::TagSet::XHTML - adds XHTML specific styling based on tags and attributes
 
@@ -95,3 +119,13 @@ Options:
 ...
 
 Also uses the existing CSS::Properties module.
+
+## TODO
+
+- Handling of interactive psuedo-classes, e.g. `a:visited`
+
+- HTML linked stylesheets, e.g. `<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>`
+
+- CSS imported stylesheets, e.g. `@import url("navigation.css")`
+
+- Other At-Rule variants (other than `@media` and `@import`) `@document`, `@page`, `@font-face` ...

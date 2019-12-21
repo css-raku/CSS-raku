@@ -6,9 +6,8 @@ use CSS::Module::CSS3;
 
 has CSS::Selectors $.selectors handles<xpath specificity>;
 has CSS::Properties $.properties;
-has $.media = 'all';
 
-submethod TWEAK(:%ast!) {
+submethod TWEAK(:%ast! is copy) {
     $!properties .= new: :ast(%ast<declarations>:delete);    
     $!selectors .= new: :%ast;
 }

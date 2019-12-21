@@ -10,7 +10,7 @@ role CSS::TagSet {
     # XPath expression to return inline style elements.
     method inline-styles {'//@style'}
 
-    # method to deduce additional styling information from tags and attributews
+    # method to deduce additional styling information from tags and attributes
     method tag-style($tag, :%attrs --> CSS::Properties) {
         ...
     }

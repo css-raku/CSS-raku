@@ -54,6 +54,7 @@ my $string = q:to<END>;
     <h3>H3 (purple)</h3>
     <span> <h3>H3 spanned (purple)</h3> </span>
     <h4>H4 (pink)</h4>
+    <span style="color:red !important; font-size:18pt"><span style="color:blue">Blue 18pt</span></span>
   </body>
 
 </html>
@@ -82,5 +83,6 @@ is $css.style('/html/body/h2'), 'color:yellow;';
 is $css.style('/html/body/h3'), 'color:purple;';
 is $css.style('/html/body/span/h3'), 'color:purple;';
 is $css.style('/html/body/h4'), 'color:pink;';
+is $css.style('/html/body/span/span'), 'color:blue; font-size:18pt;';
 
 done-testing();

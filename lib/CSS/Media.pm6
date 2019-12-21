@@ -6,7 +6,7 @@ use CSS::Module::CSS3;
 subset Len of Numeric where {!.defined || $_ ~~ Length}
 subset Res of Numeric where {!.defined || $_ ~~ Resolution}
 subset MediaType of Str where 'braille'|'embossed'|'handheld'|'print'|'projection'|'screen'|'speech'|'tty'|'tv'|'all';
-has MediaType $.type is required;
+has MediaType $.type is required handles<Str>;
 has Res $.resolution;
 has Len $.width is required;
 has Len $.height is required;

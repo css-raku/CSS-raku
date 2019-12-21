@@ -32,8 +32,8 @@ my $css = q:to<END>;
 END
 
 my CSS::Stylesheet $stylesheet .= new.parse($css);
+is $stylesheet.media, 'screen';
 is $stylesheet.rules[0].xpath, '//html | //body';
-is $stylesheet.rules[0].media, 'all';
 is $stylesheet.rules[1].properties, "font-family:Arial, Helvetica, sans-serif; font-size:em;"; 
 is $stylesheet.rules.[3].xpath, '//h1';
 is $stylesheet.rules.tail.xpath, "//a[css-pseudo('active')]";

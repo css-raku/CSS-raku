@@ -39,9 +39,9 @@ multi method load(:ruleset($_)!) {
 
 multi method load($_) is default { warn .perl }
 
-method parse($css!) {
+method parse($css!, |c) {
     my $obj = self;
-    $_ .= new without $obj;
+    $_ .= new(|c) without $obj;
     my $actions = $obj.module.actions.new;
     given $obj.module.parse($css, :rule<stylesheet>, :$actions) {
         my $ast = .ast;
