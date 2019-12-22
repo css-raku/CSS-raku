@@ -7,10 +7,13 @@ role CSS::TagSet {
     # XPath expression to return internal stylesheets
     method internal-stylesheets {'html/head/style'}
 
-    # XPath expression to return inline style elements.
-    method inline-styles {'//@style'}
+    # method to extract inline styling
+    method inline-style(Str $tag, :%attrs) {
+        my Str $style = $_ with %attrs<style>;
+        CSS::Properties.new(:$style);
+    }
 
-    # method to deduce additional styling information from tags and attributes
+    # method to extract instrinsic styling information from tags and attributes
     method tag-style($tag, :%attrs --> CSS::Properties) {
         ...
     }

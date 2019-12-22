@@ -65,8 +65,10 @@ use LibXML::Document;
 use CSS;
 use CSS::TagSet;
 use CSS::Properties;
+use Method::Also;
 
 class DummyTagSet does CSS::TagSet {
+    # no tag styling
     method tag-style(|c) { CSS::Properties }
 }
 

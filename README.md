@@ -71,7 +71,7 @@ METHODS
 
   * new
 
-    Synopsis: `my CSS $css .= new: :$doc, :$tag-set, :$stylesheet, :%inline;`
+    Synopsis: `my CSS $css .= new: :$doc, :$tag-set, :$stylesheet;`
 
     Options:
 
@@ -80,8 +80,6 @@ METHODS
     - `CSS::TagSet :$tag-set` - A tag-set manager that handles internal stylesheets, inline styles and styling of tags and attributes; for example to implement XHTML styling. 
 
     - `CSS::Stylesheet :$stylesheet` - provide an external stylesheet.
-
-    - `CSS::Properties :%inline` provide additional styling on individual nodes by NodePath.
 
   * style
 
@@ -105,6 +103,14 @@ CLASSES
   * [CSS::TagSet](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet.md) - CSS TagSet Role
 
   * [CSS::TagSet::XHTML](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
+
+  * SEE ALSO
+
+  * [CSS::Module](https://github.com/p6-css/CSS-Module-p6) - CSS Module Raku module
+
+  * [CSS::Properties](https://github.com/p6-css/CSS-Properties-p6) - CSS Properties Raku module
+
+  * [LibXML](https://github.com/p6-xml/LibXML-p6) - LibXML Raku module
 
 TODO
 ====

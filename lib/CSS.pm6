@@ -15,10 +15,9 @@ use LibXML::XPath::Expression;
 has LibXML::Document:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
 method stylesheet { $!stylesheet }
-has CSS::Properties %.inline;
-has Array %.rulesets;
-has CSS::Properties %.base-style; # styling, excluding tag-specific styling
-has CSS::Properties %.style;      # finished styling, including tags
+has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
+has CSS::Properties %.base-style;   # per node-path styling, excluding tags
+has CSS::Properties %.style;        # per node-path styling, including tags
 has CSS::TagSet $.tag-set;
 
 # apply selectors (no inheritance)
@@ -36,15 +35,6 @@ method !build {
     for $!stylesheet.rules -> CSS::Ruleset $rule {
         for $!doc.findnodes($rule.xpath) {
             %!rulesets{.nodePath}.push: $rule;
-        }
-    }
-
-    with $!tag-set {
-        # locate and parse inline styles for the tag-set
-        for $!doc.findnodes(.inline-styles) {
-            my $path = .ownerElement.nodePath;
-            my $style = .value;
-            %!inline{$path} = CSS::Properties.new(:$style);
         }
     }
 }
@@ -70,7 +60,13 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
         my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map(*.properties)
             with %!rulesets{$path};
         # merge in inline styles
-        my CSS::Properties $style = do with %!inline{$path} { .clone } else { CSS::Properties.new };
+        my CSS::Properties $style = do with $!tag-set {
+            my %attrs = $elem.properties.map: { .tag => .value };
+            .inline-style($elem.tag, :%attrs);
+        }
+
+        $style //= CSS::Properties.new;
+
         my %seen = $style.properties.map(* => 1);
 
         # Apply CSS Selector styles. Lower precedence than inline rules
@@ -199,7 +195,7 @@ inline styling and the application of HTML specific styling (based on tags and a
 =begin item
 new
 
-Synopsis: `my CSS $css .= new: :$doc, :$tag-set, :$stylesheet, :%inline;`
+Synopsis: `my CSS $css .= new: :$doc, :$tag-set, :$stylesheet;`
 
 Options:
 
@@ -208,8 +204,6 @@ Options:
 - `CSS::TagSet :$tag-set` - A tag-set manager that handles internal stylesheets, inline styles and styling of tags and attributes; for example to implement XHTML styling. 
 
 - `CSS::Stylesheet :$stylesheet` - provide an external stylesheet.
-
-- `CSS::Properties :%inline` provide additional styling on individual nodes by NodePath.
 
 =end item
 
@@ -237,6 +231,12 @@ Also uses the existing CSS::Properties module.
 =item [CSS::TagSet](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet.md) - CSS TagSet Role
 
 =item [CSS::TagSet::XHTML](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
+
+=item SEE ALSO
+
+=item [CSS::Module](https://github.com/p6-css/CSS-Module-p6) - CSS Module Raku module
+=item [CSS::Properties](https://github.com/p6-css/CSS-Properties-p6) - CSS Properties Raku module
+=item [LibXML](https://github.com/p6-xml/LibXML-p6) - LibXML Raku module
 
 =head1 TODO
 

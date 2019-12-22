@@ -77,6 +77,7 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     multi sub tweak-style($, $, %) is default {
     }
 
+    # tag intrinsic css properties; not inherited
     method tag-style(Str $tag, :%attrs) {
         my $css = self!base-property($tag).clone;
         $css.display = :keyw<none> if %attrs<hidden>:exists;
