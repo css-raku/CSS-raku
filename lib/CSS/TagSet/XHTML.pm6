@@ -71,23 +71,23 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     );
 
     # any additional CSS styling based on HTML attributes
-    multi sub tweak-style('bdo', $css, %attrs) {
+    multi sub tweak-style('bdo', $css) {
         $css.unicode-bidi //= :keyw<bidi-override>;
     }
-    multi sub tweak-style($, $, %) is default {
+    multi sub tweak-style($, $,) is default {
     }
 
     # tag intrinsic css properties; not inherited
-    method tag-style(Str $tag, :%attrs) {
+    method tag-style(Str $tag, :$hidden, *%attrs) {
         my $css = self!base-property($tag).clone;
-        $css.display = :keyw<none> if %attrs<hidden>:exists;
+        $css.display = :keyw<none> with $hidden;
 
         for %attrs.keys.grep({%AttrTags{$_}:exists && $tag ~~ %AttrTags{$_}}) {
             my $css-prop = %AttrProp{$_} // '-xhtml-' ~ $_;
             $css.alias(:name($css-prop), :like($_)) with %PropAlias{$css-prop};
             $css."$css-prop"() = %attrs{$_};
         }
-        tweak-style($tag, $css, %attrs);
+        tweak-style($tag, $css);
         $css;
     }
 

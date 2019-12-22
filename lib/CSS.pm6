@@ -25,8 +25,7 @@ method !build {
     $!doc.indexElements;
 
     $!stylesheet //= do with $!tag-set {
-        my @styles = $!doc.findnodes(.internal-stylesheets).map(*.textContent);
-        $!stylesheet.parse(@styles.join: "\n");
+        .stylesheet($!doc);
     } else {
         die "no :stylesheet or :tag-set provided";
     }
@@ -62,7 +61,7 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
         # merge in inline styles
         my CSS::Properties $style = do with $!tag-set {
             my %attrs = $elem.properties.map: { .tag => .value };
-            .inline-style($elem.tag, :%attrs);
+            .inline-style($elem.tag, |%attrs);
         }
 
         $style //= CSS::Properties.new;
@@ -99,7 +98,7 @@ multi method style(LibXML::Element:D $elem) {
         without %!style{$path} -> $style is rw {
             # apply tag style properties in isolation; they don't inherit
             my %attrs = $elem.properties.map: { .tag => .value };
-            my CSS::Properties $tag-style = $tag-set.tag-style($elem.tag, :%attrs);
+            my CSS::Properties $tag-style = $tag-set.tag-style($elem.tag, |%attrs);
             with $tag-style {
                 for .properties {
                     unless $base-style.property-exists($_) {
