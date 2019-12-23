@@ -21,7 +21,13 @@ METHODS
 
     TODO: This method currently only extracts self-contained internal style-sheets. It neither currently processes `@include` at-rules or externally linked stylesheets.
 
-begin item inline-style
+  * inline-style
 
-Synoposis: `my CSS::Properties $props = $tag-set.inline-style(
+    Synopsis: `my CSS::Properties $props = $tag-set.inline-style($elem);`
+
+    A rule to parse an inline style associated with the tag, i.e. the `style` attribute.
+
+  * tag-style
+
+    A rule to add any tag-specific property settings.
 

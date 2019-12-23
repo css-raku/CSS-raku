@@ -80,7 +80,7 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
         with $elem.parent {
             when LibXML::Element {
                 $style.inherit($_)
-                    with self!base-style($_);
+                    with self.style($_);
             }
         }
 

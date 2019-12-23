@@ -36,12 +36,11 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     method declarations { %Tags }
 
     method !base-property(Str $prop) {
-        with %Tags{$prop} {
-            %!props{$prop} //= CSS::Properties.new(declarations => $_);
+        %!props{$prop} //= do with %Tags{$prop} {
+            CSS::Properties.new(declarations => $_);
         }
         else {
-            warn  "unknown XHTML tag: $prop";
-            CSS::Properties;
+            CSS::Properties.new;
         }
     }
 
