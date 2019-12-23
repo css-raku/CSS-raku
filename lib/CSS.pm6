@@ -90,26 +90,20 @@ multi method style(LibXML::Element:D $elem) {
     my $path = $elem.nodePath;
 
     %!style{$path} //= do {
-        my CSS::Properties $base-style = self!base-style($elem, :$path);
-        my CSS::Properties $style;
+        my CSS::Properties $style = self!base-style($elem, :$path);
         with $!tag-set -> $tag-set {
             # apply tag style properties in isolation; they don't inherit
             my %attrs = $elem.properties.map: { .tag => .value };
             my CSS::Properties $tag-style = $tag-set.tag-style($elem.tag, |%attrs);
             with $tag-style {
                 for .properties {
-                    unless $base-style.property-exists($_) {
-                        # copy the raw style, on the first update
-                        $style //= $base-style.clone;
-                        # inherit definitions for extension properties, e.g. -xhtml-align
-                        $style.alias: |$base-style.alias($_)
-                            if .starts-with('-');
+                    unless $style.property-exists($_) {
                         $style."$_"() = $tag-style."$_"();
                     }
                 }
             }
         }
-        $style //= $base-style;
+        $style;
     }
 }
 
