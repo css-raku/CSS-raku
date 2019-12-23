@@ -16,7 +16,6 @@ has LibXML::Document:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
 method stylesheet { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
-has CSS::Properties %.base-style;   # per node-path styling, excluding tags
 has CSS::Properties %.style;        # per node-path styling, including tags
 has CSS::TagSet $.tag-set;
 
@@ -53,49 +52,47 @@ multi submethod TWEAK(LibXML::Document :doc($)!) {
 
 # compute the style of an individual element
 method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
-    %!base-style{$path} //= do {
-        fail "element does not belong to the DOM"
-            unless $!doc.native.isSameNode($elem.native.doc);
-        my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map(*.properties)
-            with %!rulesets{$path};
-        # merge in inline styles
-        my CSS::Properties $style = do with $!tag-set {
-            my %attrs = $elem.properties.map: { .tag => .value };
-            .inline-style($elem.tag, |%attrs);
+    fail "element does not belong to the DOM"
+        unless $!doc.native.isSameNode($elem.native.doc);
+    my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map(*.properties)
+        with %!rulesets{$path};
+    # merge in inline styles
+    my CSS::Properties $style = do with $!tag-set {
+        my %attrs = $elem.properties.map: { .tag => .value };
+        .inline-style($elem.tag, |%attrs);
+    }
+
+    $style //= CSS::Properties.new;
+
+    my %seen = $style.properties.map(* => 1);
+
+    # Apply CSS Selector styles. Lower precedence than inline rules
+    for @prop-sets -> CSS::Properties $prop-set {
+        my %important = $prop-set.important;
+        for $prop-set.properties {
+            $style."$_"() = $prop-set."$_"()
+                if !%seen{$_}++ || %important{$_};
         }
+    }
 
-        $style //= CSS::Properties.new;
-
-        my %seen = $style.properties.map(* => 1);
-
-        # Apply CSS Selector styles. Lower precedence than inline rules
-        for @prop-sets -> CSS::Properties $prop-set {
-            my %important = $prop-set.important;
-            for $prop-set.properties {
-                $style."$_"() = $prop-set."$_"()
-                    if !%seen{$_}++ || %important{$_};
-            }
+    with $elem.parent {
+        when LibXML::Element {
+            $style.inherit($_)
+            with self.style($_);
         }
+    }
 
-        with $elem.parent {
-            when LibXML::Element {
-                $style.inherit($_)
-                    with self.style($_);
-            }
-        }
-
-        $style;
-    };
+    $style;
 }
 
 # styling, including any tag-specific styling
 multi method style(LibXML::Element:D $elem) {
     my $path = $elem.nodePath;
-    my CSS::Properties $base-style = self!base-style($elem, :$path);
-    my CSS::Properties $style;
 
-    with $!tag-set -> $tag-set {
-        without %!style{$path} -> $style is rw {
+    %!style{$path} //= do {
+        my CSS::Properties $base-style = self!base-style($elem, :$path);
+        my CSS::Properties $style;
+        with $!tag-set -> $tag-set {
             # apply tag style properties in isolation; they don't inherit
             my %attrs = $elem.properties.map: { .tag => .value };
             my CSS::Properties $tag-style = $tag-set.tag-style($elem.tag, |%attrs);
@@ -112,8 +109,8 @@ multi method style(LibXML::Element:D $elem) {
                 }
             }
         }
+        $style //= $base-style;
     }
-    %!style{$path} //= $base-style;
 }
 
 multi method style(LibXML::Item) { CSS::Properties }
