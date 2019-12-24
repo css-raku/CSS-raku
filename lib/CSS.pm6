@@ -19,6 +19,7 @@ has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Properties %.style;        # per node-path styling, including tags
 has CSS::TagSet $.tag-set;
 has SetHash %!link-status;
+has Bool $.tags;
 has Bool $.inherit;
 
 multi method link-status(Str() $type, LibXML::Element:D $node) is rw {
@@ -121,7 +122,9 @@ multi method style(LibXML::Element:D $elem) {
         with $!tag-set -> $tag-set {
             # apply tag style properties in isolation; they don't inherit
             my %attrs = $elem.properties.map: { .tag => .value };
-            my CSS::Properties $tag-style = $tag-set.tag-style($elem.tag, |%attrs);
+            my CSS::Properties $tag-style = $tag-set.tag-style($elem.tag, |%attrs)
+                if $!tags || $!inherit;
+
             with $tag-style {
                 for .properties {
                     unless $style.property-exists($_) {

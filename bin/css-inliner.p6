@@ -31,10 +31,14 @@ sub style($css, $_) {
     style($css, $_) for .elements;
 }
 
-sub MAIN($file, Str :$save-as, Bool :$inherit) {
+sub MAIN($file,            #= input XML/HTML file
+         Str :$save-as,    #= output file (default stdout)
+         Bool :$tags,      #= set tag styling (e.g. <i> => 'font-weight:italic')
+         Bool :$inherit,   #= inherit parent properties
+        ) {
     my LibXML::Document $doc .= parse: :$file, :html;
     my CSS::TagSet::XHTML $tag-set .= new;
-    my CSS $css .= new: :$doc, :$tag-set, :$inherit;
+    my CSS $css .= new: :$doc, :$tag-set, :$tags, :$inherit;
     .unlink for $doc.find('html/head/style');
 
     style($css, $doc.first('html/body'));
