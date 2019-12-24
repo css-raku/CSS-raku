@@ -8,7 +8,7 @@ has CSS::Selector::To::XPath $!to-xml .= new;
 
 submethod TWEAK {
     for <active focus link hover visited> {
-        $!to-xml.pseudo-classes{$_} = "css-pseudo('$_')";
+        $!to-xml.pseudo-classes{$_} = "link-status('$_', .)";
     }
 }
 

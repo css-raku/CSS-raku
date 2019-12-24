@@ -10,7 +10,7 @@ use CSS::TagSet;
 
 use LibXML::Document;
 use LibXML::Element;
-use LibXML::XPath::Expression;
+use LibXML::XPath::Context;
 
 has LibXML::Document:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
@@ -18,6 +18,25 @@ method stylesheet { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Properties %.style;        # per node-path styling, including tags
 has CSS::TagSet $.tag-set;
+has SetHash %!link-status;
+
+multi method link-status(Str() $type, LibXML::Element:D $node) is rw {
+    $.link-status($type, $node.nodePath);
+}
+
+multi method link-status('link', Str $path) is rw {
+    Proxy.new(
+        FETCH => { ! %!link-status{$path} },
+        STORE => { %!link-status{$path}:delete },
+    );
+}
+
+multi method link-status(Str $type, Str $path) is rw is default {
+    Proxy.new(
+        FETCH => { do with %!link-status{$path} { .{$type.lc} } else { False } },
+        STORE => -> $, Bool() $v { (%!link-status{$path} //= SetHash.new){$type.lc} = $v },
+    );
+}
 
 # apply selectors (no inheritance)
 method !build {
@@ -29,9 +48,15 @@ method !build {
         die "no :stylesheet or :tag-set provided";
     }
 
+    my LibXML::XPath::Context $xpath-context .= new: :$!doc;
+    $xpath-context.registerFunction('link-status', -> $name, $node-set, *@args {
+          my LibXML::Element $elem = $node-set.first;
+          ? ($elem.tag ~~ 'a'|'link'|'area' && self.link-status($name, $elem));
+    });
+
     # evaluate selectors. associate rule-sets with nodes by path
     for $!stylesheet.rules -> CSS::Ruleset $rule {
-        for $!doc.findnodes($rule.xpath) {
+        for $xpath-context.findnodes($rule.xpath) {
             %!rulesets{.nodePath}.push: $rule;
         }
     }
