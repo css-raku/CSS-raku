@@ -25,9 +25,11 @@ METHODS
 
     Synopsis: `my CSS::Properties $props = $tag-set.inline-style($elem);`
 
-    A rule to parse an inline style associated with the tag, i.e. the `style` attribute.
+    Default method to parse an inline style associated with the tag, i.e. the `style` attribute.
+
+    This method simply parses the 'style' attribute, if present.
 
   * tag-style
 
-    A rule to add any tag-specific property settings.
+    A rule to add any tag-specific property settings. For example. This method must be implmented, by the class that is applying this role.
 

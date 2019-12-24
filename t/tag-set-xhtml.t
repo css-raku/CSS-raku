@@ -25,7 +25,9 @@ is $tag-set.tag-style('i'), 'font-style:italic;';
 my LibXML::Document $doc .= parse: :$string, :html;
 my CSS $css .= new: :$doc, :$tag-set;
 
-is $css.style('/html/body/i'), 'color:purple; font-style:italic;', '<i/>';
-is $css.style('/html/body/i/span'), 'color:purple; font-style:italic;', '<i><span/></i>';
+is $css.style('/html/body/i'), 'font-style:italic;', '<i/>';
+is $css.style('/html/body/i/span'), '', '<i><span/></i>';
+is $css.style('/html/body/i/span').parent, 'font-style:italic;', '<i><span/></i>';
+is $css.style('/html/body/i/span').parent.parent.color, '#7F007F', '<i><span/></i>';
 
 done-testing();

@@ -71,7 +71,7 @@ METHODS
 
   * new
 
-    Synopsis: `my CSS $css .= new: :$doc, :$tag-set, :$stylesheet;`
+    Synopsis: `my CSS $css .= new: :$doc, :$tag-set, :$stylesheet, :inherit;`
 
     Options:
 
@@ -81,6 +81,8 @@ METHODS
 
     - `CSS::Stylesheet :$stylesheet` - provide an external stylesheet.
 
+    - `Bool :$inherit` - perform property inheritance
+
   * style
 
     Synopsis: `my CSS::Properties $prop-style = $css.style($elem); $prop-style = $css.style($xpath);`
@@ -88,6 +90,15 @@ METHODS
     Computes a style for an individual element, or XPath to an element.
 
 Also uses the existing CSS::Properties module.
+
+  * link-status
+
+    By default, all tags of type `a`, `link` and `area` match against the `link` psuedo.
+
+    This method can be used to set individual links to a state of `active`, `focus`, `hover` or `visited` to simulate other interactive states for styling purposes. For example:
+
+        my $some-visited-link = $doc.first('//a[@id="foo"]');
+        $css.link-status('visited', $some-visited-link) = True;
 
 CLASSES
 =======

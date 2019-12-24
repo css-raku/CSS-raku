@@ -100,10 +100,26 @@ CSS::TagSet::XHTML
 
 =head1 DESCRIPTON
 
-adds XHTML specific styling based on tags and attributes
+adds XHTML specific styling based on tags and attributes.
 
- For example the XHTML `em` tag implies `font-size: italic`.
-...
+=head1 METHODS
 
+=begin item
+inline-style
+
+Synopsis `my CSS::Properties $inline-props = $tag-set.inline-style($tag, :$style)`
+
+(inherited from CSS::TagSet role). Parses an inline style as a CSS Property list.
+=end item
+
+=begin item
+tag-style
+
+Synopsis `my CSS::Properties $inline-props = $tag-set.inline-style($tag, |%atts)`
+
+Adds any further styling based on the tag and additional attrbutes.
+
+For example the XHTML `em` tag implies `font-size: italic`.
+=end item
 
 =end pod

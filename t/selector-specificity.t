@@ -75,7 +75,7 @@ class DummyTagSet does CSS::TagSet {
 my DummyTagSet $tag-set .= new;
 
 my LibXML::Document $doc .= parse: :$string, :html;
-my CSS $css .= new: :$doc, :$tag-set;
+my CSS $css .= new: :$doc, :$tag-set, :inherit;
 
 is $css.style('/html/body/h1[1]'), 'color:blue;';
 is $css.style('/html/body/h1[2]'), 'color:green;';
@@ -86,5 +86,6 @@ is $css.style('/html/body/h3'), 'color:purple;';
 is $css.style('/html/body/span/h3'), 'color:purple;';
 is $css.style('/html/body/h4'), 'color:pink;';
 is $css.style('/html/body/span/span'), 'color:blue; font-size:18pt;';
+is $css.style('/html/body/span/span').parent, 'color:red!important; font-size:18pt;';
 
 done-testing();

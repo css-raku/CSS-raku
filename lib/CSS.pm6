@@ -19,6 +19,7 @@ has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Properties %.style;        # per node-path styling, including tags
 has CSS::TagSet $.tag-set;
 has SetHash %!link-status;
+has Bool $.inherit;
 
 multi method link-status(Str() $type, LibXML::Element:D $node) is rw {
     $.link-status($type, $node.nodePath);
@@ -102,8 +103,9 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
 
     with $elem.parent {
         when LibXML::Element {
-            $style.inherit($_)
-            with self.style($_);
+            with self.style($_) {
+                $style.parent = $_;
+            }
         }
     }
 
@@ -126,6 +128,9 @@ multi method style(LibXML::Element:D $elem) {
                         $style."$_"() = $tag-style."$_"();
                     }
                 }
+            }
+            if $!inherit {
+                $style.inherit($_) with $style.parent;
             }
         }
         $style;
@@ -210,7 +215,7 @@ inline styling and the application of HTML specific styling (based on tags and a
 =begin item
 new
 
-Synopsis: `my CSS $css .= new: :$doc, :$tag-set, :$stylesheet;`
+Synopsis: `my CSS $css .= new: :$doc, :$tag-set, :$stylesheet, :inherit;`
 
 Options:
 
@@ -219,6 +224,8 @@ Options:
 - `CSS::TagSet :$tag-set` - A tag-set manager that handles internal stylesheets, inline styles and styling of tags and attributes; for example to implement XHTML styling. 
 
 - `CSS::Stylesheet :$stylesheet` - provide an external stylesheet.
+
+- `Bool :$inherit` - perform property inheritance
 
 =end item
 
@@ -232,6 +239,19 @@ Computes a style for an individual element, or XPath to an element.
 =end item
 
 Also uses the existing CSS::Properties module.
+
+=begin item
+link-status
+
+By default, all tags of type `a`, `link` and `area` match against the `link` psuedo.
+
+This method can be used to set individual links to a state of `active`, `focus`, `hover` or `visited`
+to simulate other interactive states for styling purposes. For example:
+
+    my $some-visited-link = $doc.first('//a[@id="foo"]');
+    $css.link-status('visited', $some-visited-link) = True;
+
+=end item
 
 =head1 CLASSES
 
