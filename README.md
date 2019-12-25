@@ -44,7 +44,7 @@ SYNOPSIS
     # Create a tag-set for XHTML specific loading of stylesheets and styling
     my CSS::TagSet::XHTML $tag-set .= new();
 
-    my CSS $css .= new: :$doc, :$tag-set, :$media;
+    my CSS $css .= new: :$doc, :$tag-set, :$media, :inherit;
 
     # show some computed styles, based on CSS Selectors, media, inline styles and xhtml tags
 

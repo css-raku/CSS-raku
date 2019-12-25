@@ -6,5 +6,5 @@ blib/
 README.md
 *.gz
 resources
-CSS-Selector-*
+CSS-*
 .gitignore

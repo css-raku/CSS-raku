@@ -20,14 +20,12 @@ use CSS::Properties;
 
 my CSS::TagSet::XHTML $tag-set .= new;
 
-is $tag-set.tag-style('i'), 'font-style:italic;';
+is $tag-set.tag-style('i'), 'font-style:italic;', '.tag-style()';
 
 my LibXML::Document $doc .= parse: :$string, :html;
-my CSS $css .= new: :$doc, :$tag-set;
+my CSS $css .= new: :$doc, :$tag-set, :inherit;
 
-is $css.style('/html/body/i'), 'font-style:italic;', '<i/>';
-is $css.style('/html/body/i/span'), '', '<i><span/></i>';
-is $css.style('/html/body/i/span').parent, 'font-style:italic;', '<i><span/></i>';
-is $css.style('/html/body/i/span').parent.parent.color, '#7F007F', '<i><span/></i>';
+is $css.style('/html/body/i'), 'color:purple; font-style:italic;', '<i/>';
+is $css.style('/html/body/i/span'), 'color:purple; font-style:italic;', '<i><span/></i>';
 
 done-testing();
