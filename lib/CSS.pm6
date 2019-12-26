@@ -270,7 +270,7 @@ to simulate other interactive states for styling purposes. For example:
 
 =item [CSS::TagSet::XHTML](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
 
-=item SEE ALSO
+=head2 SEE ALSO
 
 =item [CSS::Module](https://github.com/p6-css/CSS-Module-p6) - CSS Module Raku module
 =item [CSS::Properties](https://github.com/p6-css/CSS-Properties-p6) - CSS Properties Raku module

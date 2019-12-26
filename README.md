@@ -115,7 +115,8 @@ CLASSES
 
   * [CSS::TagSet::XHTML](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
 
-  * SEE ALSO
+SEE ALSO
+--------
 
   * [CSS::Module](https://github.com/p6-css/CSS-Module-p6) - CSS Module Raku module
 
