@@ -1,4 +1,4 @@
-unit class CSS;
+unit class CSS:ver<0.0.2>;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
 # no lazyness or other optimisations yet
