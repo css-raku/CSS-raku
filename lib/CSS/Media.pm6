@@ -1,6 +1,6 @@
 unit class CSS::Media;
 use CSS::Properties;
-use CSS::Properties::Units :Resolution, :Length;
+use CSS::Units :Resolution, :Length;
 use CSS::Module::CSS3;
 
 subset Len of Numeric where {!.defined || $_ ~~ Length}
@@ -18,16 +18,16 @@ method device-width { $!device-width // $!width }
 method device-height { $!device-height // $!height }
 
 method orientation {
-    $!height > $!width.scale($!height) ?? 'portrait' !! 'landscape'
+    $!height > $!width.scale($!height.type) ?? 'portrait' !! 'landscape'
 }
 
 method aspect-ratio {
-    $!width / $!height.scale($!width);
+    $!width / $!height.scale($!width.type);
 }
 
 method device-aspect-ratio {
     my $dev-width := $.device-width;
-    $dev-width / $.device-height.scale($dev-width);
+    $dev-width / $.device-height.scale($dev-width.type);
 }
 
 multi method have('color') { ? $!color }

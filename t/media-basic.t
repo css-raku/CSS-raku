@@ -2,7 +2,7 @@ use v6;
 use Test;
 plan 22;
 use CSS::Media;
-use CSS::Properties::Units :dpi, :px;
+use CSS::Units :dpi, :px;
 
 my CSS::Media $media .= new: :type<screen>, :width(640px), :height(480px), :resolution(60dpi), :color;
 

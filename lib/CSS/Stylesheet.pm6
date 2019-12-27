@@ -2,7 +2,7 @@ unit class CSS::Stylesheet;
 
 use CSS::Module:CSS3;
 use CSS::Ruleset;
-use CSS::Properties::Units :px;
+use CSS::Units :px;
 use CSS::Media;
 
 has CSS::Media $.media .= new: :type<screen>, :width(480px), :height(640px), :color;

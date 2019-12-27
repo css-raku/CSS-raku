@@ -1,9 +1,9 @@
 {   "perl"        : "6.c",
     "name"        : "CSS",
     "license"     : "Artistic-2.0",
-    "version"     : "0.0.2",
+    "version"     : "0.0.3",
     "description" : "CSS Stylesheet processing",
-    "depends"     : [ "LibXML", "CSS::Module", "CSS::Properties", "CSS::Selector::To::XPath" ],
+    "depends"     : [ "LibXML", "CSS::Module", "CSS::Properties:ver<0.5.0+>", "CSS::Selector::To::XPath" ],
     "source-url"  : "git://github.com/p6-css/CSS-raku.git",
     "provides"    : {
         "CSS" : "lib/CSS.pm6",

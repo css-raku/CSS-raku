@@ -1,10 +1,10 @@
-unit class CSS:ver<0.0.2>;
+unit class CSS:ver<0.0.3>;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
 # no lazyness or other optimisations yet
 
 use CSS::Stylesheet;
-use CSS::Properties;
+use CSS::Properties:ver<0.5.0+>;
 use CSS::Ruleset;
 use CSS::TagSet;
 
@@ -156,7 +156,7 @@ CSS
 
     use CSS;
     use CSS::Properties;
-    use CSS::Properties::Units :px; # define 'px' postfix operator
+    use CSS::Units :px; # define 'px' postfix operator
     use CSS::TagSet::XHTML;
     use LibXML::Document;
 
@@ -277,8 +277,6 @@ to simulate other interactive states for styling purposes. For example:
 =item [LibXML](https://github.com/p6-xml/LibXML-p6) - LibXML Raku module
 
 =head1 TODO
-
-- Handling of interactive psuedo-classes, e.g. `a:visited`
 
 - HTML linked stylesheets, e.g. `<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>`
 
