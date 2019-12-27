@@ -10,7 +10,7 @@ SYNOPSIS
 
     use CSS;
     use CSS::Properties;
-    use CSS::Properties::Units :px; # define 'px' postfix operator
+    use CSS::Units :px; # define 'px' postfix operator
     use CSS::TagSet::XHTML;
     use LibXML::Document;
 
@@ -126,8 +126,6 @@ SEE ALSO
 
 TODO
 ====
-
-- Handling of interactive psuedo-classes, e.g. `a:visited`
 
 - HTML linked stylesheets, e.g. `<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>`
 

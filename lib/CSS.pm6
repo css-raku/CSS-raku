@@ -1,7 +1,6 @@
 unit class CSS:ver<0.0.3>;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
-# no lazyness or other optimisations yet
 
 use CSS::Stylesheet;
 use CSS::Properties:ver<0.5.0+>;

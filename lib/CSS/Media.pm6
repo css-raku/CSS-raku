@@ -1,19 +1,20 @@
 unit class CSS::Media;
 use CSS::Properties;
-use CSS::Units :Resolution, :Length;
+use CSS::Units :Resolution, :Length, :dpi;
 use CSS::Module::CSS3;
 
 subset Len of Numeric where {!.defined || $_ ~~ Length}
 subset Res of Numeric where {!.defined || $_ ~~ Resolution}
 subset MediaType of Str where 'braille'|'embossed'|'handheld'|'print'|'projection'|'screen'|'speech'|'tty'|'tv'|'all';
 has MediaType $.type is required handles<Str>;
-has Res $.resolution;
+has Res $.resolution = 96dpi;
 has Len $.width is required;
 has Len $.height is required;
 has Len $.device-width;
 has Len $.device-height;
-has UInt $.color;
-has $!module = CSS::Module::CSS3.module;
+has UInt $.color = 8;
+has UInt $.color-index = 1;
+has $.module = CSS::Module::CSS3.module;
 method device-width { $!device-width // $!width }
 method device-height { $!device-height // $!height }
 
@@ -34,6 +35,11 @@ multi method have('color') { ? $!color }
 multi method have('color', $n) { ? $!color == $n }
 multi method have('min-color', $n) { ? $!color >= $n }
 multi method have('max-color', $n) { ? $!color <= $n }
+
+multi method have('color-index') { ? $!color-index }
+multi method have('color-index', $n) { ? $!color-index == $n }
+multi method have('min-color-index', $n) { ? $!color-index >= $n }
+multi method have('max-color-index', $n) { ? $!color-index <= $n }
 
 multi method have('orientation', $val) {
     $.orientation eq $val
@@ -87,6 +93,16 @@ multi method have('min-device-width', $val) {
 }
 multi method have('device-width', $val) {
     $!device-width =~= $val.scale($!device-width);
+}
+
+multi method have('max-device-aspect-ratio', $val) {
+    $.device-aspect-ratio <= $val;
+}
+multi method have('min-device-aspect-ratio', $val) {
+    $.device-aspect-ratio >= $val;
+}
+multi method have('device-aspect-ratio', $val) {
+    $.device-aspect-ratio =~= $val;
 }
 
 multi method have('max-resolution', $val) {
@@ -149,8 +165,110 @@ multi method query(Str:D $query) {
 
 CSS::Media
 
+=head1 SYNOPSIS
+
+    use CSS::Units :dpi, :mm;
+    use CSS::Media;
+    my CSS::Media $media .= new: :type<print>, :resolution(300dpi), :width(210mm), :height(297mm), :color(32);
+    say $media.orientation;  # portrait
+    say $media.aspect-ratio; # 0.707071
+    say $media.have('max-height', 250mm); # False
+    say $media.have('max-height', 300mm); # True
+
 =head1 DESCIPTION
 
-Represents a target media for `@media` At-rules.
+Represents a target media for `@media` at-rules.
+
+=head1 ATTRIBUTES
+
+=begin item
+type
+
+The basic media type. One of: `braille`, `embossed`, `handheld`, `print`, `projection`, `screen`, `speech`, `tty`, `tv`, `all`
+
+=end item
+
+=begin item
+resolution
+
+The media resolution, given in units of `dpi`, `dpcm`, or `dppx`. Default is `96dpi`.
+
+=end item
+
+=begin item
+width, height
+
+The width and height of the media in appropriate length units (e.g. `px`, `pt`, `mm`, or `in`).
+=end item
+
+=begin item
+device-width, device-height
+
+The physical width and height of the the display device, often given in `px` units.
+
+=end item
+
+=begin item
+color
+
+The color-depth in bits (bits per component). Default 8;
+=end item
+
+=begin item
+color-index
+
+The number of colors (e.g. grayscale is 1, rgb is 3, cmyk is 4).
+=end item
+
+=head1 METHODS
+
+=begin item
+orientation
+
+The derived orientation. Assumed to be `portrait` if the `height` is greater than the `width`; `landscape` otherwise.
+=end item
+
+=begin item
+aspect-ratio
+
+computed aspect ratio. Simply `width` / `height`.
+=end item
+
+=begin item
+device-aspect-ratio
+
+device aspect ratio: `device-width` / `device-height`.
+=end item
+
+=begin item
+have
+
+Synopsis: `my Bool $have-it = $media.has($constraint, $value);`
+
+For example: `$media.has('min-resolution', 200dpi)` will be `True` for a media with resolution `240dpi`).
+
+The available constraints are: `color`, `min-color`, `max-color`,
+`color-index`, `min-color-index`, `max-color-index`,
+`orientation`,
+`aspect-ratio`, `min-aspect-ratio`, `max-aspect-ratio`,
+`device-aspect-ratio`, `min-device-aspect-ratio`, `max-device-aspect-ratio`,
+`height`, `min-height`, `max-height`,
+`width`, `min-width`, `max-width`,
+`device-height`, `min-device-height`, `max-device-height`,
+`device-width`, `min-device-width`, `max-device-width`,
+`resolution`, `min-resolution`, `max-resolution`.
+
+=end item
+
+=begin item
+query
+
+Parses and evaluates a media query. Returns `True` if the media matches, `False` otherwise. Example:
+
+    if $media.query('screen and (orientation: portrait) and (max-width: 600px)') {
+           ... # media matches
+       }
+
+=end item
 
 =end pod
