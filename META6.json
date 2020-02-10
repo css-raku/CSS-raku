@@ -1,23 +1,32 @@
-{   "perl"        : "6.c",
-    "name"        : "CSS",
-    "license"     : "Artistic-2.0",
-    "version"     : "0.0.3",
-    "description" : "CSS Stylesheet processing",
-    "depends"     : [ "LibXML", "CSS::Module", "CSS::Properties:ver<0.5.0+>", "CSS::Selector::To::XPath" ],
-    "source-url"  : "git://github.com/p6-css/CSS-raku.git",
-    "provides"    : {
-        "CSS" : "lib/CSS.pm6",
-        "CSS::Media" : "lib/CSS/Media.pm6",
-        "CSS::Ruleset" : "lib/CSS/Ruleset.pm6",
-        "CSS::Selectors" : "lib/CSS/Selectors.pm6",
-        "CSS::Stylesheet" : "lib/CSS/Stylesheet.pm6",
-        "CSS::TagSet" : "lib/CSS/TagSet.pm6",
-        "CSS::TagSet::XHTML" : "lib/CSS/TagSet/XHTML.pm6"
-    },
-    "tags" : [
-        "xml", "html", "xpath", "css"
-    ],
-    "resources" : [ "xhtml.css" ]
-
+{
+  "depends": [
+    "LibXML",
+    "CSS::Module",
+    "CSS::Properties:ver<0.5.0+>",
+    "CSS::Selector::To::XPath"
+  ],
+  "description": "CSS Stylesheet processing",
+  "license": "Artistic-2.0",
+  "name": "CSS",
+  "perl": "6.c",
+  "provides": {
+    "CSS": "lib/CSS.rakumod",
+    "CSS::Media": "lib/CSS/Media.rakumod",
+    "CSS::Ruleset": "lib/CSS/Ruleset.rakumod",
+    "CSS::Selectors": "lib/CSS/Selectors.rakumod",
+    "CSS::Stylesheet": "lib/CSS/Stylesheet.rakumod",
+    "CSS::TagSet": "lib/CSS/TagSet.rakumod",
+    "CSS::TagSet::XHTML": "lib/CSS/TagSet/XHTML.rakumod"
+  },
+  "resources": [
+    "xhtml.css"
+  ],
+  "source-url": "git://github.com/p6-css/CSS-raku.git",
+  "tags": [
+    "xml",
+    "html",
+    "xpath",
+    "css"
+  ],
+  "version": "0.0.5"
 }
-
