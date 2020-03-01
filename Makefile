@@ -10,27 +10,27 @@ loudtest : all
 
 doc : README.md doc/Media.md doc/Ruleset.md doc/Selectors.md doc/Stylesheet.md doc/TagSet.md ##doc/TagSet/XHTML.md
 
-README.md : lib/CSS.pm6
+README.md : lib/CSS.rakumod
 	(\
 	    echo '[![Build Status](https://travis-ci.org/p6-css/CSS-raku.svg?branch=master)](https://travis-ci.org/p6-css/CSS-raku)'; \
             echo '';\
-            perl6 -I . --doc=Markdown lib/CSS.pm6\
+            perl6 -I . --doc=Markdown lib/CSS.rakumod\
         ) > README.md
 
-doc/Media.md : lib/CSS/Media.pm6
-	perl6 -I . --doc=Markdown lib/CSS/Media.pm6 > doc/Media.md
+doc/Media.md : lib/CSS/Media.rakumod
+	perl6 -I . --doc=Markdown lib/CSS/Media.rakumod > doc/Media.md
 
-doc/Ruleset.md : lib/CSS/Ruleset.pm6
-	perl6 -I . --doc=Markdown lib/CSS/Ruleset.pm6 > doc/Ruleset.md
+doc/Ruleset.md : lib/CSS/Ruleset.rakumod
+	perl6 -I . --doc=Markdown lib/CSS/Ruleset.rakumod > doc/Ruleset.md
 
-doc/Selectors.md : lib/CSS/Selectors.pm6
-	perl6 -I . --doc=Markdown lib/CSS/Selectors.pm6 > doc/Selectors.md
+doc/Selectors.md : lib/CSS/Selectors.rakumod
+	perl6 -I . --doc=Markdown lib/CSS/Selectors.rakumod > doc/Selectors.md
 
-doc/Stylesheet.md : lib/CSS/Stylesheet.pm6
-	perl6 -I . --doc=Markdown lib/CSS/Stylesheet.pm6 > doc/Stylesheet.md
+doc/Stylesheet.md : lib/CSS/Stylesheet.rakumod
+	perl6 -I . --doc=Markdown lib/CSS/Stylesheet.rakumod > doc/Stylesheet.md
 
-doc/TagSet.md : lib/CSS/TagSet.pm6
-	perl6 -I . --doc=Markdown lib/CSS/TagSet.pm6 > doc/TagSet.md
+doc/TagSet.md : lib/CSS/TagSet.rakumod
+	perl6 -I . --doc=Markdown lib/CSS/TagSet.rakumod > doc/TagSet.md
 
-##doc/TagSet/XHTML.md : lib/CSS/TagSet/XHTML.pm6
-##	perl6 -I . --doc=Markdown lib/CSS/TagSet/XHTML.pm6 > doc/TagSet/XHTML.md
+##doc/TagSet/XHTML.md : lib/CSS/TagSet/XHTML.rakumod
+##	perl6 -I . --doc=Markdown lib/CSS/TagSet/XHTML.rakumod > doc/TagSet/XHTML.md
