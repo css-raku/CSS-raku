@@ -44,6 +44,7 @@ class CSS::TagSet::XHTML does CSS::TagSet {
         }
     }
 
+    # mapping of HTML attributes to CSS properties
     constant %AttrProp = %(
         background    => 'background-image',
         bgcolor       => 'background-color',
@@ -53,6 +54,7 @@ class CSS::TagSet::XHTML does CSS::TagSet {
         height        => 'height',
     );
 
+    # mapping of HTML attributes to containing tags
     constant %AttrTags = %(
         align            => 'applet'|'caption'|'col'|'colgroup'|'hr'|'iframe'|'img'|'table'|'tbody'|'td'|'tfoot'|'th'|'thead'|'tr',
         background       => 'body'|'table'|'td'|'th', # obselete in HTML5
@@ -76,15 +78,17 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     multi sub tweak-style($, $,) is default {
     }
 
-    # tag intrinsic css properties; not inherited
+    # Builds CSS properties from an element from a tag name and attributes
     method tag-style(Str $tag, :$hidden, *%attrs) {
-        my $css = self!base-property($tag).clone;
+        my CSS::Properties $css = self!base-property($tag).clone;
         $css.display = :keyw<none> with $hidden;
 
         for %attrs.keys.grep({%AttrTags{$_}:exists && $tag ~~ %AttrTags{$_}}) {
-            my $css-prop = %AttrProp{$_} // '-xhtml-' ~ $_;
-            $css.alias(:name($css-prop), :like($_)) with %PropAlias{$css-prop};
-            $css."$css-prop"() = %attrs{$_};
+            my $name = %AttrProp{$_} // '-xhtml-' ~ $_;
+            with %PropAlias{$name} -> $like {
+                $css.alias(:$name, :$like);
+            }
+            $css."$name"() = %attrs{$_};
         }
         tweak-style($tag, $css);
         $css;

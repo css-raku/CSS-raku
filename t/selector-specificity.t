@@ -46,10 +46,12 @@ my $string = q:to<END>;
   </head>
 
   <body style="color:purple">
-    <h1 id="id1" class="c1">Heading 1 (blue)</h1>
-    <h1 id="id2" class="c2">Heading 2 (green)</h1>
-    <h1 id="id3" class="c3">Heading 3 (red)</h1>
-    <h1 id="id4" class="c4">Heading 4 (pink)</h1>
+    <h1 class="c1">Heading[1] (blue)</h1>
+    <h1 class="c2">Heading[2] (green)</h1>
+    <h1 id="id3" class="c3">Heading[3] (red)</h1>
+    <h1 id="id4" class="c4">Heading[4] (pink)</h1>
+    <h1 class="c4" style="color:purple">Heading[5] (pink)</h1>
+    <h1 class="c4" style="color:purple !important">Heading[6] (purple)</h1>
     <h2>H2 (yellow)</h2>
     <h3>H3 (purple)</h3>
     <span> <h3>H3 spanned (purple)</h3> </span>
@@ -81,6 +83,8 @@ is $css.style('/html/body/h1[1]'), 'color:blue;';
 is $css.style('/html/body/h1[2]'), 'color:green;';
 is $css.style('/html/body/h1[3]'), 'color:red;';
 is $css.style('/html/body/h1[4]'), 'color:pink;';
+is $css.style('/html/body/h1[5]'), 'color:pink;';
+is $css.style('/html/body/h1[6]'), 'color:purple!important;';
 is $css.style('/html/body/h2'), 'color:yellow;';
 is $css.style('/html/body/h3'), 'color:purple;';
 is $css.style('/html/body/span/h3'), 'color:purple;';

@@ -80,8 +80,7 @@ multi submethod TWEAK(LibXML::Document :doc($)!) {
 method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
     fail "element does not belong to the DOM"
         unless $!doc.native.isSameNode($elem.native.doc);
-    my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map(*.properties)
-        with %!rulesets{$path};
+
     # merge in inline styles
     my CSS::Properties $style = do with $!tag-set {
         my %attrs = $elem.properties.map: { .tag => .value };
@@ -90,14 +89,18 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
 
     $style //= CSS::Properties.new;
 
-    my %seen = $style.properties.map(* => 1);
+    my %seen  = $style.properties.map(* => 1);
+    my %vital = $style.important;
 
     # Apply CSS Selector styles. Lower precedence than inline rules
+    my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map(*.properties)
+        with %!rulesets{$path};
+
     for @prop-sets -> CSS::Properties $prop-set {
         my %important = $prop-set.important;
         for $prop-set.properties {
             $style."$_"() = $prop-set."$_"()
-                if !%seen{$_}++ || %important{$_};
+                if !%seen{$_}++ || (%important{$_} && !%vital{$_});
         }
     }
 

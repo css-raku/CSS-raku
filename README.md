@@ -15,25 +15,25 @@ SYNOPSIS
     use LibXML::Document;
 
     my $string = q:to<\_(ツ)_/>;
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <style>
-          body {background-color: powderblue; font-size: 12pt}
-          @media screen { h1:first-child {color: blue !important;} }
-          @media print { h2 {color: green;} }
-          p    {color: red;}
-          div {font-size: 10pt }
-        </style>
-      </head>
-      <body>
-        <h1>This is a heading</h1>
-        <h2>This is a sub-heading</h2>
-        <h1>This is another heading</h1>
-        <p>This is a paragraph.</p>
-        <div style="color:green">This is a div</div>
-      </body>
-    </html>
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body {background-color: powderblue; font-size: 12pt}
+            @media screen { h1:first-child {color: blue !important;} }
+            @media print { h2 {color: green;} }
+            p    {color: red;}
+            div {font-size: 10pt }
+          </style>
+        </head>
+        <body>
+          <h1>This is a heading</h1>
+          <h2>This is a sub-heading</h2>
+          <h1>This is another heading</h1>
+          <p>This is a paragraph.</p>
+          <div style="color:green">This is a div</div>
+        </body>
+      </html>
     \_(ツ)_/
 
     my LibXML::Document $doc .= parse: :$string, :html;
