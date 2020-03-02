@@ -42,16 +42,19 @@ my $string = q:to<END>;
       .c4  {color: pink !important}
       body h2 {color: yellow !important}
       body h4 {color: pink}
+      .c5 {color:red}
+      .c5 {color:blue}
     </style>
   </head>
 
   <body style="color:purple">
-    <h1 class="c1">Heading[1] (blue)</h1>
-    <h1 class="c2">Heading[2] (green)</h1>
-    <h1 id="id3" class="c3">Heading[3] (red)</h1>
-    <h1 id="id4" class="c4">Heading[4] (pink)</h1>
-    <h1 class="c4" style="color:purple">Heading[5] (pink)</h1>
-    <h1 class="c4" style="color:purple !important">Heading[6] (purple)</h1>
+    <h1 class="c1">H1[1] (blue)</h1>
+    <h1 class="c2">H1[2] (green)</h1>
+    <h1 id="id3" class="c3">H1[3] (red)</h1>
+    <h1 id="id4" class="c4">H1[4] (pink)</h1>
+    <h1 class="c4" style="color:purple">H1[5] (pink)</h1>
+    <h1 class="c4" style="color:purple !important">H1[6] (purple)</h1>
+    <h1 class="c5">H1[7] (blue)</h1>
     <h2>H2 (yellow)</h2>
     <h3>H3 (purple)</h3>
     <span> <h3>H3 spanned (purple)</h3> </span>
@@ -69,15 +72,8 @@ use CSS::TagSet;
 use CSS::Properties;
 use Method::Also;
 
-class DummyTagSet does CSS::TagSet {
-    # no tag styling
-    method tag-style(|c) { CSS::Properties }
-}
-
-my DummyTagSet $tag-set .= new;
-
 my LibXML::Document $doc .= parse: :$string, :html;
-my CSS $css .= new: :$doc, :$tag-set, :inherit;
+my CSS $css .= new: :$doc, :inherit;
 
 is $css.style('/html/body/h1[1]'), 'color:blue;';
 is $css.style('/html/body/h1[2]'), 'color:green;';
@@ -85,6 +81,7 @@ is $css.style('/html/body/h1[3]'), 'color:red;';
 is $css.style('/html/body/h1[4]'), 'color:pink;';
 is $css.style('/html/body/h1[5]'), 'color:pink;';
 is $css.style('/html/body/h1[6]'), 'color:purple!important;';
+is $css.style('/html/body/h1[7]'), 'color:blue;';
 is $css.style('/html/body/h2'), 'color:yellow;';
 is $css.style('/html/body/h3'), 'color:purple;';
 is $css.style('/html/body/span/h3'), 'color:purple;';

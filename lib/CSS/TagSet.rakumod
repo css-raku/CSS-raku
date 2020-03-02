@@ -21,7 +21,7 @@ role CSS::TagSet {
 
     # method to extract instrinsic styling information from tags and attributes
     method tag-style($tag, *%attrs --> CSS::Properties) {
-        ...
+        CSS::Properties;
     }
 }
 

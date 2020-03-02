@@ -16,7 +16,7 @@ has CSS::Stylesheet $!stylesheet;
 method stylesheet { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Properties %.style;        # per node-path styling, including tags
-has CSS::TagSet $.tag-set;
+has CSS::TagSet $.tag-set .= new;
 has SetHash %!link-status;
 has Bool $.tags;
 has Bool $.inherit;
@@ -43,11 +43,7 @@ multi method link-status(Str $type, Str $path) is rw is default {
 method !build {
     $!doc.indexElements;
 
-    $!stylesheet //= do with $!tag-set {
-        .stylesheet($!doc);
-    } else {
-        die "no :stylesheet or :tag-set provided";
-    }
+    $!stylesheet //= $!tag-set.stylesheet($!doc);
 
     my LibXML::XPath::Context $xpath-context .= new: :$!doc;
     $xpath-context.registerFunction('link-status', -> $name, $node-set, *@args {
