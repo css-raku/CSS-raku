@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.org/p6-css/CSS-raku.svg?branch=master)](https://travis-ci.org/p6-css/CSS-raku)
+[![Build Status](https://travis-ci.org/css-raku/CSS-raku.svg?branch=master)](https://travis-ci.org/css-raku/CSS-raku)
 
 NAME
 ====
 
-CSS
+CSS Raku Module
 
 SYNOPSIS
 ========
@@ -103,26 +103,26 @@ Also uses the existing CSS::Properties module.
 CLASSES
 =======
 
-  * [CSS::Media](https://github.com/p6-css/CSS-raku/blob/master/doc/Media.md) - CSS Media class
+  * [CSS::Media](https://github.com/css-raku/CSS-raku/blob/master/doc/Media.md) - CSS Media class
 
-  * [CSS::Ruleset](https://github.com/p6-css/CSS-raku/blob/master/doc/Ruleset.md) - CSS Ruleset class
+  * [CSS::Ruleset](https://github.com/css-raku/CSS-raku/blob/master/doc/Ruleset.md) - CSS Ruleset class
 
-  * [CSS::Selectors](https://github.com/p6-css/CSS-raku/blob/master/doc/Selectors.md) - CSS DOM attribute class
+  * [CSS::Selectors](https://github.com/css-raku/CSS-raku/blob/master/doc/Selectors.md) - CSS DOM attribute class
 
-  * [CSS::Stylesheet](https://github.com/p6-css/CSS-raku/blob/master/doc/Stylesheet.md) - CSS Stylesheet class
+  * [CSS::Stylesheet](https://github.com/css-raku/CSS-raku/blob/master/doc/Stylesheet.md) - CSS Stylesheet class
 
-  * [CSS::TagSet](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet.md) - CSS TagSet Role
+  * [CSS::TagSet](https://github.com/css-raku/CSS-raku/blob/master/doc/TagSet.md) - CSS TagSet Role
 
-  * [CSS::TagSet::XHTML](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
+  * [CSS::TagSet::XHTML](https://github.com/css-raku/CSS-raku/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
 
 SEE ALSO
 --------
 
-  * [CSS::Module](https://github.com/p6-css/CSS-Module-p6) - CSS Module Raku module
+  * [CSS::Module](https://github.com/css-raku/CSS-Module-raku) - CSS Module Raku module
 
-  * [CSS::Properties](https://github.com/p6-css/CSS-Properties-p6) - CSS Properties Raku module
+  * [CSS::Properties](https://github.com/css-raku/CSS-Properties-raku) - CSS Properties Raku module
 
-  * [LibXML](https://github.com/p6-xml/LibXML-p6) - LibXML Raku module
+  * [LibXML](https://github.com/xml-raku/LibXML-raku) - LibXML Raku module
 
 TODO
 ====

@@ -21,7 +21,7 @@
   "resources": [
     "xhtml.css"
   ],
-  "source-url": "git://github.com/p6-css/CSS-raku.git",
+  "source-url": "git://github.com/css-raku/CSS-raku.git",
   "tags": [
     "xml",
     "html",
