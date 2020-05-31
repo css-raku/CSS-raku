@@ -161,11 +161,11 @@ multi method query(Str:D $query) {
 
 =begin pod
 
-=head1 NAME
+=head2 Name
 
 CSS::Media
 
-=head1 SYNOPSIS
+=head2 Synopsis
 
     use CSS::Units :dpi, :mm;
     use CSS::Media;
@@ -175,11 +175,11 @@ CSS::Media
     say $media.have('max-height', 250mm); # False
     say $media.have('max-height', 300mm); # True
 
-=head1 DESCIPTION
+=head2 Desciption
 
 Represents a target media for `@media` at-rules.
 
-=head1 ATTRIBUTES
+=head2 Attributes
 
 =begin item
 type
@@ -220,7 +220,7 @@ color-index
 The number of colors (e.g. grayscale is 1, rgb is 3, cmyk is 4).
 =end item
 
-=head1 METHODS
+=head2 Methods
 
 =begin item
 orientation

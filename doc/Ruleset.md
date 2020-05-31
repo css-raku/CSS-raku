@@ -1,10 +1,10 @@
-NAME
-====
+Name
+----
 
-## CSS::Ruleset - contains a single CSS rule-set (a selector and properties)
+CSS::Ruleset
 
-SYNOPSIS
-========
+Synopsis
+--------
 
     use CSS::Ruleset;
     my CSS::Ruleset $rules .= parse('h1 { font-size: 2em; margin: 3px; }');
@@ -12,13 +12,13 @@ SYNOPSIS
     say $css.selectors.xpath;       # '//h1'
     say $css.selectors.specificity; #
 
-DESCRIPTION
-===========
+Description
+-----------
 
 This is a container class for a CSS ruleset; a single set of CSS selectors and declarations (or properties)/
 
-METHODS
-=======
+Methods
+-------
 
   * parse
 

@@ -5,6 +5,7 @@ role CSS::TagSet {
     use LibXML::Document;
     use CSS::Properties;
     use CSS::Stylesheet;
+    use LibXML::XPath::Context;
 
     method stylesheet(LibXML::Document:D $doc --> CSS::Stylesheet) {
         with $doc.first('html/head/link[lowercase(@link)="stylesheet"]') {
@@ -15,7 +16,7 @@ role CSS::TagSet {
     }
 
     # method to extract inline styling
-    method inline-style(Str $tag, Str :$style) {
+    method inline-style(Str $, Str :$style) {
         CSS::Properties.new(:$style);
     }
 
@@ -23,21 +24,25 @@ role CSS::TagSet {
     method tag-style($tag, *%attrs --> CSS::Properties) {
         CSS::Properties;
     }
+
+    method init(LibXML::XPath::Context :$xpath-context!) {
+        $xpath-context.registerFunction('link-status', -> | { False });
+    }
 }
 
 =begin pod
 
-=head1 NAME
+=head2 Name
 
 CSS::TagSet
 
-=head1 DESCRIPTON
+=head2 Descripton
 
 Role to perform tag-specific stylesheet loading, and styling based on tags and attributes.
 
 This is the base role for CSS::TagSet::XHTML.
 
-=head1 METHODS
+=head2 Methods
 
 =begin item
 stylesheet

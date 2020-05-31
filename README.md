@@ -1,12 +1,12 @@
-[![Build Status](https://travis-ci.org/css-raku/CSS-raku.svg?branch=master)](https://travis-ci.org/css-raku/CSS-raku)
+[![Build Status](https://travis-ci.org/p6-css/CSS-raku.svg?branch=master)](https://travis-ci.org/p6-css/CSS-raku)
 
-NAME
-====
+class CSS
+---------
 
-CSS Raku Module
+CSS Stylesheet processing
 
-SYNOPSIS
-========
+Synopsis
+--------
 
     use CSS;
     use CSS::Properties;
@@ -59,73 +59,60 @@ SYNOPSIS
     say $css.style($doc.first('/html/body/div'));
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
 
-DESCRIPTION
-===========
+Description
+-----------
 
 [CSS](CSS) is a module for parsing stylesheets and applying them to HTML or XML documents.
 
 This module aims to be W3C compliant and complete, including: stylesheets, media specific and inline styling and the application of HTML specific styling (based on tags and attributes).
 
-METHODS
-=======
+Methods
+-------
 
-  * new
+### method new
 
-    Synopsis: `my CSS $css .= new: :$doc, :$tag-set, :$stylesheet, :inherit;`
+    method new(
+        LibXML::Document :$doc!,       # document to be styled.
+        CSS::Stylesheet :$stylesheet!, # stylesheet to apply
+        CSS::TagSet :$tag-set,         # tag-specific styling
+        Bool :$inherit = True,         # perform property inheritance
+    ) returns CSS;
 
-    Options:
+In particular, the `CSS::TagSet :$tag-set` options specifies a tag-specific styler; For example CSS::TagSet::XHTML. 
 
-    - `LibXML::Document :$doc` - LibXML HTML or XML document to be styled.
+### method style
 
-    - `CSS::TagSet :$tag-set` - A tag-set manager that handles internal stylesheets, inline styles and styling of tags and attributes; for example to implement XHTML styling. 
+    multi method style(LibXML::Element:D $elem) returns CSS::Properties;
+    multi method style(Str:D $xpath) returns CSS::Properties;
 
-    - `CSS::Stylesheet :$stylesheet` - provide an external stylesheet.
+Computes a style for an individual element, or XPath to an element.
 
-    - `Bool :$inherit` - perform property inheritance
+Classes
+-------
 
-  * style
+  * [CSS::Media](https://github.com/p6-css/CSS-raku/blob/master/doc/Media.md) - CSS Media class
 
-    Synopsis: `my CSS::Properties $prop-style = $css.style($elem); $prop-style = $css.style($xpath);`
+  * [CSS::Ruleset](https://github.com/p6-css/CSS-raku/blob/master/doc/Ruleset.md) - CSS Ruleset class
 
-    Computes a style for an individual element, or XPath to an element.
+  * [CSS::Selectors](https://github.com/p6-css/CSS-raku/blob/master/doc/Selectors.md) - CSS DOM attribute class
 
-Also uses the existing CSS::Properties module.
+  * [CSS::Stylesheet](https://github.com/p6-css/CSS-raku/blob/master/doc/Stylesheet.md) - CSS Stylesheet class
 
-  * link-status
+  * [CSS::TagSet](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet.md) - CSS TagSet Role
 
-    By default, all tags of type `a`, `link` and `area` match against the `link` psuedo.
+  * [CSS::TagSet::XHTML](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
 
-    This method can be used to set individual links to a state of `active`, `focus`, `hover` or `visited` to simulate other interactive states for styling purposes. For example:
-
-        my $some-visited-link = $doc.first('//a[@id="foo"]');
-        $css.link-status('visited', $some-visited-link) = True;
-
-CLASSES
-=======
-
-  * [CSS::Media](https://github.com/css-raku/CSS-raku/blob/master/doc/Media.md) - CSS Media class
-
-  * [CSS::Ruleset](https://github.com/css-raku/CSS-raku/blob/master/doc/Ruleset.md) - CSS Ruleset class
-
-  * [CSS::Selectors](https://github.com/css-raku/CSS-raku/blob/master/doc/Selectors.md) - CSS DOM attribute class
-
-  * [CSS::Stylesheet](https://github.com/css-raku/CSS-raku/blob/master/doc/Stylesheet.md) - CSS Stylesheet class
-
-  * [CSS::TagSet](https://github.com/css-raku/CSS-raku/blob/master/doc/TagSet.md) - CSS TagSet Role
-
-  * [CSS::TagSet::XHTML](https://github.com/css-raku/CSS-raku/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
-
-SEE ALSO
+See Also
 --------
 
-  * [CSS::Module](https://github.com/css-raku/CSS-Module-raku) - CSS Module Raku module
+  * [CSS::Module](https://github.com/p6-css/CSS-Module-p6) - CSS Module Raku module
 
-  * [CSS::Properties](https://github.com/css-raku/CSS-Properties-raku) - CSS Properties Raku module
+  * [CSS::Properties](https://github.com/p6-css/CSS-Properties-p6) - CSS Properties Raku module
 
-  * [LibXML](https://github.com/xml-raku/LibXML-raku) - LibXML Raku module
+  * [LibXML](https://github.com/p6-xml/LibXML-p6) - LibXML Raku module
 
-TODO
-====
+Todo
+----
 
 - HTML linked stylesheets, e.g. `<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>`
 

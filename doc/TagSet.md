@@ -1,17 +1,17 @@
-NAME
-====
+Name
+----
 
 CSS::TagSet
 
-DESCRIPTON
-==========
+Descripton
+----------
 
 Role to perform tag-specific stylesheet loading, and styling based on tags and attributes.
 
 This is the base role for CSS::TagSet::XHTML.
 
-METHODS
-=======
+Methods
+-------
 
   * stylesheet
 

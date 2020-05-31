@@ -1,4 +1,5 @@
-unit class CSS:ver<0.0.4>;
+#| CSS Stylesheet processing
+unit class CSS:ver<0.0.5>;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
 
@@ -17,27 +18,8 @@ method stylesheet { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Properties %.style;        # per node-path styling, including tags
 has CSS::TagSet $.tag-set .= new;
-has SetHash %!link-status;
 has Bool $.tags;
 has Bool $.inherit;
-
-multi method link-status(Str() $type, LibXML::Element:D $node) is rw {
-    $.link-status($type, $node.nodePath);
-}
-
-multi method link-status('link', Str $path) is rw {
-    Proxy.new(
-        FETCH => { ! %!link-status{$path} },
-        STORE => { %!link-status{$path}:delete },
-    );
-}
-
-multi method link-status(Str $type, Str $path) is rw is default {
-    Proxy.new(
-        FETCH => { do with %!link-status{$path} { .{$type.lc} } else { False } },
-        STORE => -> $, Bool() $v { (%!link-status{$path} //= SetHash.new){$type.lc} = $v },
-    );
-}
 
 # apply selectors (no inheritance)
 method !build {
@@ -46,10 +28,7 @@ method !build {
     $!stylesheet //= $!tag-set.stylesheet($!doc);
 
     my LibXML::XPath::Context $xpath-context .= new: :$!doc;
-    $xpath-context.registerFunction('link-status', -> $name, $node-set, *@args {
-          my LibXML::Element $elem = $node-set.first;
-          ? ($elem.tag ~~ 'a'|'link'|'area' && self.link-status($name, $elem));
-    });
+    $!tag-set.init(:$xpath-context);
 
     # evaluate selectors. associate rule-sets with nodes by path
     for $!stylesheet.rules -> CSS::Ruleset $rule {
@@ -64,18 +43,14 @@ multi submethod TWEAK(Str:D :stylesheet($string)!) {
     self!build();
 }
 
-multi submethod TWEAK(CSS::Stylesheet :$!stylesheet!) {
-    self!build();
-}
-
-multi submethod TWEAK(LibXML::Document :doc($)!) {
+multi submethod TWEAK(CSS::Stylesheet :$!stylesheet) {
     self!build();
 }
 
 # compute the style of an individual element
 method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
     fail "element does not belong to the DOM"
-        unless $!doc.native.isSameNode($elem.native.doc);
+        unless $!doc.isSameNode($elem.doc);
 
     # merge in inline styles
     my CSS::Properties $style = do with $!tag-set {
@@ -83,7 +58,7 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
         .inline-style($elem.tag, |%attrs);
     }
 
-    $style //= CSS::Properties.new;
+    $_ .= new() without $style;
 
     my %seen  = $style.properties.map(* => 1);
     my %vital = $style.important;
@@ -144,13 +119,11 @@ multi method style(Str:D $xpath) {
     self.style: $!doc.first($xpath);
 }
 
+method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
+
 =begin pod
 
-=head1 NAME
-
-CSS
-
-=head1 SYNOPSIS
+=head2 Synopsis
 
     use CSS;
     use CSS::Properties;
@@ -203,7 +176,7 @@ CSS
     say $css.style($doc.first('/html/body/div'));
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
 
-=head1 DESCRIPTION
+=head2 Description
 
 L<CSS> is a module for parsing stylesheets and applying them to HTML or XML documents.
 
@@ -211,50 +184,28 @@ This module aims to be W3C compliant and complete, including: stylesheets, media
 inline styling and the application of HTML specific styling (based on tags and attributes).
 
 
-=head1 METHODS
+=head2 Methods
 
-=begin item
-new
+=head3 method new
 
-Synopsis: `my CSS $css .= new: :$doc, :$tag-set, :$stylesheet, :inherit;`
+    method new(
+        LibXML::Document :$doc!,       # document to be styled.
+        CSS::Stylesheet :$stylesheet!, # stylesheet to apply
+        CSS::TagSet :$tag-set,         # tag-specific styling
+        Bool :$inherit = True,         # perform property inheritance
+    ) returns CSS;
 
-Options:
+In particular, the `CSS::TagSet :$tag-set` options specifies a tag-specific styler; For example CSS::TagSet::XHTML. 
 
-- `LibXML::Document :$doc` - LibXML HTML or XML document to be styled.
+=head3 method style
 
-- `CSS::TagSet :$tag-set` - A tag-set manager that handles internal stylesheets, inline styles and styling of tags and attributes; for example to implement XHTML styling. 
-
-- `CSS::Stylesheet :$stylesheet` - provide an external stylesheet.
-
-- `Bool :$inherit` - perform property inheritance
-
-=end item
-
-=begin item
-style
-
-Synopsis: `my CSS::Properties $prop-style = $css.style($elem);
-$prop-style = $css.style($xpath);`
+    multi method style(LibXML::Element:D $elem) returns CSS::Properties;
+    multi method style(Str:D $xpath) returns CSS::Properties;
 
 Computes a style for an individual element, or XPath to an element.
-=end item
 
-Also uses the existing CSS::Properties module.
 
-=begin item
-link-status
-
-By default, all tags of type `a`, `link` and `area` match against the `link` psuedo.
-
-This method can be used to set individual links to a state of `active`, `focus`, `hover` or `visited`
-to simulate other interactive states for styling purposes. For example:
-
-    my $some-visited-link = $doc.first('//a[@id="foo"]');
-    $css.link-status('visited', $some-visited-link) = True;
-
-=end item
-
-=head1 CLASSES
+=head2 Classes
 
 =item [CSS::Media](https://github.com/p6-css/CSS-raku/blob/master/doc/Media.md) - CSS Media class
 
@@ -268,13 +219,13 @@ to simulate other interactive states for styling purposes. For example:
 
 =item [CSS::TagSet::XHTML](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
 
-=head2 SEE ALSO
+=head2 See Also
 
 =item [CSS::Module](https://github.com/p6-css/CSS-Module-p6) - CSS Module Raku module
 =item [CSS::Properties](https://github.com/p6-css/CSS-Properties-p6) - CSS Properties Raku module
 =item [LibXML](https://github.com/p6-xml/LibXML-p6) - LibXML Raku module
 
-=head1 TODO
+=head2 Todo
 
 - HTML linked stylesheets, e.g. `<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>`
 

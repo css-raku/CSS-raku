@@ -1,10 +1,10 @@
-NAME
-====
+Name
+----
 
 CSS::Media
 
-SYNOPSIS
-========
+Synopsis
+--------
 
     use CSS::Units :dpi, :mm;
     use CSS::Media;
@@ -14,13 +14,13 @@ SYNOPSIS
     say $media.have('max-height', 250mm); # False
     say $media.have('max-height', 300mm); # True
 
-DESCIPTION
-==========
+Desciption
+----------
 
 Represents a target media for `@media` at-rules.
 
-ATTRIBUTES
-==========
+Attributes
+----------
 
   * type
 
@@ -46,8 +46,8 @@ ATTRIBUTES
 
     The number of colors (e.g. grayscale is 1, rgb is 3, cmyk is 4).
 
-METHODS
-=======
+Methods
+-------
 
   * orientation
 

@@ -8,7 +8,7 @@ has CSS::Selector::To::XPath $!to-xml .= new;
 
 submethod TWEAK {
     for <active focus link hover visited> {
-        $!to-xml.pseudo-classes{$_} = "link-status('$_', .)";
+        $!to-xml.pseudo-classes{$_} = "link-pseudo('$_', .)";
     }
 }
 
@@ -65,26 +65,26 @@ method xpath {
 
 =begin pod
 
-=head1 NAME
+=head2 Name
 
 CSS::Selectors
 
-=head1 DESCIPTION
+=head2 Desciption
 
 selector component of rulesets
 
-=head1 METHODS
+=head2 Methods
 
 =begin item
 xpath
 
-returns an xpath expression
+Returns an XPath expression
 =end item
 
 =begin item
 specificity
 
-returns specificity (type Version) of the form v<id>.<class>.<type>
+Returns specificity (type Version) of the form v<id>.<class>.<type>
 =end item
 
 =end pod

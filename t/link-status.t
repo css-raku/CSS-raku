@@ -1,6 +1,6 @@
 use v6;
 use Test;
-plan 6;
+plan 9;
 use CSS;
 use CSS::TagSet::XHTML;
 use LibXML;
@@ -26,24 +26,30 @@ my $string = q:to<\_(ツ)_/>;
 </html>
 \_(ツ)_/
 
-my CSS::TagSet::XHTML $tag-set .= new();
 my LibXML::Document $doc .= parse: :$string, :html;
-my CSS $css .= new: :$doc, :$tag-set;
 
 my $link =  $doc.first('//*[@href="link"]');
 my $visited =  $doc.first('//*[@href="visited"]');
 my $hover =  $doc.first('//*[@href="hover"]');
 
-$css.link-status('visited', $visited) = True;
-$css.link-status('hover', $hover) = True;
+my CSS::TagSet::XHTML $tag-set .= new();
 
-ok $css.link-status('visited', $visited);
-ok $css.link-status('hover', $hover);
+$tag-set.link-pseudo('visited', $visited) = True;
+$tag-set.link-pseudo('hover', $hover) = True;
 
-nok $css.link-status('visited', $hover);
-nok $css.link-status('hover', $visited);
+my CSS $css .= new: :$doc, :$tag-set;
 
-nok $css.link-status('link', $hover);
-ok $css.link-status('link', $link);
+ok $css.link-pseudo('visited', $visited);
+ok $css.link-pseudo('hover', $hover);
+
+nok $css.link-pseudo('visited', $hover), 'hover is not visited';
+nok $css.link-pseudo('hover', $visited), 'visited is not hover';
+
+nok $css.link-pseudo('link', $hover), 'link is not hover';
+ok $css.link-pseudo('link', $link), 'link is link';
+
+is $css.style($link), 'color:red;';
+is $css.style($visited), 'color:blue;';
+is $css.style($hover), 'color:green;';
 
 done-testing();

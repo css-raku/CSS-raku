@@ -20,11 +20,11 @@ method parse(Str :$css!) {
 
 =begin pod
 
-=head1 NAME
+=head2 Name
 
-## CSS::Ruleset - contains a single CSS rule-set (a selector and properties)
+CSS::Ruleset
 
-=head1 SYNOPSIS
+=head2 Synopsis
 
     use CSS::Ruleset;
     my CSS::Ruleset $rules .= parse('h1 { font-size: 2em; margin: 3px; }');
@@ -32,12 +32,12 @@ method parse(Str :$css!) {
     say $css.selectors.xpath;       # '//h1'
     say $css.selectors.specificity; #
 
-=head1 DESCRIPTION
+=head2 Description
 
 This is a container class for a CSS ruleset; a single set of CSS selectors and
 declarations (or properties)/
 
-=head1 METHODS
+=head2 Methods
 
 =begin item
 parse

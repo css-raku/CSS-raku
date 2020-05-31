@@ -1,21 +1,21 @@
-NAME
-====
+Name
+----
 
 CSS::Selectors
 
-DESCIPTION
-==========
+Desciption
+----------
 
 selector component of rulesets
 
-METHODS
-=======
+Methods
+-------
 
   * xpath
 
-    returns an xpath expression
+    Returns an XPath expression
 
   * specificity
 
-    returns specificity (type Version) of the form v<id>.<class>.<type>
+    Returns specificity (type Version) of the form v<id>.<class>.<type>
 

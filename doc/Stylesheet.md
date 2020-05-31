@@ -1,15 +1,15 @@
-NAME
-====
+Name
+----
 
 CSS::Stylesheet - overall stylesheet
 
-DESCRIPTION
-===========
+Description
+-----------
 
 This class is used to parse stylesheets and load rulesets. It contains an associated media attributes which is used to filter `@media` rule-sets.
 
-METHODS
-=======
+Methods
+-------
 
   * parse
 
