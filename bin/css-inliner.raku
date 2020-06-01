@@ -2,13 +2,15 @@
 
 =head1 NAME
 
-css-inline.p6 - Burst a PDF into individual pages
+css-inliner.raku - flatten css rulesets to inline style attributes
 
 =head1 SYNOPSIS
 
- css-inline.p6 [options] --save-as=outfile.xml infile.xml
+ css-inliner.raku [options] --save-as=outfile.xml infile.xml
 
  Options:
+    --tags     # include tags styling, e.g. <i style='font-weight:italic'>...</i>
+    --inherit # include style inherited from parent properties
     --save-as=outfile.xml  # e.g. --save-as=myout-%02d.pdf
 
 =head1 DESCRIPTION
