@@ -14,66 +14,112 @@ Synopsis
     say $media.have('max-height', 250mm); # False
     say $media.have('max-height', 300mm); # True
 
-Desciption
-----------
+Description
+-----------
 
 Represents a target media for `@media` at-rules.
 
 Attributes
 ----------
 
-  * type
+### method type
 
-    The basic media type. One of: `braille`, `embossed`, `handheld`, `print`, `projection`, `screen`, `speech`, `tty`, `tv`, `all`
+    use CSS::Media :MediaType;
+    method type() returns MediaType
 
-  * resolution
+The basic media type. One of: `braille`, `embossed`, `handheld`, `print`, `projection`, `screen`, `speech`, `tty`, `tv`, `all`
 
-    The media resolution, given in units of `dpi`, `dpcm`, or `dppx`. Default is `96dpi`.
+### method resolution
 
-  * width, height
+    use CSS::Media :MediaRes;
+    method resolution() returns MediaRes;
 
-    The width and height of the media in appropriate length units (e.g. `px`, `pt`, `mm`, or `in`).
+The media resolution, given in units of `dpi`, `dpcm`, or `dppx`. Default is `96dpi`.
 
-  * device-width, device-height
+Example:
 
-    The physical width and height of the the display device, often given in `px` units.
+    use CSS::Units :dpi, :mm;
+    use CSS::Media;
+    my CSS::Media $media .= new: :type<print>, :resolution(300dpi), :width(210mm), :height(297mm);
+    say $media.resolution.gist;  # 300dpi
+    say $media.resolution.units; # dpi
+    say $media.resolution.scale('dpcm').Int; # 118
 
-  * color
+### methods width, height
 
-    The color-depth in bits (bits per component). Default 8;
+    use CSS::Media :MediaLen;
+    method width() returns MediaLen;
+    method height() returns MediaLen;
 
-  * color-index
+The width and height of the media in appropriate length units (e.g. `px`, `pt`, `mm`, or `in`).
 
-    The number of colors (e.g. grayscale is 1, rgb is 3, cmyk is 4).
+### methods device-width, device-height
+
+    use CSS::Media :MediaLen;
+    method device-width() returns MediaLen;
+    method device-height() returns MediaLen;
+
+The physical width and height of the the display device, often given in `px` units.
+
+### method color
+
+    method color() returns UInt
+
+The color-depth in bits (bits per component). Default 8;
+
+### method color-index
+
+    method color-index() returns UInt
+
+The number of colors (e.g. gray-scale is 1, rgb is 3, cmyk is 4).
 
 Methods
 -------
 
-  * orientation
+### method orientation
 
-    The derived orientation. Assumed to be `portrait` if the `height` is greater than the `width`; `landscape` otherwise.
+    use CSS::Media :MediaOrientation;
+    method orientation() returns MediaOrientation;
 
-  * aspect-ratio
+The derived orientation. Assumed to be `portrait` if the `height` is greater than the `width`; `landscape` otherwise.
 
-    computed aspect ratio. Simply `width` / `height`.
+### method aspect-ratio
 
-  * device-aspect-ratio
+    method aspect-ratio() returns Numeric
 
-    device aspect ratio: `device-width` / `device-height`.
+Computed aspect ratio. Simply `width` / `height`.
 
-  * have
+### method device-aspect-ratio
 
-    Synopsis: `my Bool $have-it = $media.has($constraint, $value);`
+    method device-aspect-ratio() returns Numeric
 
-    For example: `$media.has('min-resolution', 200dpi)` will be `True` for a media with resolution `240dpi`).
+Computed device aspect ratio. Simply `device-width` / `device-height`.
 
-    The available constraints are: `color`, `min-color`, `max-color`, `color-index`, `min-color-index`, `max-color-index`, `orientation`, `aspect-ratio`, `min-aspect-ratio`, `max-aspect-ratio`, `device-aspect-ratio`, `min-device-aspect-ratio`, `max-device-aspect-ratio`, `height`, `min-height`, `max-height`, `width`, `min-width`, `max-width`, `device-height`, `min-device-height`, `max-device-height`, `device-width`, `min-device-width`, `max-device-width`, `resolution`, `min-resolution`, `max-resolution`.
+### method have
 
-  * query
+    use CSS::Media :MediaProp;
+    method has(MediaProp $prop, Numeric $val?) returns Bool
 
-    Parses and evaluates a media query. Returns `True` if the media matches, `False` otherwise. Example:
+Returns True if the constraint is matched.
 
-        if $media.query('screen and (orientation: portrait) and (max-width: 600px)') {
-               ... # media matches
-           }
+For example: `$media.have('min-resolution', 200dpi)` will be `True` for a media with resolution `240dpi`).
+
+The available constraints are: `color`, `min-color`, `max-color`, `color-index`, `min-color-index`, `max-color-index`, `orientation`, `aspect-ratio`, `min-aspect-ratio`, `max-aspect-ratio`, `device-aspect-ratio`, `min-device-aspect-ratio`, `max-device-aspect-ratio`, `height`, `min-height`, `max-height`, `width`, `min-width`, `max-width`, `device-height`, `min-device-height`, `max-device-height`, `device-width`, `min-device-width`, `max-device-width`, `resolution`, `min-resolution`, `max-resolution`.
+
+### method query
+
+    method query(Str $expr) returns Bool
+
+Parses and evaluates a CSS media query. Returns `True` if the media matches, `False` otherwise. Example:
+
+    if $media.query('screen and (orientation: portrait) and (max-width: 600px)') {
+           ... # media matches
+    }
+
+Which is equivalent to
+
+    use CSS::Units :px;
+    if $media.type eq 'screen' && $media.orientation eq 'portrait' && $media.have('max-width', 600px) {
+       ...
+    }
 

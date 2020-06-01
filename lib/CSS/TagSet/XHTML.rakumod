@@ -15,7 +15,13 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     constant %Tags is export(:Tags) = do {
         my %asts;
         # Todo: load via CSS::Stylesheet?
-        for %ast<stylesheet>.list {
+        my CSS::Module $module = CSS::Module::CSS3.module;
+        my $default-css = %?RESOURCES<xhtml.css>.absolute;
+        my $actions = $module.actions.new;
+        my $p = $module.grammar.parsefile($default-css, :$actions);
+        my %ast = $p.ast;
+
+       for %ast<stylesheet>.list {
             with .<ruleset> {
                 my $declarations = .<declarations>;
                 for .<selectors>.list {
