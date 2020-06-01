@@ -12,7 +12,7 @@ submethod TWEAK(:%ast! is copy) {
     $!selectors .= new: :%ast;
 }
 
-method parse(Str :$css!) {
+method parse(Str :$css! --> CSS::Ruleset) {
     my $p := CSS::Module::CSS3.module.parse($css, :rule<ruleset>);
     my $ast = $p.ast;
     self.new: :$ast;
@@ -39,22 +39,24 @@ declarations (or properties)/
 
 =head2 Methods
 
-=begin item
-parse
+=head3 method parse
 
-parse a single rule-set; creates a rule-set object.
-=end item
+   method parse(Str :$css!) returns CSS::Ruleset;
 
-=begin item
-selectors
+Parses a single rule-set; creates a rule-set object.
 
-returns the selectors (type CSS::Selectors)
-=end item
+=head3 method selectors
 
-=begin item
-properties
+    use CSS::Selectors;
+    method selectors() returns CSS::Selectors
 
-returns the properties (type CSS::Properties)
-=end item
+Returns the rule-set's selectors
+
+=head3  method properties
+
+    use CSS::Properties;
+    method properties() returns CSS::Properties
+
+returns the rule-set's properties
 
 =end pod

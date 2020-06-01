@@ -44,34 +44,30 @@ This is the base role for CSS::TagSet::XHTML.
 
 =head2 Methods
 
-=begin item
-stylesheet
+=head3 method stylesheet
 
-Synopsis: `my CSS::Stylesheet $stylesheet = $tag-set.stylesheet($doc);`
+    method stylesheet(LibXML::Document $doc) returns CSS::Stylesheet;
 
 A method to build the stylesheet associated with a document; both from internal styling elements and linked stylesheets.
 
 TODO: This method currently only extracts self-contained internal style-sheets. It neither currently processes `@include` at-rules or externally linked stylesheets.
 
-=end item
 
-=begin item
-inline-style
+=head3 method inline-style
 
-Synopsis: `my CSS::Properties $props = $tag-set.inline-style($elem);`
+    method inline-style(Str $tag, Str :$style) returns CSS::Properties;
 
 Default method to parse an inline style associated with the tag, i.e. the `style` attribute.
 
 This method simply parses the 'style' attribute, if present.
 
-=end item
 
-=begin item
-tag-style
+=head3 method tag-style
+
+    method tag-style(str $tag, Str *%atts) returns CSS::Properties
 
 A rule to add any tag-specific property settings. For example. This method must be implmented, by the class
 that is applying this role.
 
-=end item
 
 =end pod

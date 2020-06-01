@@ -158,7 +158,7 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
     # define our media (this is the default media anyway)
     my CSS::Media $media .= new: :type<screen>, :width(480px), :height(640px), :color;
 
-    # Create a tag-set for XHTML specific loading of stylesheets and styling
+    # Create a tag-set for XHTML specific loading of style-sheets and styling
     my CSS::TagSet::XHTML $tag-set .= new();
 
     my CSS $css .= new: :$doc, :$tag-set, :$media, :inherit;
@@ -178,9 +178,9 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
 
 =head2 Description
 
-L<CSS> is a module for parsing stylesheets and applying them to HTML or XML documents.
+L<CSS> is a module for parsing style-sheets and applying them to HTML or XML documents.
 
-This module aims to be W3C compliant and complete, including: stylesheets, media specific and
+This module aims to be W3C compliant and complete, including: style-sheets, media specific and
 inline styling and the application of HTML specific styling (based on tags and attributes).
 
 
@@ -227,9 +227,9 @@ Computes a style for an individual element, or XPath to an element.
 
 =head2 Todo
 
-- HTML linked stylesheets, e.g. `<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>`
+- HTML linked style-sheets, e.g. `<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>`
 
-- CSS imported stylesheets, e.g. `@import url("navigation.css")`
+- CSS imported style-sheets, e.g. `@import url("navigation.css")`
 
 - Other At-Rule variants (in addition to `@media` and `@import`) `@document`, `@page`, `@font-face`
 

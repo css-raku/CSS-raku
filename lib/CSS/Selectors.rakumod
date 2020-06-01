@@ -1,3 +1,4 @@
+#| selector component of rule-sets
 unit class CSS::Selectors;
 
 use CSS::Selector::To::XPath;
@@ -11,6 +12,7 @@ submethod TWEAK {
         $!to-xml.pseudo-classes{$_} = "link-pseudo('$_', .)";
     }
 }
+
 
 class Specificity {
     has UInt $!id     = 0;
@@ -52,39 +54,18 @@ class Specificity {
 
 }
 
-method specificity {
+=head2 Methods
+
+#| Returns selector specificity in the form v<id>.<class>.<type>
+method specificity returns Specificity {
     $!specificity //= do {
         my Specificity $spec .= new;
         $spec.calc(|%!ast);
     }
 }
 
-method xpath {
+#| Returns an XPath translation of the selector
+method xpath returns Str {
     $!to-xml.xpath(%!ast);
 }
 
-=begin pod
-
-=head2 Name
-
-CSS::Selectors
-
-=head2 Desciption
-
-selector component of rulesets
-
-=head2 Methods
-
-=begin item
-xpath
-
-Returns an XPath expression
-=end item
-
-=begin item
-specificity
-
-Returns specificity (type Version) of the form v<id>.<class>.<type>
-=end item
-
-=end pod

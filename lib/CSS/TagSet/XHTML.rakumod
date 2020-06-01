@@ -62,10 +62,10 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     # mapping of HTML attributes to containing tags
     constant %AttrTags = %(
         align            => 'applet'|'caption'|'col'|'colgroup'|'hr'|'iframe'|'img'|'table'|'tbody'|'td'|'tfoot'|'th'|'thead'|'tr',
-        background       => 'body'|'table'|'td'|'th', # obselete in HTML5
-        bgcolor          => 'body'|'col'|'colgroup'|'marquee'|'table'|'tbody'|'tfoot'|'td'|'th'|'tr',  # obselete in HTML5
-        border           => 'img'|'object'|'table',   # obselete in HTML5
-        color            => 'basefont'|'font'|'hr',   # obselete in HTML5
+        background       => 'body'|'table'|'td'|'th', # obsolete in HTML5
+        bgcolor          => 'body'|'col'|'colgroup'|'marquee'|'table'|'tbody'|'tfoot'|'td'|'th'|'tr',  # obsolete in HTML5
+        border           => 'img'|'object'|'table',   # obsolete in HTML5
+        color            => 'basefont'|'font'|'hr',   # obsolete in HTML5
         bdo              => 'bidi-override',
         dir              => Str, # applicable to all
         'height'|'width' => 'canvas'|'embed'|'iframe'|'img'|'input'|'object'|'video',
@@ -135,7 +135,7 @@ class CSS::TagSet::XHTML does CSS::TagSet {
 
 CSS::TagSet::XHTML
 
-=head2 Descripton
+=head2 Description
 
 adds XHTML specific styling based on tags and attributes.
 
@@ -151,7 +151,7 @@ adds XHTML specific styling based on tags and attributes.
 
     method tag-style(Str $tag, *%atts) returns CSS::Properties
 
-Adds any further styling based on the tag and additional attrbutes.
+Adds any further styling based on the tag and additional attributes.
 
 For example the XHTML `em` tag implies `font-size: italic`.
 

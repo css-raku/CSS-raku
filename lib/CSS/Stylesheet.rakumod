@@ -62,27 +62,23 @@ CSS::Stylesheet - overall stylesheet
 
 =head2 Description
 
-This class is used to parse stylesheets and load rulesets. It contains an associated
+This class is used to parse style-sheets and load rule-sets. Objects have an associated
 media attributes which is used to filter `@media` rule-sets.
 
 =head2 Methods
 
-=begin item
-parse
+=head3 method parse
 
-Synposis: `CSS::Stylesheet $stylesheet .= parse($css, :$media);`
+    method parse(Str $stylesheet, Str :$media) returns CSS::Stylesheet
 
 Parses the string as a CSS Stylesheet. Filters any `@media` rule-sets that do not match
 the supplied media object.
 
-=end item
 
-=begin item
-rules
+=head3 method rules
 
-Synopsis: `my CSS::Ruleset @rules = $stylesheet.rules;`
+     method rules() returns Array[CSS::Ruleset]
 
 Returns the rule-sets in the loaded style-sheet.
-=end item
 
 =end pod

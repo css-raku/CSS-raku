@@ -20,15 +20,23 @@ This is a container class for a CSS ruleset; a single set of CSS selectors and d
 Methods
 -------
 
-  * parse
+### method parse
 
-    parse a single rule-set; creates a rule-set object.
+    method parse(Str :$css!) returns CSS::Ruleset;
 
-  * selectors
+Parses a single rule-set; creates a rule-set object.
 
-    returns the selectors (type CSS::Selectors)
+### method selectors
 
-  * properties
+    use CSS::Selectors;
+    method selectors() returns CSS::Selectors
 
-    returns the properties (type CSS::Properties)
+Returns the rule-set's selectors
+
+### method properties
+
+    use CSS::Properties;
+    method properties() returns CSS::Properties
+
+returns the rule-set's properties
 
