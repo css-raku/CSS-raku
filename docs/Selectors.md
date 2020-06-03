@@ -9,7 +9,7 @@ Methods
 ### method specificity
 
 ```perl6
-method specificity() returns CSS::Selectors::Specificity
+method specificity() returns Version
 ```
 
 Returns selector specificity in the form v<id>.<class>.<type>

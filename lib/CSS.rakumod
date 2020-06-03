@@ -207,23 +207,23 @@ Computes a style for an individual element, or XPath to an element.
 
 =head2 Classes
 
-=item [CSS::Media](https://github.com/p6-css/CSS-raku/blob/master/doc/Media.md) - CSS Media class
+=item L<CSS::Media> - CSS Media class
 
-=item [CSS::Ruleset](https://github.com/p6-css/CSS-raku/blob/master/doc/Ruleset.md) - CSS Ruleset class
+=item L<CSS::Ruleset> - CSS Ruleset class
 
-=item [CSS::Selectors](https://github.com/p6-css/CSS-raku/blob/master/doc/Selectors.md) - CSS DOM attribute class
+=item L<CSS::Selectors> - CSS DOM attribute class
 
-=item [CSS::Stylesheet](https://github.com/p6-css/CSS-raku/blob/master/doc/Stylesheet.md) - CSS Stylesheet class
+=item L<CSS::Stylesheet> - CSS Stylesheet class
 
-=item [CSS::TagSet](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet.md) - CSS TagSet Role
+=item L<CSS::TagSet> - CSS TagSet Role
 
-=item [CSS::TagSet::XHTML](https://github.com/p6-css/CSS-raku/blob/master/doc/TagSet/XHTML.md) - Implements XHTML specific styling
+=item L<CSS::TagSet::XHTML> - Implements XHTML specific styling
 
 =head2 See Also
 
-=item [CSS::Module](https://github.com/p6-css/CSS-Module-p6) - CSS Module Raku module
-=item [CSS::Properties](https://github.com/p6-css/CSS-Properties-p6) - CSS Properties Raku module
-=item [LibXML](https://github.com/p6-xml/LibXML-p6) - LibXML Raku module
+=item L<CSS::Module> - CSS Module Raku module
+=item L<CSS::Properties> - CSS Properties Raku module
+=item L<LibXML> - LibXML Raku module
 
 =head2 Todo
 

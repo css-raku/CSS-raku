@@ -57,7 +57,7 @@ class Specificity {
 =head2 Methods
 
 #| Returns selector specificity in the form v<id>.<class>.<type>
-method specificity returns Specificity {
+method specificity returns Version {
     $!specificity //= do {
         my Specificity $spec .= new;
         $spec.calc(|%!ast);
