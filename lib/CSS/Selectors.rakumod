@@ -19,10 +19,6 @@ class Specificity {
     has UInt $!class  = 0;
     has UInt $!type   = 0;
 
-    multi method calc(:qname($_)!) {
-        $!type++ unless .<element-name> ~~ '*';
-    }
-
     multi method calc(:simple-selector($_)!) {
         $.calc(|$_) for .list;
     }
@@ -36,6 +32,9 @@ class Specificity {
         Version.new: ($!id, $!class, $!type).join: '.';
     }
 
+    multi method calc(:qname($_)!) {
+        $!type++ unless .<element-name> ~~ '*';
+    }
     multi method calc(:attrib($)!)       { $!class++ }
     multi method calc(:class($)!)        { $!class++ }
     multi method calc(:pseudo-class($)!) { $!class++ }

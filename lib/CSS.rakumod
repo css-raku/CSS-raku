@@ -47,6 +47,9 @@ multi submethod TWEAK(CSS::Stylesheet :$!stylesheet) {
     self!build();
 }
 
+multi method COERCE(Str:D $_) { self.new: :stylesheet($_); }
+multi method COERCE(CSS::Stylesheet:D $_) { self.new: :stylesheet($_); }
+
 # compute the style of an individual element
 method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
     fail "element does not belong to the DOM"
