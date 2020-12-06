@@ -7,6 +7,31 @@ role CSS::TagSet {
     use CSS::Stylesheet;
     use LibXML::XPath::Context;
 
+    sub load-css-tagset(Str $tag-css) is export(:load-css-tagset) {
+        my %asts;
+        # Todo: load via CSS::Stylesheet?
+        my CSS::Module $module = CSS::Module::CSS3.module;
+        my $actions = $module.actions.new;
+        my $p = $module.grammar.parsefile($tag-css, :$actions);
+        my %ast = $p.ast;
+
+       for %ast<stylesheet>.list {
+            with .<ruleset> {
+                my $declarations = .<declarations>;
+                for .<selectors>.list {
+                    for .<selector>.list {
+                        for .<simple-selector>.list {
+                            with .<qname><element-name> -> $elem-name {
+                                %asts{$elem-name}.append: $declarations.list;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        %asts;
+    }
+
     method stylesheet(LibXML::Document:D $doc --> CSS::Stylesheet) {
         with $doc.first('html/head/link[lowercase(@link)="stylesheet"]') {
             warn "todo: this document has linked stylesheets - ignoring";

@@ -16,9 +16,11 @@
     "CSS::Selectors": "lib/CSS/Selectors.rakumod",
     "CSS::Stylesheet": "lib/CSS/Stylesheet.rakumod",
     "CSS::TagSet": "lib/CSS/TagSet.rakumod",
+    "CSS::TagSet::Pango": "lib/CSS/TagSet/Pango.rakumod",
     "CSS::TagSet::XHTML": "lib/CSS/TagSet/XHTML.rakumod"
   },
   "resources": [
+    "pango.css",
     "xhtml.css"
   ],
   "source-url": "git://github.com/css-raku/CSS-raku.git",

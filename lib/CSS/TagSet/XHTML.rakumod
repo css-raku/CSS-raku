@@ -1,6 +1,6 @@
 use v6;
 
-use CSS::TagSet;
+use CSS::TagSet :&load-css-tagset;
 
 class CSS::TagSet::XHTML does CSS::TagSet {
     use CSS::Module;
@@ -12,31 +12,7 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     has CSS::Properties %!props;
     has SetHash %!link-pseudo;
 
-    constant %Tags is export(:Tags) = do {
-        my %asts;
-        # Todo: load via CSS::Stylesheet?
-        my CSS::Module $module = CSS::Module::CSS3.module;
-        my $default-css = %?RESOURCES<xhtml.css>.absolute;
-        my $actions = $module.actions.new;
-        my $p = $module.grammar.parsefile($default-css, :$actions);
-        my %ast = $p.ast;
-
-       for %ast<stylesheet>.list {
-            with .<ruleset> {
-                my $declarations = .<declarations>;
-                for .<selectors>.list {
-                    for .<selector>.list {
-                        for .<simple-selector>.list {
-                            with .<qname><element-name> -> $elem-name {
-                                %asts{$elem-name}.append: $declarations.list;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        %asts;
-    }
+    constant %Tags is export(:Tags) = load-css-tagset(%?RESOURCES<xhtml.css>.absolute);
 
     method declarations { %Tags }
 
