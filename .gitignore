@@ -5,6 +5,5 @@ Makefile
 blib/
 README.md
 *.gz
-resources
 CSS-*
 .gitignore
