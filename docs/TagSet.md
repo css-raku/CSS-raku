@@ -19,15 +19,13 @@ Methods
 
 A method to build the stylesheet associated with a document; both from internal styling elements and linked stylesheets.
 
-TODO: This method currently only extracts self-contained internal style-sheets. It neither currently processes `@include` at-rules or externally linked stylesheets.
+This method currently only extracts self-contained internal style-sheets. It neither currently processes `@include` at-rules or externally linked stylesheets.
 
 ### method inline-style
 
     method inline-style(Str $tag, Str :$style) returns CSS::Properties;
 
-Default method to parse an inline style associated with the tag, i.e. the `style` attribute.
-
-This method simply parses the 'style' attribute, if present.
+Default method to parse an inline style associated with the tag, typically the `style` attribute.
 
 ### method tag-style
 

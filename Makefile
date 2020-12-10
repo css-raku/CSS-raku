@@ -8,11 +8,11 @@ test : all
 loudtest : all
 	@prove -e"raku -I ." -v t
 
-doc : docs/index.md docs/Media.md docs/Ruleset.md docs/Selectors.md docs/Stylesheet.md docs/TagSet.md #docs/TagSet/XHTML.md
+doc : docs/index.md docs/Media.md docs/Ruleset.md docs/Selectors.md docs/Stylesheet.md docs/TagSet.md #docs/TagSet/XHTML.md docs/TagSet/Pango.md
 
 docs/index.md : lib/CSS.rakumod
 	(\
-	    echo '[![Build Status](https://travis-ci.org/p6-css/CSS-raku.svg?branch=master)](https://travis-ci.org/p6-css/CSS-raku)'; \
+	    echo '[![Build Status](https://travis-ci.org/css-raku/CSS-raku.svg?branch=master)](https://travis-ci.org/css-raku/CSS-raku)'; \
             echo '';\
             perl6 -I . --doc=Markdown $< \
             | raku -p -n etc/resolve-links.raku \
@@ -34,4 +34,6 @@ docs/Stylesheet.md : lib/CSS/Stylesheet.rakumod
 docs/TagSet.md : lib/CSS/TagSet.rakumod
 
 docs/TagSet/XHTML.md : lib/CSS/TagSet/XHTML.rakumod
+
+docs/TagSet/Pango.md : lib/CSS/TagSet/Pango.rakumod
 

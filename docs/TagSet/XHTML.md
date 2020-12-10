@@ -3,8 +3,8 @@ Name
 
 CSS::TagSet::XHTML
 
-Descripton
-----------
+Description
+-----------
 
 adds XHTML specific styling based on tags and attributes.
 
@@ -15,15 +15,15 @@ Methods
 
     method inline-style(Str $tag, :$style, *%atts) returns CSS::Properties
 
-(inherited from CSS::TagSet role). Parses an inline style as a CSS Property list.
+Parses an inline style as a CSS Property list.
 
 ### method tag-style
 
     method tag-style(Str $tag, *%atts) returns CSS::Properties
 
-Adds any further styling based on the tag and additional attrbutes.
+Adds any further styling based on the tag and additional attributes.
 
-For example the XHTML `em` tag implies `font-size: italic`.
+For example the XHTML `i` tag implies `font-style: italic`.
 
 ### method link-pseudo
 

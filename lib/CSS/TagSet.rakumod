@@ -50,8 +50,7 @@ role CSS::TagSet {
         CSS::Properties;
     }
 
-    method init(LibXML::XPath::Context :$xpath-context!) {
-        $xpath-context.registerFunction('link-status', -> | { False });
+    method init( LibXML::XPath::Context :$xpath-context!) {
     }
 }
 
@@ -75,16 +74,14 @@ This is the base role for CSS::TagSet::XHTML.
 
 A method to build the stylesheet associated with a document; both from internal styling elements and linked stylesheets.
 
-TODO: This method currently only extracts self-contained internal style-sheets. It neither currently processes `@include` at-rules or externally linked stylesheets.
+This method currently only extracts self-contained internal style-sheets. It neither currently processes `@include` at-rules or externally linked stylesheets.
 
 
 =head3 method inline-style
 
     method inline-style(Str $tag, Str :$style) returns CSS::Properties;
 
-Default method to parse an inline style associated with the tag, i.e. the `style` attribute.
-
-This method simply parses the 'style' attribute, if present.
+Default method to parse an inline style associated with the tag, typically the `style` attribute.
 
 
 =head3 method tag-style

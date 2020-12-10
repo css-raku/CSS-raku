@@ -53,24 +53,16 @@ Synopsis
     say $body-props;           # background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;
     say $css.style('/html/body/h1[1]');
     # color:blue; display:block; font-size:12pt; font-weight:bolder; margin-bottom:0.67em; margin-top:0.67em; unicode-bidi:embed;
+    say $css.style('/html/body/div');
 
-    say $css.style: '/html/body/div';
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
-
-    say $css.style: $doc.first('/html/body/div');
+    say $css.style($doc.first('/html/body/div'));
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
 
 Description
 -----------
 
 [CSS](https://css-raku.github.io/CSS-raku) is a module for parsing style-sheets and applying them to HTML or XML documents.
-
-[CSS::Properties](https://css-raku.github.io/CSS-Properties-raku) property-sets can be computed for individual nodes based on:
-
-- Stylesheet selectors, external or embedded
-- Inline styles (`style=...` attributes)
-- Inherited styles
-- Tag specific styling (e.g. XHTML '<b>..</b>' implies 'font-weight: bolder').
 
 This module aims to be W3C compliant and complete, including: style-sheets, media specific and inline styling and the application of HTML specific styling (based on tags and attributes).
 
@@ -86,17 +78,7 @@ Methods
         Bool :$inherit = True,         # perform property inheritance
     ) returns CSS;
 
-In particular, the `CSS::TagSet :$tag-set` options specifies a tag-specific styler; For example CSS::TagSet::XHTML.
-
-If the `:$stylesheet` option is omitted the `$tag-set.stylesheet` method is invoked to locate a stylesheet for the document. This is currently limited to loading internal stylehseets from the document. Externally linked stylesheets are not yet handled.
-
-Important Note: XHTML stylesheet selectors are case in-sensitive, whereas XML selectors are usually case sensitive. To get the correct behaviour, the LibXML document should be loaded as either an HTML or XML document as required:
-
-```
-use LibXML::Document;
-my LibXML::Document::HTML $doc1 = LibXML::Document.parse: :$string, :html;
-my LibXML::Document::XML  $doc2 = LibXML::Document.parse: :$string;
-```
+In particular, the `CSS::TagSet :$tag-set` options specifies a tag-specific styler; For example CSS::TagSet::XHTML. 
 
 ### method style
 
@@ -120,7 +102,9 @@ Classes
 
   * [CSS::TagSet::XHTML](https://css-raku.github.io/CSS-raku/TagSet/XHTML) - Implements XHTML specific styling
 
-Dependencies
+  * [CSS::TagSet::Pango](https://css-raku.github.io/CSS-raku/TagSet/Pango) - Implements Pango styling
+
+See Also
 --------
 
   * [CSS::Module](https://css-raku.github.io/CSS-Module-raku) - CSS Module Raku module

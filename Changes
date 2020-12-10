@@ -1,5 +1,7 @@
+0.0.6 2020-12-11
+    - Add CSS::TagSet::Pango
 0.0.5 2020-06-02
-    - Add CSS::Media :MediaType, :MediaLen, :MediaRes, :MediaOrientation exports
+    - Add exports: CSS::Media :MediaType, :MediaLen, :MediaRes, :MediaOrientation
 0.0.4 2020-03-02
     - Rename sources *.pm6 -> *.rakumod; *.p6 -> *.raku
     - Fixed handling of inline style !important properties

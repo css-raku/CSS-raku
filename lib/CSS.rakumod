@@ -222,6 +222,8 @@ Computes a style for an individual element, or XPath to an element.
 
 =item L<CSS::TagSet::XHTML> - Implements XHTML specific styling
 
+=item L<CSS::TagSet::Pango> - Implements Pango styling
+
 =head2 See Also
 
 =item L<CSS::Module> - CSS Module Raku module

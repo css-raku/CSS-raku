@@ -121,7 +121,7 @@ adds XHTML specific styling based on tags and attributes.
 
     method inline-style(Str $tag, :$style, *%atts) returns CSS::Properties
 
-(inherited from CSS::TagSet role). Parses an inline style as a CSS Property list.
+Parses an inline style as a CSS Property list.
 
 =head3 method tag-style
 
@@ -129,7 +129,7 @@ adds XHTML specific styling based on tags and attributes.
 
 Adds any further styling based on the tag and additional attributes.
 
-For example the XHTML `em` tag implies `font-size: italic`.
+For example the XHTML `i` tag implies `font-style: italic`.
 
 =head3 method link-pseudo
 
