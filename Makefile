@@ -8,7 +8,7 @@ test : all
 loudtest : all
 	@prove -e"raku -I ." -v t
 
-doc : docs/index.md docs/Media.md docs/Ruleset.md docs/Selectors.md docs/Stylesheet.md docs/TagSet.md #docs/TagSet/XHTML.md docs/TagSet/Pango.md
+doc : docs/index.md docs/Media.md docs/Ruleset.md docs/Selectors.md docs/Stylesheet.md docs/TagSet.md #docs/TagSet/XHTML.md docs/TagSet/Pango.md docs/TagSet/TaggedPDF.md
 
 docs/index.md : lib/CSS.rakumod
 	(\
@@ -37,3 +37,4 @@ docs/TagSet/XHTML.md : lib/CSS/TagSet/XHTML.rakumod
 
 docs/TagSet/Pango.md : lib/CSS/TagSet/Pango.rakumod
 
+docs/TagSet/TaggedPDF.md : lib/CSS/TagSet/TaggedPDF.rakumod

@@ -7,11 +7,11 @@ role CSS::TagSet {
     use CSS::Stylesheet;
     use LibXML::XPath::Context;
 
-    sub load-css-tagset(Str $tag-css) is export(:load-css-tagset) {
+    sub load-css-tagset(Str $tag-css, |c) is export(:load-css-tagset) {
         my %asts;
         # Todo: load via CSS::Stylesheet?
         my CSS::Module $module = CSS::Module::CSS3.module;
-        my $actions = $module.actions.new;
+        my $actions = $module.actions.new: |c;
         my $p = $module.grammar.parsefile($tag-css, :$actions);
         my %ast = $p.ast;
 
