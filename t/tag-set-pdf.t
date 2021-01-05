@@ -2,7 +2,7 @@ use v6;
 use Test;
 
 my $string = q:to<END>;
-<P BackgroundColor="1 0 0" BorderStyle="Dotted">Hello World!</P>  
+<P BackgroundColor="1 0 0" BorderStyle="Dotted" FontSize="15">Hello World!</P>  
 END
 
 use LibXML;
@@ -18,6 +18,6 @@ is $tag-set.tag-style('P'), 'display:block; margin-bottom:1.12em; margin-top:1.1
 my LibXML::Document::XML $doc .= parse: :$string;
 my CSS $css .= new: :$doc, :$tag-set, :inherit;
 
-is $css.style('P'), 'background-color:red; border-style:dotted; display:block; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;', '<P/>';
+is $css.style('P'), 'background-color:red; border-style:dotted; display:block; font-size:15pt; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;', '<P/>';
 
 done-testing();

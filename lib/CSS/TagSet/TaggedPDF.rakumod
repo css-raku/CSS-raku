@@ -17,12 +17,7 @@ class CSS::TagSet::TaggedPDF does CSS::TagSet {
     method declarations { %Tags }
 
     method !base-property(Str $prop) {
-        %!props{$prop} //= do with %Tags{$prop} {
-            CSS::Properties.new(declarations => $_);
-        }
-        else {
-            CSS::Properties.new;
-        }
+        %!props{$prop} //= CSS::Properties.new: declarations => %Tags{$prop};
     }
 
     sub snake-case($s) {
@@ -32,14 +27,14 @@ class CSS::TagSet::TaggedPDF does CSS::TagSet {
     # mapping of Pango attributes to CSS properties
     our %Layout = %(
         'FontFamily'|'FontSize'|'FontStyle'|'FontWeight'|'FontVariant'|'FontStretch'
-                      => ->  Str $prop, Str() $v { snake-case($prop) => $v },
+                      => ->  Str $prop, $v { snake-case($prop) => $v ~ 'pt' },
         'Placement'   => :display{ :Block<block>, :Inline<inline> },
         'WritingMode' => :direction{ :LrTb<ltr>, :RlTb<rtl> },
         'BackgroundColor'|'BorderColor' => -> $_, $c {
             .&snake-case => '#' ~ $c.split(' ').map({sprintf("%02x", (.Num * 255).round)}).join;
         },
         'BorderStyle' => -> Str $prop, Str $s {
-            snake-case($prop) => [ $s>>.lc ];
+            snake-case($prop) => [ $s.split(' ')>>.lc ];
         },
     );
 

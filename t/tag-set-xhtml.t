@@ -6,7 +6,7 @@ my $string = q:to<END>;
 <html>
 
   <body style="color:purple">
-    <i><span>italic purple text</span></i>
+    <i><b><span>bold italic purple text</span></b></i>
   </body>
 
 </html>
@@ -26,6 +26,6 @@ my LibXML::Document $doc .= parse: :$string, :html;
 my CSS $css .= new: :$doc, :$tag-set, :inherit;
 
 is $css.style('/html/body/i'), 'color:purple; font-style:italic;', '<i/>';
-is $css.style('/html/body/i/span'), 'color:purple; font-style:italic;', '<i><span/></i>';
+is $css.style('/html/body/i/b/span'), 'color:purple; font-style:italic; font-weight:700;', '<i><b><span/><b/></i>';
 
 done-testing();
