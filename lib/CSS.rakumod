@@ -7,23 +7,30 @@ use CSS::Stylesheet;
 use CSS::Properties:ver<0.5.0+>;
 use CSS::Ruleset;
 use CSS::TagSet;
+use CSS::TagSet::XHTML;
 
 use LibXML::Document;
 use LibXML::Element;
+use LibXML::_ParentNode;
 use LibXML::XPath::Context;
 
-has LibXML::Document:D $.doc is required;
+has LibXML::_ParentNode:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
 method stylesheet { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Properties %.style;        # per node-path styling, including tags
-has CSS::TagSet $.tag-set .= new;
+has CSS::TagSet $.tag-set;
 has Bool $.tags;
 has Bool $.inherit;
 
 # apply selectors (no inheritance)
 method !build {
-    $!doc.indexElements;
+    $!doc.indexElements
+        if $!doc.isa(LibXML::Document);
+
+    $!tag-set //= $!doc ~~ LibXML::Document::HTML
+        ?? CSS::TagSet::XHTML.new
+        !! CSS::TagSet.new;
 
     $!stylesheet //= $!tag-set.stylesheet($!doc);
 
@@ -52,8 +59,8 @@ multi method COERCE(CSS::Stylesheet:D $_) { self.new: :stylesheet($_); }
 
 # compute the style of an individual element
 method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
-    fail "element does not belong to the DOM"
-        unless $!doc.isSameNode($elem.doc);
+    fail "document does not contain this element"
+        unless $!doc.isSameNode($elem.root);
 
     # merge in inline styles
     my CSS::Properties $style = do with $!tag-set {

@@ -24,7 +24,7 @@ class CSS::TagSet::TaggedPDF does CSS::TagSet {
         $s.split(/<?after .><?before <[A..Z]>>/).map(*.lc).join: '-'
     }
 
-    # mapping of Pango attributes to CSS properties
+    # mapping of Tagged PDF attributes to CSS properties
     our %Layout = %(
         'FontFamily'|'FontSize'|'FontStyle'|'FontWeight'|'FontVariant'|'FontStretch'
                       => ->  Str $prop, $v { snake-case($prop) => $v ~ 'pt' },
@@ -37,6 +37,7 @@ class CSS::TagSet::TaggedPDF does CSS::TagSet {
             snake-case($prop) => [ $s.split(' ')>>.lc ];
         },
     );
+    #xx
 
     my subset HashMap of Pair where .value ~~ Associative;
     # Builds CSS properties from an element from a tag name and attributes

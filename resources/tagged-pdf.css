@@ -3,7 +3,7 @@ BlockQuote,
 Caption, TOC, Index,
 H, H1, H2, H3, H4,
 H5, H6, P, Index, L { display: block; unicode-bidi: embed }
-TOCI, Li         { display: list-item }
+TOCI, LI         { display: list-item }
 NonStruct        { display: none }
 Table            { display: table }
 TR               { display: table-row }
@@ -28,11 +28,11 @@ Code             { font-family: monospace }
 THead, TBody,
 TFoot            { vertical-align: middle }
 TD, TH, TR       { vertical-align: inherit }
-Li               { margin-left: 40px }
+LI               { margin-left: 40px }
 L                { margin-top: 0; margin-bottom: 0 }
 Annot, Link      { text-decoration: underline }
-:link, :visited { text-decoration: underline }
-:focus          { outline: thin dotted invert }
+:link, :visited  { text-decoration: underline }
+:focus           { outline: thin dotted invert }
 
 @media print {
     H, H1        { page-break-before: always }

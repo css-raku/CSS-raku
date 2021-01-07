@@ -68,25 +68,25 @@ END
 use LibXML;
 use LibXML::Document;
 use CSS;
-use CSS::TagSet;
+use CSS::TagSet::XHTML;
 use CSS::Properties;
 use Method::Also;
 
 my LibXML::Document $doc .= parse: :$string, :html;
-my CSS $css .= new: :$doc, :inherit;
+my CSS $css .= new: :$doc, :inherit, :!tags;
 
-is $css.style('/html/body/h1[1]'), 'color:blue;';
-is $css.style('/html/body/h1[2]'), 'color:green;';
-is $css.style('/html/body/h1[3]'), 'color:red;';
-is $css.style('/html/body/h1[4]'), 'color:pink;';
-is $css.style('/html/body/h1[5]'), 'color:pink;';
-is $css.style('/html/body/h1[6]'), 'color:purple!important;';
-is $css.style('/html/body/h1[7]'), 'color:blue;';
-is $css.style('/html/body/h2'), 'color:yellow;';
-is $css.style('/html/body/h3'), 'color:purple;';
-is $css.style('/html/body/span/h3'), 'color:purple;';
-is $css.style('/html/body/h4'), 'color:pink;';
-is $css.style('/html/body/span/span'), 'color:blue; font-size:18pt;';
-is $css.style('/html/body/span/span').parent, 'color:red!important; font-size:18pt;';
+like $css.style('/html/body/h1[1]'), /'color:blue;'/;
+like $css.style('/html/body/h1[2]'), /'color:green;'/;
+like $css.style('/html/body/h1[3]'), /'color:red;'/;
+like $css.style('/html/body/h1[4]'), /'color:pink;'/;
+like $css.style('/html/body/h1[5]'), /'color:pink;'/;
+like $css.style('/html/body/h1[6]'), /'color:purple!important;'/;
+like $css.style('/html/body/h1[7]'), /'color:blue;'/;
+like $css.style('/html/body/h2'), /'color:yellow;'/;
+like $css.style('/html/body/h3'), /'color:purple;'/;
+like $css.style('/html/body/span/h3'), /'color:purple;'/;
+like $css.style('/html/body/h4'), /'color:pink;'/;
+like $css.style('/html/body/span/span'), /'color:blue; font-size:18pt;'/;
+like $css.style('/html/body/span/span').parent, /'color:red!important; font-size:18pt;'/;
 
 done-testing();

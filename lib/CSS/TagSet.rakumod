@@ -2,7 +2,7 @@ use v6;
 
 # interface role for tagsets
 role CSS::TagSet {
-    use LibXML::Document;
+    use LibXML::_ParentNode;
     use CSS::Properties;
     use CSS::Stylesheet;
     use LibXML::XPath::Context;
@@ -32,11 +32,10 @@ role CSS::TagSet {
         %asts;
     }
 
-    method stylesheet(LibXML::Document:D $doc --> CSS::Stylesheet) {
-        with $doc.first('html/head/link[lowercase(@link)="stylesheet"]') {
-            warn "todo: this document has linked stylesheets - ignoring";
-        }
-        my @styles = $doc.findnodes('html/head/style').map(*.textContent);
+    method internal-stylesheets($) { [] } # override me
+    method root($doc) { $doc.root }
+    method stylesheet(LibXML::_ParentNode:D $doc --> CSS::Stylesheet) {
+        my @styles = @.internal-stylesheets($doc).map(*.textContent);
         CSS::Stylesheet.parse(@styles.join: "\n");
     }
 

@@ -59,6 +59,14 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     multi sub tweak-style($, $,) is default {
     }
 
+    method internal-stylesheets($doc) {
+        with $doc.first('html/head/link[@link="stylesheet"]') {
+            warn "todo: this document has linked stylesheets - ignoring";
+        }
+        $doc.findnodes('html/head/style')
+    }
+    method root($doc) { $doc.first('html/body') };
+
     # Builds CSS properties from an element from a tag name and attributes
     method tag-style(Str $tag, :$hidden, *%attrs) {
         my CSS::Properties $css = self!base-property($tag).clone;
