@@ -28,16 +28,31 @@ class CSS::TagSet::TaggedPDF does CSS::TagSet {
     our %Layout = %(
         'FontFamily'|'FontSize'|'FontStyle'|'FontWeight'|'FontVariant'|'FontStretch'
                       => ->  Str $prop, $v { snake-case($prop) => $v ~ 'pt' },
+        # Table 343 – Standard layout attributes common to all standard structure types
         'Placement'   => :display{ :Block<block>, :Inline<inline> },
         'WritingMode' => :direction{ :LrTb<ltr>, :RlTb<rtl> },
-        'BackgroundColor'|'BorderColor' => -> $_, $c {
+        'BackgroundColor'|'BorderColor'|'Color' => -> $_, $c {
             .&snake-case => '#' ~ $c.split(' ').map({sprintf("%02x", (.Num * 255).round)}).join;
         },
         'BorderStyle' => -> Str $prop, Str $s {
             snake-case($prop) => [ $s.split(' ')>>.lc ];
         },
+        'BorderThickness'|'Padding' => -> Str $prop, Str $s {
+            snake-case($prop) => [ $s.split(' ').map(* ~ 'pt') ];
+        },
+        'TextIdent'|'Width'|'Height'|'LineHeight' => -> Str $prop, Str $s {
+            # aproximate
+            snake-case($prop) => $s ~ 'pt'; # user space units??
+        },
+        'TextAlign' => -> Str $prop, Str $s {
+            snake-case($prop) => $s.lc;
+        },
+        'TextDecorationType' => -> Str $prop, Str $s {
+            text-decoration => $s.lc;
+        }
+
+        # Todo: SpaceBefore SpaceAfter StartIndent EndIndent BBox BlockAlign InlineAlign TBorderStyle TPadding TextDecorationColor TextDecorationThickness RubyAlign RubyPosition GlyphOrientationVertical
     );
-    #xx
 
     my subset HashMap of Pair where .value ~~ Associative;
     # Builds CSS properties from an element from a tag name and attributes
@@ -54,8 +69,9 @@ class CSS::TagSet::TaggedPDF does CSS::TagSet {
                     $css."{.key}"() = $_ with .value{$value}; 
                 }
                 when Code {
-                    my Pair $kv = .($key, $value);
-                    $css."{$kv.key}"() = $_ with $kv.value;
+                    with .($key, $value) -> $kv {
+                        $css."{$kv.key}"() = $_ with $kv.value;
+                    }
                 }
                 default {
                     die "can't map attribute {.key} to {.value.raku}";
