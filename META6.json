@@ -1,6 +1,6 @@
 {
   "depends": [
-    "LibXML:ver<0.5.15+>",
+    "LibXML:ver<0.5.14+>",
     "CSS::Module:ver<0.5.3+>",
     "CSS::Properties:ver<0.5.2+>",
     "CSS::Selector::To::XPath"

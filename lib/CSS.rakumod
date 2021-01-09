@@ -60,7 +60,7 @@ multi method COERCE(CSS::Stylesheet:D $_) { self.new: :stylesheet($_); }
 # compute the style of an individual element
 method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
     fail "document does not contain this element"
-        unless $!doc.isSameNode($elem.root);
+        unless $!doc.isSameNode($elem.getOwner);
 
     # merge in inline styles
     my CSS::Properties $style = do with $!tag-set {
