@@ -19,6 +19,7 @@ has CSS::Stylesheet $!stylesheet;
 method stylesheet { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Properties %.style;        # per node-path styling, including tags
+has CSS::Properties %!parent;
 has CSS::TagSet $.tag-set;
 has Bool $.tags;
 has Bool $.inherit;
@@ -87,8 +88,8 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
 
     with $elem.parent {
         when LibXML::Element {
-            with self.style($_) {
-                $style.parent = $_;
+            with self.style($_) -> $css {
+                %!parent{$elem.nodePath} = $css;
             }
         }
     }
@@ -116,7 +117,7 @@ multi method style(LibXML::Element:D $elem) {
                 }
             }
             if $!inherit {
-                $style.inherit($_) with $style.parent;
+                $style.inherit($_) with %!parent{$elem.nodePath};
             }
         }
         $style;

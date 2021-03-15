@@ -87,6 +87,6 @@ like $css.style('/html/body/h3'), /'color:purple;'/;
 like $css.style('/html/body/span/h3'), /'color:purple;'/;
 like $css.style('/html/body/h4'), /'color:pink;'/;
 like $css.style('/html/body/span/span'), /'color:blue; font-size:18pt;'/;
-like $css.style('/html/body/span/span').parent, /'color:red!important; font-size:18pt;'/;
+like $css.style('/html/body/span[2]'), /'color:red!important; font-size:18pt;'/;
 
 done-testing();

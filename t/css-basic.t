@@ -40,7 +40,7 @@ is $css.rulesets.keys.sort.join(','), '/html/body,/html/body/div,/html/body/h1[1
 
 is $css.style('/html/body'), 'background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;';
 is $css.style('/html/body/h1[1]'), 'color:blue; display:block; font-size:2em; font-weight:bolder; margin-bottom:0.67em; margin-top:0.67em; unicode-bidi:embed;';
-is $css.style('/html/body/h1[1]').parent, 'background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;';
+is $css.style('/html/body'), 'background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;';
 is $css.style('/html/body/div'), 'color:green; display:block; font-size:10pt; unicode-bidi:embed;';
 is $css.style('/html/body/h2[1]'), 'display:block; font-size:9pt; font-weight:bolder; margin-bottom:0.75em; margin-top:0.75em; unicode-bidi:embed;';
 is $css.style('/html/body/h2[2]'), 'direction:rtl; display:table; font-size:1.5em; font-weight:bolder; margin-bottom:0.75em; margin-top:0.75em; unicode-bidi:embed;';
