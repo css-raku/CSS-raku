@@ -13,7 +13,6 @@ submethod TWEAK {
     }
 }
 
-
 class Specificity {
     has UInt $!id     = 0;
     has UInt $!class  = 0;

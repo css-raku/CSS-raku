@@ -75,7 +75,7 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
     my %vital = $style.important;
 
     # Apply CSS Selector styles. Lower precedence than inline rules
-    my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map(*.properties)
+    my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map: *.properties
         with %!rulesets{$path};
 
     for @prop-sets -> CSS::Properties $prop-set {

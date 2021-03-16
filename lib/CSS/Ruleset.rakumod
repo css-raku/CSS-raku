@@ -3,6 +3,7 @@ unit class CSS::Ruleset;
 use CSS::Properties;
 use CSS::Selectors;
 use CSS::Module::CSS3;
+use CSS::Writer;
 
 has CSS::Selectors $.selectors handles<xpath specificity>;
 has CSS::Properties $.properties;
@@ -16,6 +17,18 @@ method parse(Str :$css! --> CSS::Ruleset) {
     my $p := CSS::Module::CSS3.module.parse($css, :rule<ruleset>);
     my $ast = $p.ast;
     self.new: :$ast;
+}
+
+method ast(|c) {
+    my %ast = $!selectors.ast;
+    %ast ,= declarations => $!properties.ast(|c)<declaration-list>;
+    :ruleset(%ast);
+}
+
+method Str(:$optimize = True, :$terse = True, |c) {
+    my %ast = $.ast: :$optimize;
+    my CSS::Writer $writer .= new: :$terse, |c;
+    $writer.write(%ast);
 }
 
 =begin pod
