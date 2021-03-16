@@ -1,3 +1,5 @@
+`$terse` and 
+
 Name
 ----
 
@@ -7,10 +9,11 @@ Synopsis
 --------
 
     use CSS::Ruleset;
-    my CSS::Ruleset $rules .= parse('h1 { font-size: 2em; margin: 3px; }');
-    say $css.properties; # font-size: 2em; margin: 3px;
-    say $css.selectors.xpath;       # '//h1'
-    say $css.selectors.specificity; #
+    my CSS::Ruleset $rules .= parse('h1 { x:42;font-size: 2em; margin: 3px; }');
+    say $rules.properties; # font-size: 2em; margin: 3px;
+    say $rules.selectors.xpath;       # '//h1'
+    say $rules.selectors.specificity; # v0.0.1
+    say $rules.Str; # h1 { font-size:2em; margin:3px; }
 
 Description
 -----------
@@ -39,4 +42,8 @@ Returns the rule-set's selectors
     method properties() returns CSS::Properties
 
 returns the rule-set's properties
+
+### method Str
+
+    Reserialize the rule-set.
 

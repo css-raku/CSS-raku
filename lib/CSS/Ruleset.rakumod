@@ -3,21 +3,30 @@ unit class CSS::Ruleset;
 use CSS::Properties;
 use CSS::Selectors;
 use CSS::Module::CSS3;
+use CSS::Module::CSS3::Actions;
 use CSS::Writer;
 
 has CSS::Selectors $.selectors handles<xpath specificity>;
 has CSS::Properties $.properties;
 
 submethod TWEAK(:%ast! is copy) {
-    $!properties .= new: :ast(%ast<declarations>:delete);    
+    %ast = $_ with %ast<ruleset>;
+    $!properties .= new: :ast($_)
+       given %ast<declarations>:delete;
     $!selectors .= new: :%ast;
 }
 
-method parse(Str :$css! --> CSS::Ruleset) {
-    my $p := CSS::Module::CSS3.module.parse($css, :rule<ruleset>);
+multi method parse(Str $css!) { self.parse: :$css }
+multi method parse(Str :$css! --> CSS::Ruleset) {
+    my CSS::Module::CSS3::Actions $actions .= new;
+    my $p := CSS::Module::CSS3.module.parse($css, :rule<ruleset>, :$actions)
+        or die "unable to parse CSS rule-set: $css";
+    note $_ for $actions.warnings;
     my $ast = $p.ast;
     self.new: :$ast;
 }
+
+multi method COERCE(Str:D $css --> CSS::Ruleset ) { self.parse: :$css; }
 
 method ast(|c) {
     my %ast = $!selectors.ast;
@@ -25,11 +34,12 @@ method ast(|c) {
     :ruleset(%ast);
 }
 
-method Str(:$optimize = True, :$terse = True, |c) {
+method Str(:$optimize = True, :$terse = True, |c --> Str) {
     my %ast = $.ast: :$optimize;
     my CSS::Writer $writer .= new: :$terse, |c;
     $writer.write(%ast);
 }
+=para `$terse` and 
 
 =begin pod
 
@@ -40,10 +50,11 @@ CSS::Ruleset
 =head2 Synopsis
 
     use CSS::Ruleset;
-    my CSS::Ruleset $rules .= parse('h1 { font-size: 2em; margin: 3px; }');
-    say $css.properties; # font-size: 2em; margin: 3px;
-    say $css.selectors.xpath;       # '//h1'
-    say $css.selectors.specificity; #
+    my CSS::Ruleset $rules .= parse('h1 { x:42;font-size: 2em; margin: 3px; }');
+    say $rules.properties; # font-size: 2em; margin: 3px;
+    say $rules.selectors.xpath;       # '//h1'
+    say $rules.selectors.specificity; # v0.0.1
+    say $rules.Str; # h1 { font-size:2em; margin:3px; }
 
 =head2 Description
 
@@ -71,5 +82,9 @@ Returns the rule-set's selectors
     method properties() returns CSS::Properties
 
 returns the rule-set's properties
+
+=head3 method Str
+
+    Reserialize the rule-set.
 
 =end pod
