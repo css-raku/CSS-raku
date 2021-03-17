@@ -16,7 +16,7 @@ use LibXML::XPath::Context;
 
 has LibXML::_ParentNode:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
-method stylesheet { $!stylesheet }
+method stylesheet handles <Str gist> { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Properties %.style;        # per node-path styling, including tags
 has CSS::Properties %!parent;

@@ -5,10 +5,11 @@
   "build-depends": [
   ],
   "depends": [
-    "LibXML:ver<0.5.14+>",
     "CSS::Module:ver<0.5.3+>",
     "CSS::Properties:ver<0.5.2+>",
-    "CSS::Selector::To::XPath"
+    "CSS::Selector::To::XPath",
+    "LibXML:ver<0.5.14+>",
+    "Method::Also"
   ],
   "description": "CSS Stylesheet processing",
   "license": "Artistic-2.0",

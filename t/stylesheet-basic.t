@@ -35,7 +35,7 @@ my CSS::Stylesheet $stylesheet .= new.parse($css);
 is $stylesheet.media, 'screen';
 is $stylesheet.rules[0].xpath, '//html | //body';
 is $stylesheet.rules[0].properties, 'background-color:white; border-width:0; color:black;';
-is $stylesheet.rules[0].Str, 'html, body { background-color:#FFF; border-width:0; color:#000; }';
+is $stylesheet.rules[0].Str, 'html, body { background-color:white; border-width:0; color:black; }';
 is $stylesheet.rules[1].properties, "font-family:Arial, Helvetica, sans-serif; font-size:em;";
 is $stylesheet.rules.[3].xpath, '//h1';
 is $stylesheet.rules.tail.xpath, "//a[link-pseudo('active', .)]";

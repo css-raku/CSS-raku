@@ -1,6 +1,6 @@
 use v6;
 use Test;
-plan 9;
+plan 10;
 use CSS;
 use CSS::TagSet::XHTML;
 use LibXML;
@@ -46,5 +46,12 @@ is $css.style('/html/body/h2[1]'), 'display:block; font-size:9pt; font-weight:bo
 is $css.style('/html/body/h2[2]'), 'direction:rtl; display:table; font-size:1.5em; font-weight:bolder; margin-bottom:0.75em; margin-top:0.75em; unicode-bidi:embed;';
 is $css.style('/html/body/hr'), '-xhtml-align:center; border:1px inset; display:block; font-size:12pt; unicode-bidi:embed;';
 is $css.style('/html/body/p'), 'color:red; display:none; font-size:12pt; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;';
+
+is-deeply $css.Str.lines, (
+    'body { background-color:powderblue; font-size:12pt; }',
+    'h1:first-child { color:blue; }',
+    'p { color:red; }',
+    'div { font-size:10pt; }'
+), 'filtered lines';
 
 done-testing();

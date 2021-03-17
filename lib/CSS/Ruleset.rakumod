@@ -34,12 +34,11 @@ method ast(|c) {
     :ruleset(%ast);
 }
 
-method Str(:$optimize = True, :$terse = True, |c --> Str) {
+method Str(:$optimize = True, :$terse = True, :$color-names=True, |c --> Str) {
     my %ast = $.ast: :$optimize;
-    my CSS::Writer $writer .= new: :$terse, |c;
+    my CSS::Writer $writer .= new: :$terse, :$color-names, |c;
     $writer.write(%ast);
 }
-=para `$terse` and 
 
 =begin pod
 

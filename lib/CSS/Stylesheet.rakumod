@@ -4,6 +4,7 @@ use CSS::Module:CSS3;
 use CSS::Ruleset;
 use CSS::Units :px;
 use CSS::Media;
+use Method::Also;
 
 has CSS::Media $.media .= new: :type<screen>, :width(480px), :height(640px), :color;
 has CSS::Module $.module = CSS::Module::CSS3.module; # associated CSS module
@@ -19,8 +20,9 @@ multi method at-rule('charset', :string($_)!) {
 }
 
 multi method at-rule('media', :@media-list, :@rule-list) {
+    # filter rule-sets, based on our media settings
     if $!media.query(:@media-list) {
-         self.load(|$_) for @rule-list;
+        self.load(|$_) for @rule-list;
     }
 }
 
@@ -41,7 +43,7 @@ multi method load(:ruleset($_)!) {
     @!rules.push: CSS::Ruleset.new: :ast($_);
 }
 
-multi method load($_) is default { warn .perl }
+multi method load($_) is default { warn .raku }
 
 method parse($css!, |c) {
     my $obj = self;
@@ -52,6 +54,10 @@ method parse($css!, |c) {
         $obj.load(|$ast);
     }
     $obj;
+}
+
+method Str(|c) is also<gist> {
+    @!rules.map(*.Str(|c)).join: "\n";
 }
 
 =begin pod
