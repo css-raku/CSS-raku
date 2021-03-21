@@ -1,6 +1,8 @@
 use v6;
 use Test;
 use CSS::Stylesheet;
+use CSS::Media;
+use CSS::Units :px;
 plan 7;
 
 my $css = q:to<END>;
@@ -31,7 +33,8 @@ my $css = q:to<END>;
  a:active { color: #0cf; }
 END
 
-my CSS::Stylesheet $stylesheet .= new.parse($css);
+my CSS::Media $media .= new: :type<screen>, :width(480px), :height(640px), :color;
+my CSS::Stylesheet $stylesheet .= new(:$media).parse($css);
 is $stylesheet.media, 'screen';
 is $stylesheet.rules[0].xpath, '//html | //body';
 is $stylesheet.rules[0].properties, 'background-color:white; border-width:0; color:black;';

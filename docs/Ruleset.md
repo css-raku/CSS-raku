@@ -1,5 +1,3 @@
-`$terse` and 
-
 Name
 ----
 

@@ -1,14 +1,15 @@
 unit class CSS::Stylesheet;
 
+use CSS::Media;
 use CSS::Module:CSS3;
 use CSS::Ruleset;
-use CSS::Units :px;
-use CSS::Media;
+use CSS::Writer;
 use Method::Also;
 
-has CSS::Media $.media .= new: :type<screen>, :width(480px), :height(640px), :color;
+has CSS::Media $.media;
 has CSS::Module $.module = CSS::Module::CSS3.module; # associated CSS module
 has CSS::Ruleset @.rules;
+has List %.rule-media{CSS::Ruleset};
 has Str $.charset = 'utf-8';
 
 multi method load(:stylesheet($_)!) {
@@ -21,8 +22,8 @@ multi method at-rule('charset', :string($_)!) {
 
 multi method at-rule('media', :@media-list, :@rule-list) {
     # filter rule-sets, based on our media settings
-    if $!media.query(:@media-list) {
-        self.load(|$_) for @rule-list;
+    if !$!media || $!media.query(:@media-list) {
+        self.load(:@media-list, |$_) for @rule-list;
     }
 }
 
@@ -39,8 +40,10 @@ multi method load(:at-rule($_)!) {
     $.at-rule($type, |$_);
 }
 
-multi method load(:ruleset($_)!) {
-    @!rules.push: CSS::Ruleset.new: :ast($_);
+multi method load(:ruleset($ast)!, :$media-list) {
+    my CSS::Ruleset $rule .= new: :$ast;
+    %!rule-media{$rule} = $_ with $media-list;
+    @!rules.push: $rule;
 }
 
 multi method load($_) is default { warn .raku }
@@ -57,7 +60,29 @@ method parse($css!, |c) {
 }
 
 method Str(|c) is also<gist> {
-    @!rules.map(*.Str(|c)).join: "\n";
+    my @chunks;
+    my List $cur-media;
+    my CSS::Writer $writer .= new;
+
+    for @!rules -> $rule {
+        my $indent = '';
+        with %!rule-media{$rule} -> $media-list {
+            $indent = '';
+            unless $media-list === $cur-media {
+                my $at-header = $writer.write-nodes: (:at-keyw<media>), (:$media-list);
+                @chunks.push: $at-header ~ ' {';
+                $cur-media = $media-list;
+                $indent = '  ';
+            }
+        }
+        elsif $cur-media {
+            @chunks.push: '}';
+            $cur-media = Nil;
+         }
+         @chunks.push: $indent ~ $rule.Str;
+    }
+    @chunks.push: '}' with $cur-media;
+    @chunks.join: "\n";
 }
 
 =begin pod

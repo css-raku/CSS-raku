@@ -3,6 +3,7 @@ use Test;
 plan 10;
 use CSS;
 use CSS::TagSet::XHTML;
+use CSS::Units :px;
 use LibXML;
 use LibXML::Document;
 
@@ -49,7 +50,9 @@ is $css.style('/html/body/p'), 'color:red; display:none; font-size:12pt; margin-
 
 is-deeply $css.Str.lines, (
     'body { background-color:powderblue; font-size:12pt; }',
-    'h1:first-child { color:blue; }',
+    '@media screen {',
+    '  h1:first-child { color:blue; }',
+    '}',
     'p { color:red; }',
     'div { font-size:10pt; }'
 ), 'filtered lines';

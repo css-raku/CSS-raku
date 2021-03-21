@@ -1,5 +1,6 @@
 {{$NEXT}}
     - Add rule-set and style-sheet Str() and gist() methods
+    - Don't provide default :media for CSS::Stylesheet
 
 0.0.7  2021-03-16T11:43:23+13:00
     - Fix for CSS::Properties v0.6.0+ compatibility; withdrawn parent() method

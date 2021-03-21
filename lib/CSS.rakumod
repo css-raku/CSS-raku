@@ -3,11 +3,13 @@ unit class CSS:ver<0.0.7>;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
 
-use CSS::Stylesheet;
+use CSS::Media;
 use CSS::Properties:ver<0.5.0+>;
 use CSS::Ruleset;
+use CSS::Stylesheet;
 use CSS::TagSet;
 use CSS::TagSet::XHTML;
+use CSS::Units :px;
 
 use LibXML::Document;
 use LibXML::Element;
@@ -25,7 +27,7 @@ has Bool $.tags;
 has Bool $.inherit;
 
 # apply selectors (no inheritance)
-method !build {
+method !build(:$media = CSS::Media.new: :type<screen>, :width(480px), :height(640px), :color) {
     $!doc.indexElements
         if $!doc.isa(LibXML::Document);
 
@@ -33,7 +35,7 @@ method !build {
         ?? CSS::TagSet::XHTML.new
         !! CSS::TagSet.new;
 
-    $!stylesheet //= $!tag-set.stylesheet($!doc);
+    $!stylesheet //= $!tag-set.stylesheet($!doc, :$media);
 
     my LibXML::XPath::Context $xpath-context .= new: :$!doc;
     $!tag-set.init(:$xpath-context);
@@ -46,13 +48,13 @@ method !build {
     }
 }
 
-multi submethod TWEAK(Str:D :stylesheet($string)!) {
+multi submethod TWEAK(Str:D :stylesheet($string)!, |c) {
     $!stylesheet .= parse($string);
-    self!build();
+    self!build(|c);
 }
 
-multi submethod TWEAK(CSS::Stylesheet :$!stylesheet) {
-    self!build();
+multi submethod TWEAK(CSS::Stylesheet :$!stylesheet, |c) {
+    self!build(|c);
 }
 
 multi method COERCE(Str:D $_) { self.new: :stylesheet($_); }
@@ -166,7 +168,7 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
 
     my LibXML::Document $doc .= parse: :$string, :html;
 
-    # define our media (this is the default media anyway)
+    # define a selection media
     my CSS::Media $media .= new: :type<screen>, :width(480px), :height(640px), :color;
 
     # Create a tag-set for XHTML specific loading of style-sheets and styling
@@ -203,6 +205,7 @@ inline styling and the application of HTML specific styling (based on tags and a
         LibXML::Document :$doc!,       # document to be styled.
         CSS::Stylesheet :$stylesheet!, # stylesheet to apply
         CSS::TagSet :$tag-set,         # tag-specific styling
+        CSS::Media :$media,            # target media
         Bool :$inherit = True,         # perform property inheritance
     ) returns CSS;
 

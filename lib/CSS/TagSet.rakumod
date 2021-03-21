@@ -34,9 +34,9 @@ role CSS::TagSet {
 
     method internal-stylesheets($) { [] } # override me
     method root($doc) { $doc.root }
-    method stylesheet(LibXML::_ParentNode:D $doc --> CSS::Stylesheet) {
+    method stylesheet(LibXML::_ParentNode:D $doc, |c --> CSS::Stylesheet) {
         my @styles = @.internal-stylesheets($doc).map(*.textContent);
-        CSS::Stylesheet.parse(@styles.join: "\n");
+        CSS::Stylesheet.new(|c).parse(@styles.join: "\n");
     }
 
     # method to extract inline styling
