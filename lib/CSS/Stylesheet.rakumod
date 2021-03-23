@@ -11,9 +11,8 @@ has CSS::Module $.module = CSS::Module::CSS3.module; # associated CSS module
 has CSS::Ruleset @.rules;
 has List %.rule-media{CSS::Ruleset};
 has Str $.charset = 'utf-8';
-has %!opts;
 
-submethod TWEAK(:media($), :module($), :rules($), :rule-media($), *%!opts) { }
+submethod TWEAK(:media($), :module($), :rules($), :rule-media($)) { }
 
 multi method load(:stylesheet($_)!) {
     $.load(|$_) for .list;

@@ -1,5 +1,5 @@
 #| CSS Stylesheet processing
-unit class CSS:ver<0.0.7>;
+unit class CSS:ver<0.0.8>;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
 
@@ -236,6 +236,12 @@ Computes a style for an individual element, or XPath to an element.
 =item L<CSS::TagSet::Pango> - Implements Pango styling
 
 =item L<CSS::TagSet::TaggedPDF> - (*UNDER CONSTRUCTION*) Implements Taged PDF styling
+
+=head2 Utility Scripts
+
+=item `css-rewriter.raku [--/optimize] [--/terse] [--/warn] [--lax] [--color=names|values] <file> [<output>]`
+
+Rebuild a CSS Style-sheet with various checks and optimizations.
 
 =head2 See Also
 

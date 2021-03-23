@@ -38,7 +38,7 @@ Synopsis
 
     my LibXML::Document $doc .= parse: :$string, :html;
 
-    # define our media (this is the default media anyway)
+    # define a selection media
     my CSS::Media $media .= new: :type<screen>, :width(480px), :height(640px), :color;
 
     # Create a tag-set for XHTML specific loading of style-sheets and styling
@@ -75,6 +75,7 @@ Methods
         LibXML::Document :$doc!,       # document to be styled.
         CSS::Stylesheet :$stylesheet!, # stylesheet to apply
         CSS::TagSet :$tag-set,         # tag-specific styling
+        CSS::Media :$media,            # target media
         Bool :$inherit = True,         # perform property inheritance
     ) returns CSS;
 
@@ -105,6 +106,13 @@ Classes
   * [CSS::TagSet::Pango](https://css-raku.github.io/CSS-raku/TagSet/Pango) - Implements Pango styling
 
   * [CSS::TagSet::TaggedPDF](https://css-raku.github.io/CSS-raku/TagSet/TaggedPDF) - (*UNDER CONSTRUCTION*) Implements Taged PDF styling
+
+Utility Scripts
+---------------
+
+  * `css-rewriter.raku [--optimize] [--terse] [--warn] [--lax] [--color=names|values] <file> [<output>]`
+
+Rebuild a CSS Style-sheet with various checks and optimizations.
 
 See Also
 --------
