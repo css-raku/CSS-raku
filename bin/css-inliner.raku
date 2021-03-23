@@ -64,5 +64,5 @@ sub MAIN($file,            #= input XML/HTML file
     else {
         say $doc.Str;
     }
-    warn 'done';
+    note 'done';
 }

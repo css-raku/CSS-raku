@@ -9,9 +9,9 @@ use CSS::Writer;
 has CSS::Selectors $.selectors handles<xpath specificity>;
 has CSS::Properties $.properties;
 
-submethod TWEAK(:%ast! is copy) {
+submethod TWEAK(:%ast! is copy, |c) {
     %ast = $_ with %ast<ruleset>;
-    $!properties .= new: :ast($_)
+    $!properties .= new: :ast($_), |c
        given %ast<declarations>:delete;
     $!selectors .= new: :%ast;
 }

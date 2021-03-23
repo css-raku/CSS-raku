@@ -11,6 +11,9 @@ has CSS::Module $.module = CSS::Module::CSS3.module; # associated CSS module
 has CSS::Ruleset @.rules;
 has List %.rule-media{CSS::Ruleset};
 has Str $.charset = 'utf-8';
+has %!opts;
+
+submethod TWEAK(:media($), :module($), :rules($), :rule-media($), *%!opts) { }
 
 multi method load(:stylesheet($_)!) {
     $.load(|$_) for .list;
@@ -48,11 +51,14 @@ multi method load(:ruleset($ast)!, :$media-list) {
 
 multi method load($_) is default { warn .raku }
 
-method parse($css!, |c) {
+method parse($css!, Bool :$lax, Bool :$warn = True, |c) {
     my $obj = self;
     $_ .= new(|c) without $obj;
-    my $actions = $obj.module.actions.new;
+    my $actions = $obj.module.actions.new: :$lax;
     given $obj.module.parse($css, :rule<stylesheet>, :$actions) {
+        if $warn {
+            note $_ for $actions.warnings
+        }
         my $ast = .ast;
         $obj.load(|$ast);
     }
@@ -62,7 +68,7 @@ method parse($css!, |c) {
 method Str(|c) is also<gist> {
     my @chunks;
     my List $cur-media;
-    my CSS::Writer $writer .= new;
+    my CSS::Writer $writer .= new: |c;
 
     for @!rules -> $rule {
         my $indent = '';
@@ -79,7 +85,7 @@ method Str(|c) is also<gist> {
             @chunks.push: '}';
             $cur-media = Nil;
          }
-         @chunks.push: $indent ~ $rule.Str;
+         @chunks.push: $indent ~ $rule.Str: |c;
     }
     @chunks.push: '}' with $cur-media;
     @chunks.join: "\n";
