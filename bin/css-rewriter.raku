@@ -13,7 +13,8 @@ css-inliner.raku - tidy/optimise and rewrite CSS stylesheets
     --/terse          # enable multiline property lists
     --/warn           # disable warnings
     --color=names     # write color names (if possible)
-    --color=values    # write color values
+    --color=masks     # write colors as masks #77F
+    --color=values    # write colors as rgb(...) rgba(...)
     --lax             # allow any functions and units
 
 =head1 DESCRIPTION
@@ -26,9 +27,10 @@ module. The output XHTML should be visually identical to the input.
 =end pod
 
 use CSS::Stylesheet;
-subset ColorOptNames of Str where 'names'|'name'|'n';
-subset ColorOptValues of Str where 'values'|'value'|'v';
-subset ColorOpt of Str where ColorOptNames|ColorOptValues|Any:U;
+subset ColorOptMasks of Str:D  where /:i ^m[asks?]?/;
+subset ColorOptNames of Str:D  where /:i ^n[ames?]?/;
+subset ColorOptValues of Str:D where /:i ^v[alues?]?/;
+subset ColorOpt of Str where ColorOptMasks|ColorOptNames|ColorOptValues|Any:U;
 
 sub MAIN($file = '-',            #= Input CSS Stylesheet path ('-' for stdin)
          $output?,               #= Processed stylesheet path (stdout)
@@ -39,12 +41,13 @@ sub MAIN($file = '-',            #= Input CSS Stylesheet path ('-' for stdin)
          ColorOpt :$color,       #= Color output mode; 'names', or 'values'
         ) {
 
+    my Bool $color-masks  = True if $color ~~ ColorOptMasks;
     my Bool $color-names  = True if $color ~~ ColorOptNames;
     my Bool $color-values = True if $color ~~ ColorOptValues;
 
     given ($file eq '-' ?? $*IN !! $file.IO).slurp {
         my CSS::Stylesheet $style .= new.parse: $_, :$lax, :$warn;
-        my $out = $style.Str: :$optimize, :$terse, :$color-names, :$color-values; 
+        my $out = $style.Str: :$optimize, :$terse, :$color-names, :$color-masks, :$color-values;
 
         with $output {
             .IO.spurt: $out
