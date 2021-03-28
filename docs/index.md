@@ -88,6 +88,16 @@ In particular, the `CSS::TagSet :$tag-set` options specifies a tag-specific styl
 
 Computes a style for an individual element, or XPath to an element.
 
+### method prune
+
+    method prune(LibXML::Element $node? --> LibXML::Element)
+
+Removes all XML nodes with CSS property `display:none;`, giving an approximate representation of a CSS rendering tree.
+
+For example, for a XHTML tag-set the `head` element will be removed, along with any other elements that have had `display:none;' applied to them via inline CSS or CSS Selectors.
+
+By default, this method acts on the root element of the associated $.doc XML document.
+
 Classes
 -------
 
@@ -110,7 +120,7 @@ Classes
 Utility Scripts
 ---------------
 
-  * `css-rewriter.raku [--optimize] [--terse] [--warn] [--lax] [--color=names|values] <file> [<output>]`
+  * `css-rewriter.raku [--/optimize] [--/terse] [--/warn] [--lax] [--color=names|values] <file> [<output>]`
 
 Rebuild a CSS Style-sheet with various checks and optimizations.
 

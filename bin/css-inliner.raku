@@ -12,8 +12,9 @@ css-inliner.raku - flatten css rulesets to inline style attributes
     --type=[xhtml|pdf|pango] # specifiy document type
     --tags                   # include tags styling, e.g. <i style='font-weight:italic'>...</i>
     --inherit                # include style inherited from parent properties
+    --prune                  # prune to displayed elements
     --style=file             # load external stylesheet
-    --save-as=outfile.xml    # e.g. --save-as=myout-%02d.pdf
+    --save-as=outfile.xml
 
 =head1 DESCRIPTION
 
@@ -48,8 +49,9 @@ sub parse-stylesheet(Str $file, |c) {
 
 sub MAIN($file,                #= input XML/HTML file
          Str  :$save-as,       #= output file (default stdout)
-         Bool :$tags,          #= include tag styling (e.g. <i> => 'font-weight:italic')
          Str  :$style,         #= external stylesheet to apply
+         Bool :$prune,         #= prune to a rendering tree
+         Bool :$tags,          #= include tag styling (e.g. <i> => 'font-weight:italic')
          Str  :$type is copy,  #= tag-set type: xml, html, or pango
          Bool :$inherit,       #= inherit parent properties
         ) {
@@ -69,9 +71,10 @@ sub MAIN($file,                #= input XML/HTML file
     my CSS::Stylesheet $stylesheet = parse-stylesheet($_)
         with $style;
     my CSS $css .= new: :$doc, :$tag-set, :$tags, :$inherit, :$stylesheet;
+    $css.prune if $prune;
 
     style($css, $_)
-        with $tag-set.root($doc);
+        with $doc.root;
 
     with $save-as -> $file {
         $doc.write: :$file

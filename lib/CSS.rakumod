@@ -27,7 +27,9 @@ has Bool $.tags;
 has Bool $.inherit;
 
 # apply selectors (no inheritance)
-method !build(:$media = CSS::Media.new: :type<screen>, :width(480px), :height(640px), :color) {
+method !build(
+    CSS::Media :$media = CSS::Media.new: :type<screen>, :width(480px), :height(640px), :color
+) {
     $!doc.indexElements
         if $!doc.isa(LibXML::Document);
 
@@ -132,6 +134,32 @@ multi method style(Str:D $xpath) {
     self.style: $!doc.first($xpath);
 }
 
+method prune($node = $!doc.root) {
+    my Bool $unlink;
+
+    if !$!tags {
+        with $!tag-set {
+            $unlink = .display ~~ 'none'
+                with .tag-style($node.tag);
+        }
+    }
+
+    $unlink ||= .display ~~ 'none'
+        with self.style($node);
+
+    if $unlink {
+        my $node-path = $node.nodePath;
+        %!style{$node-path}:delete;
+        %!parent{$node-path}:delete;
+        $node.unlink
+    }
+    else {
+        self.prune($_)
+            for $node.elements;
+    }
+    $node;
+}
+
 method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
 
 =begin pod
@@ -218,6 +246,18 @@ In particular, the `CSS::TagSet :$tag-set` options specifies a tag-specific styl
 
 Computes a style for an individual element, or XPath to an element.
 
+=head3 method prune
+
+    method prune(LibXML::Element $node? --> LibXML::Element)
+
+Removes all XML nodes with CSS property `display:none;`, giving an
+approximate representation of a CSS rendering tree.
+
+For example, for a XHTML tag-set the `head` element will be removed,
+along with any other elements that have had `display:none;' applied
+to them via inline CSS or CSS Selectors.
+
+By default, this method acts on the root element of the associated $.doc XML document.
 
 =head2 Classes
 

@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Add prune() method.
 
 0.0.8  2021-03-23T13:48:50+13:00
     - Add script bin/css-rewriter.raku

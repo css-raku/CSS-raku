@@ -60,12 +60,11 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     }
 
     method internal-stylesheets($doc) {
-        with $doc.first('html/head/link[@link="stylesheet"]') {
+        with $doc.first('html/head/link[@link="stylesheet" or @rel="stylesheet"]') {
             warn "todo: this document has linked stylesheets - ignoring";
         }
         $doc.findnodes('html/head/style')
     }
-    method root($doc) { $doc.first('html/body') };
 
     # Builds CSS properties from an element from a tag name and attributes
     method tag-style(Str $tag, :$hidden, *%attrs) {
