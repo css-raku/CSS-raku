@@ -3,7 +3,16 @@ use Test;
 
 my $string = q:to<END>;
 <span foreground="purple">
+    <b>bold purple text</b>
+    <big>large text</big>
     <i><span>italic purple text</span></i>
+    <s>strike-though text</s>
+    <sub>subscript text</sub>
+    <sup>superscript text</sup>
+    <small>small text</small>
+    <tt>monospaced text</tt>
+    <u>underlined text</u>
+    <big><b><i><tt>big, bold, italic, mono</tt></i></b></big>
     <span rise="50" fallback="True">1. rise + fallback.</span>
     <span font_family="sans">2. font family</span>
     <span face="sans">3. face</span>
@@ -37,7 +46,17 @@ my $todo = 'CSS::Module.^ver >= v0.5.6'
 
 is $tag-set.tag-style('i'), 'font-style:italic;', '.tag-style()';
 
+is $css.style('/span/b'), 'color:purple; font-weight:bold;', '<b/>';
+is $css.style('/span/big'), 'color:purple; font-size:larger;', '<big/>';
 is $css.style('/span/i'), 'color:purple; font-style:italic;', '<i/>';
+is $css.style('/span/s'), 'color:purple; text-decoration:line-through;', '<s/>';
+is $css.style('/span/sub'), 'color:purple; font-size:0.83em; vertical-align:sub;', '<sub/>';
+is $css.style('/span/sup'), 'color:purple; font-size:0.83em; vertical-align:super;', '<sup/>';
+is $css.style('/span/small'), 'color:purple; font-size:smaller;', '<small/>';
+is $css.style('/span/tt'), 'color:purple; font-family:monospace;', '<tt/>';
+is $css.style('/span/u'), 'color:purple; text-decoration:underline;', '<u/>';
+is $css.style('/span/big/b/i/tt'), 'color:purple; font:italic 700 12pt monospace;', '<big/><b/><i/><tt/>';
+
 is $css.style('/span/i/span'), 'color:purple; font-style:italic;', '<i><span/></i>';
 
 is $css.style('/span/span[1]'), '-pango-fallback:1; -pango-rise:50; color:purple;','span fallback and rise';
