@@ -12,20 +12,20 @@ my $string = q:to<END>;
     <small>small text</small>
     <tt>monospaced text</tt>
     <u>underlined text</u>
-    <big><b><i><tt>big, bold, italic, mono</tt></i></b></big>
+    <big><b><i><tt>big, bold, italic, mono text</tt></i></b></big>
     <span rise="50" fallback="True">1. rise + fallback.</span>
-    <span font_family="sans">2. font family</span>
-    <span face="sans">3. face</span>
-    <span size="x-small">4. size, named</span>
-    <span size="9500">5. size, numeric</span>
-    <span variant="smallcaps">6. variant</span>
-    <span variant="normal" stretch="condensed">7. stretch</span>
+    <span font_family="sans">2. font family sans</span>
+    <span face="sans">3. face sans</span>
+    <span size="x-small">4. size, x-small</span>
+    <span size="9500">5. size 9500 (9.5.pt)</span>
+    <span variant="smallcaps">6. SmallCaps Variant</span>
+    <span variant="normal" stretch="condensed">7.  condensed</span>
     <span variant="gunk">8. invalid variant</span>
-    <span foreground="#f00">9. foreground</span>
-    <span background="#0f0">10. background</span>
-    <span rise="50">11. rise</span>
-    <span strikethrough="true">12. strikethrough="true"</span>
-    <span strikethrough="false">13. strikethrough="false"</span>
+    <span foreground="#f00">9. foreground red</span>
+    <span background="#0f0">10. background green</span>
+    <span rise="50">11. text rise</span>
+    <span strikethrough="true">12. with strikethrough="true"</span>
+    <span strikethrough="false">13. without strikethrough="false"</span>
 </span>
 END
 
