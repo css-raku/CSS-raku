@@ -11,6 +11,7 @@ class CSS::TagSet::XHTML does CSS::TagSet {
 
     has CSS::Properties %!props;
     has SetHash %!link-pseudo;
+    has CSS::Module $!module;
 
     constant %Tags is export(:Tags) = load-css-tagset(%?RESOURCES<xhtml.css>.absolute);
 
@@ -18,39 +19,62 @@ class CSS::TagSet::XHTML does CSS::TagSet {
 
     method !base-property(Str $prop) {
         %!props{$prop} //= do with %Tags{$prop} {
-            CSS::Properties.new(declarations => $_);
+            CSS::Properties.new(:$!module, declarations => $_);
         }
         else {
-            CSS::Properties.new;
+            CSS::Properties.new(:$!module);
         }
     }
 
     # mapping of HTML attributes to CSS properties
     constant %AttrProp = %(
+        align         => '-xhtml-align',
         background    => 'background-image',
         bgcolor       => 'background-color',
         border        => 'border',
         color         => 'color',
+        colspan       => '-xhtml-colspan',
         dir           => 'direction',
         height        => 'height',
+        rowspan       => '-xhtml-rowspan',
     );
 
     # mapping of HTML attributes to containing tags
     constant %AttrTags = %(
-        align            => 'applet'|'caption'|'col'|'colgroup'|'hr'|'iframe'|'img'|'table'|'tbody'|'td'|'tfoot'|'th'|'thead'|'tr',
-        background       => 'body'|'table'|'td'|'th', # obsolete in HTML5
-        bgcolor          => 'body'|'col'|'colgroup'|'marquee'|'table'|'tbody'|'tfoot'|'td'|'th'|'tr',  # obsolete in HTML5
-        border           => 'img'|'object'|'table',   # obsolete in HTML5
-        color            => 'basefont'|'font'|'hr',   # obsolete in HTML5
-        bdo              => 'bidi-override',
-        dir              => Str, # applicable to all
-        'height'|'width' => 'canvas'|'embed'|'iframe'|'img'|'input'|'object'|'video',
-        # hidden
+        align               => 'applet'|'caption'|'col'|'colgroup'|'hr'|'iframe'|'img'|'table'|'tbody'|'td'|'tfoot'|'th'|'thead'|'tr',
+        background          => 'body'|'table'|'td'|'th', # obsolete in HTML5
+        bgcolor             => 'body'|'col'|'colgroup'|'marquee'|'table'|'tbody'|'tfoot'|'td'|'th'|'tr',  # obsolete in HTML5
+        border              => 'img'|'object'|'table',   # obsolete in HTML5
+        color               => 'basefont'|'font'|'hr',   # obsolete in HTML5
+        bdo                 => 'bidi-override',
+        dir                 => Str, # applicable to all
+        'height'|'width'    => 'canvas'|'embed'|'iframe'|'img'|'input'|'object'|'video',
+        'colspan'|'rowspan' => 'td'|'th',
     );
 
-    constant %PropAlias = %(
-        '-xhtml-align' => 'text-align',
-    );
+    method init(CSS::Module:D :$!module!, LibXML::XPath::Context :$xpath-context!) {
+        $xpath-context.registerFunction(
+            'link-pseudo',
+            -> $name, $node-set, *@args {
+                my LibXML::Element $elem = $node-set.first;
+                ? ($elem.tag ~~ 'a'|'link'|'area' && self.link-pseudo($name, $elem));
+            });
+
+        my %CustomProps = %(
+            '-xhtml-align' => %(
+                :like<text-align>,
+            ),
+            '-xhtml-colspan'|'-xhtml-rowspan' => %(
+                :synopsis<integer>,
+                :default(1),
+                :coerce(-> Int() $num { :$num }),
+            ),
+        );
+
+        for %CustomProps.pairs {
+            $!module.extend(:name(.key), |.value);
+        }
+    }
 
     # any additional CSS styling based on HTML attributes
     multi sub tweak-style('bdo', $css) {
@@ -66,30 +90,24 @@ class CSS::TagSet::XHTML does CSS::TagSet {
         $doc.findnodes('html/head/style')
     }
 
+    # method to extract inline styling
+    method inline-style(Str $, Str :$style) {
+        CSS::Properties.new(:$!module, :$style);
+    }
+
     # Builds CSS properties from an element from a tag name and attributes
     method tag-style(Str $tag, :$hidden, *%attrs) {
         my CSS::Properties $css = self!base-property($tag).clone;
         $css.display = :keyw<none> with $hidden;
 
         for %attrs.keys.grep({%AttrTags{$_}:exists && $tag ~~ %AttrTags{$_}}) {
-            my $name = %AttrProp{$_} // '-xhtml-' ~ $_;
-            with %PropAlias{$name} -> $like {
-                $css.alias(:$name, :$like);
-            }
+            my $name = %AttrProp{$_} // $_;
             $css."$name"() = %attrs{$_};
         }
         tweak-style($tag, $css);
         $css;
     }
 
-    method init( LibXML::XPath::Context :$xpath-context!) {
-        $xpath-context.registerFunction(
-            'link-pseudo',
-            -> $name, $node-set, *@args {
-                my LibXML::Element $elem = $node-set.first;
-                ? ($elem.tag ~~ 'a'|'link'|'area' && self.link-pseudo($name, $elem));
-            });
-    }
     multi method link-pseudo(Str() $type, LibXML::Element:D $node) is rw {
         $.link-pseudo($type, $node.nodePath);
     }

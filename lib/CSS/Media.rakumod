@@ -1,5 +1,5 @@
 unit class CSS::Media;
-use CSS::Properties;
+use CSS::Properties :&from-ast;
 use CSS::Units :Resolution, :Length, :dpi;
 use CSS::Module::CSS3;
 
@@ -133,7 +133,7 @@ multi method have($prop, $v) is default {
 
 multi method query(:property(%)! ( :$ident!, :$expr )) {
     with $expr {
-        $.have($ident, CSS::Properties.from-ast($_));
+        $.have($ident, from-ast($_));
     }
     else { 
         $.have($ident);

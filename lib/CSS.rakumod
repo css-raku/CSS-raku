@@ -1,5 +1,5 @@
 #| CSS Stylesheet processing
-unit class CSS:ver<0.0.8>;
+unit class CSS:ver<0.0.9>;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
 
@@ -11,6 +11,9 @@ use CSS::TagSet;
 use CSS::TagSet::XHTML;
 use CSS::Units :px;
 
+use CSS::Module;
+use CSS::Module::CSS3;
+
 use LibXML::Document;
 use LibXML::Element;
 use LibXML::_ParentNode;
@@ -20,6 +23,7 @@ has LibXML::_ParentNode:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
 method stylesheet handles <Str gist> { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
+has CSS::Module:D $.module = CSS::Module::CSS3.module;
 has CSS::Properties %.style;        # per node-path styling, including tags
 has CSS::Properties %!parent;
 has CSS::TagSet $.tag-set;
@@ -40,7 +44,7 @@ method !build(
     $!stylesheet //= $!tag-set.stylesheet($!doc, :$media);
 
     my LibXML::XPath::Context $xpath-context .= new: :$!doc;
-    $!tag-set.init(:$xpath-context);
+    $!tag-set.init(:$!module, :$xpath-context);
 
     # evaluate selectors. associate rule-sets with nodes by path
     for $!stylesheet.rules -> CSS::Ruleset $rule {
@@ -68,15 +72,15 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
         unless $!doc.isSameNode($elem.getOwner);
 
     # merge in inline styles
-    my CSS::Properties $style = do with $!tag-set {
+    my CSS::Properties $props = do with $!tag-set {
         my %attrs = $elem.properties.map: { .tag => .value };
         .inline-style($elem.tag, |%attrs);
     }
 
-    $_ .= new() without $style;
+    $_ .= new(:$!module) without $props;
 
-    my %seen  = $style.properties.map(* => 1);
-    my %vital = $style.important;
+    my %seen  = $props.properties.map(* => 1);
+    my %vital = $props.important;
 
     # Apply CSS Selector styles. Lower precedence than inline rules
     my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map: *.properties
@@ -85,7 +89,7 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
     for @prop-sets -> CSS::Properties $prop-set {
         my %important = $prop-set.important;
         for $prop-set.properties {
-            $style."$_"() = $prop-set."$_"()
+            $props."$_"() = $prop-set."$_"()
                 if !%seen{$_}++ || (%important{$_} && !%vital{$_});
         }
     }
@@ -98,7 +102,7 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
         }
     }
 
-    $style;
+    $props;
 }
 
 # styling, including any tag-specific styling

@@ -6,7 +6,7 @@
   ],
   "depends": [
     "CSS::Module:ver<0.5.3+>",
-    "CSS::Properties:ver<0.6.2+>",
+    "CSS::Properties:ver<0.6.3+>",
     "CSS::Selector::To::XPath",
     "LibXML:ver<0.5.14+>",
     "Method::Also"
@@ -40,5 +40,5 @@
   ],
   "test-depends": [
   ],
-  "version": "0.0.8"
+  "version": "0.0.9"
 }
