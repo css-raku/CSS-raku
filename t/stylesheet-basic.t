@@ -37,8 +37,8 @@ my CSS::Media $media .= new: :type<screen>, :width(480px), :height(640px), :colo
 my CSS::Stylesheet $stylesheet .= new(:$media).parse($css);
 is $stylesheet.media, 'screen';
 is $stylesheet.rules[0].xpath, '//html | //body';
-is $stylesheet.rules[0].properties, 'background-color:white; border-width:0; color:black;';
-is $stylesheet.rules[0].Str, 'html, body { background-color:white; border-width:0; color:black; }';
+is $stylesheet.rules[0].properties, 'background:white; border:0; color:black;';
+is $stylesheet.rules[0].Str, 'html, body { background:white; border:0; color:black; }';
 is $stylesheet.rules[1].properties, "font:em Arial, Helvetica, sans-serif;";
 is $stylesheet.rules.[3].xpath, '//h1';
 is $stylesheet.rules.tail.xpath, "//a[link-pseudo('active', .)]";

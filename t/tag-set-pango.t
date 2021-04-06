@@ -68,7 +68,7 @@ is $css.style('/span/span[5]'), 'color:purple; font-size:9.5pt;', 'span size, nu
 is $css.style('/span/span[6]'), 'color:purple; font-variant:small-caps;', 'span variant';
 is $css.style('/span/span[7]'), 'color:purple; font-stretch:condensed;', 'span stretch';
 is $css.style('/span/span[9]'), 'color:red;', 'span foreground';
-is $css.style('/span/span[10]'), 'background-color:lime; color:purple;', 'span background';
+is $css.style('/span/span[10]'), 'background:lime; color:purple;', 'span background';
 is $css.style('/span/span[11]'), '-pango-rise:50; color:purple;', 'span rise';
 todo $_  with $todo;
 is $css.style('/span/span[12]'), 'color:purple; text-decoration:line-through;', 'strikethrough="true"';

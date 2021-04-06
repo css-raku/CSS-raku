@@ -18,12 +18,7 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     method declarations { %Tags }
 
     method !base-property(Str $prop) {
-        %!props{$prop} //= do with %Tags{$prop} {
-            CSS::Properties.new(:$!module, declarations => $_);
-        }
-        else {
-            CSS::Properties.new(:$!module);
-        }
+        %!props{$prop} //= CSS::Properties.new(:$!module, declarations => %Tags{$prop});
     }
 
     # mapping of HTML attributes to CSS properties

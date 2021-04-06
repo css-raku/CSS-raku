@@ -19,7 +19,7 @@ END
 my LibXML::Document::XML $doc .= parse: :$string;
 my CSS $css .= new: :$doc, :$tag-set, :inherit;
 
-is $css.style('P'), 'background-color:red; border-style:dotted; display:block; font-size:15pt; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;', '<P/>';
+is $css.style('P'), 'background:red; border:dotted; display:block; font-size:15pt; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;', '<P/>';
 
 my $frags = q:to<END>;
 <H1>NAME</H1>

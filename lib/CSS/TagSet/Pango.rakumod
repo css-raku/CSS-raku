@@ -17,12 +17,7 @@ class CSS::TagSet::Pango does CSS::TagSet {
     method declarations { %Tags }
 
     method !base-property(Str $prop) {
-        %!props{$prop} //= do with %Tags{$prop} {
-            CSS::Properties.new(:$!module, declarations => $_);
-        }
-        else {
-            CSS::Properties.new: :$!module;
-        }
+        %!props{$prop} //= CSS::Properties.new(:$!module, declarations => %Tags{$prop});
     }
 
     # mapping of Pango attributes to CSS properties
@@ -50,8 +45,8 @@ class CSS::TagSet::Pango does CSS::TagSet {
             ),
             '-pango-fallback' => %(
                 :synopsis<True>,
-                :default(0),
-                :coerce(-> Str:D() $att { my $num = ($att eq 'True') ?? 1 !! 0; :$num }),
+                :default<False>,
+                :coerce(-> Str:D $att { my $num = ($att eq 'True') ?? 1 !! 0; :$num }),
             ),
             'font-size' => %(
                 # convert Pango `size` attribute to a standard CSS `font-size` property
@@ -73,7 +68,7 @@ class CSS::TagSet::Pango does CSS::TagSet {
                 :like<font-variant>,
                 :synopsis("normal | smallcaps"),
                 :coerce(
-                    -> Str:D() $att {
+                    -> Str:D $att {
                         my $keyw = $att.lc;
                         $keyw ~~ s/smallcaps/small-caps/;
                         :$keyw
@@ -84,7 +79,7 @@ class CSS::TagSet::Pango does CSS::TagSet {
                 :like<text-decoration>,
                 :synopsis("true | false"),
                 :coerce(
-                    -> Str:D() $_ {
+                    -> Str:D $_ {
                         :keyw(
                             /:i true/ ?? 'line-through' !! 'none'
                         )
