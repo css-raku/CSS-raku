@@ -9,15 +9,30 @@ class CSS::TagSet::TaggedPDF does CSS::TagSet {
     use LibXML::Element;
     use LibXML::XPath::Context;
 
+    has CSS::Module $!module;
     has CSS::Properties %!props;
-    has SetHash %!link-pseudo;
 
     constant %Tags is export(:PDFTags) = load-css-tagset(%?RESOURCES<tagged-pdf.css>.absolute, :xml);
 
     method declarations { %Tags }
 
     method !base-property(Str $prop) {
-        %!props{$prop} //= CSS::Properties.new: declarations => %Tags{$prop};
+        %!props{$prop} //= CSS::Properties.new: :$!module, declarations => %Tags{$prop};
+    }
+
+    method init(CSS::Module:D :$!module!,) {
+        my %CustomProps = %(
+            '-pdf-space-before'|'-pdf-space-after'|'-pdf-start-indent'|'-pdf-end-indent' => %(
+                :synopsis<number>,
+                :default(0e0),
+                :coerce(-> Num:D() $num { :$num }),
+            ),
+        );
+
+        for %CustomProps.pairs {
+            $!module.extend(:name(.key), |.value);
+        }
+
     }
 
     sub snake-case($s) {
@@ -38,21 +53,29 @@ class CSS::TagSet::TaggedPDF does CSS::TagSet {
             snake-case($prop) => [ $s.split(' ')>>.lc ];
         },
         'BorderThickness'|'Padding' => -> Str $prop, Str $s {
-            snake-case($prop) => [ $s.split(' ').map(* ~ 'pt') ];
+            snake-case($prop) => [ $s.split(' ').map: -> $pt { :$pt } ];
         },
-        'TextIdent'|'Width'|'Height'|'LineHeight' => -> Str $prop, Str $s {
+        'TextIdent'|'Width'|'Height'|'LineHeight' => -> Str $prop, Num() $pt {
             # aproximate
-            snake-case($prop) => $s ~ 'pt'; # user space units??
+            snake-case($prop) => :$pt;
         },
         'TextAlign' => -> Str $prop, Str $s {
             snake-case($prop) => $s.lc;
         },
         'TextDecorationType' => -> Str $prop, Str $s {
             text-decoration => $s.lc;
-        }
-
-        # Todo: SpaceBefore SpaceAfter StartIndent EndIndent BBox BlockAlign InlineAlign TBorderStyle TPadding TextDecorationColor TextDecorationThickness RubyAlign RubyPosition GlyphOrientationVertical
+        },
+        # Custom properties which don't map well to CSS standard propeties
+        'SpaceBefore'|'SpaceAfter'|'StartIndent'|'EndIndent' => -> Str $prop, Num() $pt {
+            '-pdf-' ~ snake-case($prop) => :$pt;
+        },
+        # Todo: BBox BlockAlign InlineAlign TBorderStyle TPadding TextDecorationColor TextDecorationThickness RubyAlign RubyPosition GlyphOrientationVertical
     );
+
+    # method to extract inline styling
+    method inline-style(Str $, Str :$style) {
+        CSS::Properties.new(:$!module, :$style);
+    }
 
     my subset HashMap of Pair where .value ~~ Associative;
     # Builds CSS properties from an element from a tag name and attributes
