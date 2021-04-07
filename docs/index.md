@@ -124,6 +124,10 @@ Utility Scripts
 
 Rebuild a CSS Style-sheet with various checks and optimizations.
 
+  * `css-inliner.raku input.xml [output.xml] --style=file.css --prune --tags --type=html|pango|pdf --inherit
+
+Apply internal or external stylesheets to per-element 'style' attributes
+
 See Also
 --------
 

@@ -6,7 +6,7 @@ css-inliner.raku - flatten css rulesets to inline style attributes
 
 =head1 SYNOPSIS
 
- css-inliner.raku [options] --save-as=outfile.xml infile.xml
+ css-inliner.raku [options] infile.xml [outfile.xml]
 
  Options:
     --type=[xhtml|pdf|pango] # specifiy document type
@@ -14,11 +14,10 @@ css-inliner.raku - flatten css rulesets to inline style attributes
     --inherit                # include style inherited from parent properties
     --prune                  # prune to displayed elements
     --style=file             # load external stylesheet
-    --save-as=outfile.xml
 
 =head1 DESCRIPTION
 
-This applies CSS selectors and flattens them to per-element explicit style attributes.
+This script evaluates CSS selectors, which are removed and flattened to per-element `style` attributes.
 
 This script was written to help with visual verification of the Raku CSS
 module. The output XHTML should be visually identical to the input.
@@ -46,13 +45,12 @@ sub parse-stylesheet(Str $file, |c) {
     CSS::Stylesheet.parse($io.slurp, |c);
 }
 
-
 sub MAIN($file,                #= input XML/HTML file
-         Str  :$save-as,       #= output file (default stdout)
+         $output?,             #= Processed stylesheet path (stdout)
          Str  :$style,         #= external stylesheet to apply
          Bool :$prune,         #= prune to a rendering tree
          Bool :$tags,          #= include tag styling (e.g. <i> => 'font-weight:italic')
-         Str  :$type is copy,  #= tag-set type: xml, html, or pango
+         Str  :$type is copy,  #= tag-set type: html, pango, or pdf
          Bool :$inherit,       #= inherit parent properties
         ) {
     $type //= 'html' if $file ~~ /:i '.'x?html$/;
@@ -65,6 +63,9 @@ sub MAIN($file,                #= input XML/HTML file
             CSS::TagSet.new;
         }
     }
+    else {
+        CSS::TagSet.new;
+    }
 
     my Bool $html = $tag-set.isa(CSS::TagSet::XHTML);
     my LibXML::Document $doc .= parse: :$file, :$html;
@@ -76,7 +77,7 @@ sub MAIN($file,                #= input XML/HTML file
     style($css, $_)
         with $doc.root;
 
-    with $save-as -> $file {
+    with $output -> $file {
         $doc.write: :$file
     }
     else {

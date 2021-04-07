@@ -287,6 +287,10 @@ By default, this method acts on the root element of the associated $.doc XML doc
 
 Rebuild a CSS Style-sheet with various checks and optimizations.
 
+=item `css-inliner.raku input.xml [output.xml] --style=file.css --prune --tags --type=html|pango|pdf --inherit
+
+Apply internal or external stylesheets to per-element 'style' attributes
+
 =head2 See Also
 
 =item L<CSS::Module> - CSS Module Raku module
