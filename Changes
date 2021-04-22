@@ -1,6 +1,8 @@
 {{$NEXT}}
     - Tweak/document css-inliner.raku script
-    - More TaggedPDF development
+    - Rename script css-rewriter.raku -> css-tidy.raku
+    - More Tagged PDF development
+    - Fix serialization of default values in rule-sets #4
 
 0.0.11  2021-04-07T11:46:08+12:00
     - Adjust tests for CSS::Properties v0.6.5+

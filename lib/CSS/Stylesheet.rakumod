@@ -11,11 +11,10 @@ has CSS::Module $.module = CSS::Module::CSS3.module; # associated CSS module
 has CSS::Ruleset @.rules;
 has List %.rule-media{CSS::Ruleset};
 has Str $.charset = 'utf-8';
-
-submethod TWEAK(:media($), :module($), :rules($), :rule-media($)) { }
+has Exception @.warnings;
 
 multi method load(:stylesheet($_)!) {
-    $.load(|$_) for .list;
+    $.load: |$_ for .list;
 }
 
 multi method at-rule('charset', :string($_)!) {
@@ -39,7 +38,7 @@ multi method at-rule($rule, |c) is default {
 
 multi method load(:at-rule($_)!) {
     my $type = .<at-keyw>:delete;
-    $.at-rule($type, |$_);
+    $.at-rule: $type, |$_;
 }
 
 multi method load(:ruleset($ast)!, :$media-list) {
@@ -55,11 +54,11 @@ method parse($css!, Bool :$lax, Bool :$warn = True, |c) {
     $_ .= new(|c) without $obj;
     my $actions = $obj.module.actions.new: :$lax;
     given $obj.module.parse($css, :rule<stylesheet>, :$actions) {
+        $obj.warnings.append: $actions.warnings;
         if $warn {
-            note $_ for $actions.warnings
+            note $_ for $obj.warnings;
         }
-        my $ast = .ast;
-        $obj.load(|$ast);
+        $obj.load: |.ast;
     }
     $obj;
 }
@@ -71,6 +70,7 @@ method Str(|c) is also<gist> {
 
     for @!rules -> $rule {
         my $indent = '';
+
         with %!rule-media{$rule} -> $media-list {
             $indent = '';
             unless $media-list === $cur-media {
@@ -84,9 +84,12 @@ method Str(|c) is also<gist> {
             @chunks.push: '}';
             $cur-media = Nil;
          }
+
          @chunks.push: $indent ~ $rule.Str: |c;
     }
+
     @chunks.push: '}' with $cur-media;
+
     @chunks.join: "\n";
 }
 

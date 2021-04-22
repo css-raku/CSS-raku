@@ -30,7 +30,7 @@ multi method COERCE(Str:D $css --> CSS::Ruleset ) { self.parse: :$css; }
 
 method ast(|c) {
     my %ast = $!selectors.ast;
-    %ast ,= declarations => $!properties.ast(|c)<declaration-list>;
+    %ast<declarations> = $!properties.ast(:keep-defaults, |c)<declaration-list>;
     :ruleset(%ast);
 }
 
