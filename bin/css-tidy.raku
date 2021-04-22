@@ -2,15 +2,15 @@
 
 =head1 NAME
 
-css-inliner.raku - tidy/optimise and rewrite CSS stylesheets
+css-tidy.raku - tidy/optimise and rewrite CSS stylesheets
 
 =head1 SYNOPSIS
 
- css-writer.raku infile.css [outfile.css] 
+ css-tidy.raku infile.css [outfile.css]
 
  Options:
-    --/optimize       # disable optimizations
-    --/terse          # enable multiline property lists
+    --atomize         # break into component properties
+    --pretty          # enable multiline property lists
     --/warn           # disable warnings
     --color=names     # write color names (if possible)
     --color=masks     # write colors as masks #77F
@@ -34,8 +34,8 @@ subset ColorOpt of Str where ColorOptMasks|ColorOptNames|ColorOptValues|Any:U;
 
 sub MAIN($file = '-',            #= Input CSS Stylesheet path ('-' for stdin)
          $output?,               #= Processed stylesheet path (stdout)
-         Bool :$optimize=True,   #= Optimize CSS properties
-         Bool :$terse=True,      #= Single line property output
+         Bool :$atomize      ,   #= Break into component properties
+         Bool :$pretty,          #= Multi line property output
          Bool :$warn = True,     #= Output warnings
          Bool :$lax,             #= Allow any functions and units
          ColorOpt :$color,       #= Color output mode; 'names', or 'values'
@@ -44,6 +44,8 @@ sub MAIN($file = '-',            #= Input CSS Stylesheet path ('-' for stdin)
     my Bool $color-masks  = True if $color ~~ ColorOptMasks;
     my Bool $color-names  = True if $color ~~ ColorOptNames;
     my Bool $color-values = True if $color ~~ ColorOptValues;
+    my Bool $terse = !$pretty;
+    my Bool $optimize = !$atomize;
 
     given ($file eq '-' ?? $*IN !! $file.IO).slurp {
         my CSS::Stylesheet $style .= new.parse: $_, :$lax, :$warn;
