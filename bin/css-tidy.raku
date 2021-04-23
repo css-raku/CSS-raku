@@ -27,10 +27,7 @@ module. The output XHTML should be visually identical to the input.
 =end pod
 
 use CSS::Stylesheet;
-subset ColorOptMasks of Str:D  where /:i ^m[asks?]?/;
-subset ColorOptNames of Str:D  where /:i ^n[ames?]?/;
-subset ColorOptValues of Str:D where /:i ^v[alues?]?/;
-subset ColorOpt of Str where ColorOptMasks|ColorOptNames|ColorOptValues|Any:U;
+subset ColorOpt of Str where 'masks'|'names'|'values'|Str:U;
 
 sub MAIN($file = '-',            #= Input CSS Stylesheet path ('-' for stdin)
          $output?,               #= Processed stylesheet path (stdout)
@@ -38,18 +35,15 @@ sub MAIN($file = '-',            #= Input CSS Stylesheet path ('-' for stdin)
          Bool :$pretty,          #= Multi line property output
          Bool :$warn = True,     #= Output warnings
          Bool :$lax,             #= Allow any functions and units
-         ColorOpt :$color,       #= Color output mode; 'names', or 'values'
+         ColorOpt :$color,       #= Color output mode; 'names', 'masks', or 'values'
         ) {
 
-    my Bool $color-masks  = True if $color ~~ ColorOptMasks;
-    my Bool $color-names  = True if $color ~~ ColorOptNames;
-    my Bool $color-values = True if $color ~~ ColorOptValues;
-    my Bool $terse = !$pretty;
-    my Bool $optimize = !$atomize;
+    my %opt = :terse(!$pretty), :optimize(!$atomize);
+    %opt{'color-' ~ $_} = True with $color;
 
     given ($file eq '-' ?? $*IN !! $file.IO).slurp {
         my CSS::Stylesheet $style .= new.parse: $_, :$lax, :$warn;
-        my $out = $style.Str: :$optimize, :$terse, :$color-names, :$color-masks, :$color-values;
+        my $out = $style.Str: |%opt;
 
         with $output {
             .IO.spurt: $out

@@ -34,9 +34,11 @@ method ast(|c) {
     :ruleset(%ast);
 }
 
-method Str(:$optimize = True, :$terse = True, :$color-names=True, |c --> Str) {
+method Str(:$optimize = True, :$terse = True, *%opt --> Str) {
     my %ast = $.ast: :$optimize;
-    my CSS::Writer $writer .= new: :$terse, :$color-names, |c;
+    %opt<color-names> //= True
+        unless %opt<color-masks> || %opt<color-values>;
+    my CSS::Writer $writer .= new: :$terse, |%opt;
     $writer.write(%ast);
 }
 
