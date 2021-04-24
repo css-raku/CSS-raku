@@ -1,6 +1,6 @@
 use v6;
 use Test;
-plan 10;
+plan 11;
 use CSS;
 use CSS::TagSet::XHTML;
 use CSS::Units :px;
@@ -50,11 +50,31 @@ is $css.style('/html/body/p'), 'color:red; display:none; font-size:12pt; margin-
 
 is-deeply $css.Str.lines, (
     'body { background:powderblue; font-size:12pt; }',
-    '@media screen {',
-    '  h1:first-child { color:blue; }',
-    '}',
+    '@media screen { h1:first-child { color:blue; }}',
     'p { color:red; }',
     'div { font-size:10pt; }'
 ), 'filtered lines';
+
+todo "issue #5";
+is-deeply $css.Str.lines(:!terse), (
+    'body {',
+    '  background:powderblue;',
+    '  font-size:12pt;',
+    '}',
+    '',
+    '@media screen {',
+    '  h1:first-child {',
+    '    color:blue;',
+    '  }',
+    '}',
+    '',
+    'p {',
+    '  color:red;',
+    '}',
+    '',
+    'div {',
+    '  font-size:10pt;',
+    '}'
+), 'pretty lines';
 
 done-testing();

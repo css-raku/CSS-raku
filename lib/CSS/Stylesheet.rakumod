@@ -63,34 +63,38 @@ method parse($css!, Bool :$lax, Bool :$warn = True, |c) {
     $obj;
 }
 
-method Str(|c) is also<gist> {
-    my @chunks;
-    my List $cur-media;
-    my CSS::Writer $writer .= new: |c;
+method ast(|c) {
+    my @stylesheet;
+    my %at-rules{CSS::Ruleset};
 
     for @!rules -> $rule {
-        my $indent = '';
+        my $rule-ast = $rule.ast(|c);
 
         with %!rule-media{$rule} -> $media-list {
-            $indent = '';
-            unless $media-list === $cur-media {
-                my $at-header = $writer.write-nodes: (:at-keyw<media>), (:$media-list);
-                @chunks.push: $at-header ~ ' {';
-                $cur-media = $media-list;
-                $indent = '  ';
+            my Hash $at-rule;
+            with %at-rules{$rule} {
+                $at-rule = .<at-rule>;
             }
+            else {
+                $at-rule = %(:at-keyw<media>, :$media-list, :rule-list[]);
+                %at-rules{$rule} = $at-rule;
+                @stylesheet.push: (:$at-rule);
+            }
+            $at-rule<rule-list>.push: $rule-ast;
         }
-        elsif $cur-media {
-            @chunks.push: '}';
-            $cur-media = Nil;
-         }
-
-         @chunks.push: $indent ~ $rule.Str: |c;
+        else {
+            @stylesheet.push: $rule-ast;
+        }
     }
+    :@stylesheet;
+}
 
-    @chunks.push: '}' with $cur-media;
-
-    @chunks.join: "\n";
+method Str($optimize = True, Bool :$terse = True, *%opt) is also<gist> {
+    my Pair $ast = self.ast: :$optimize;
+    %opt<color-names> //= True
+        unless %opt<color-masks> || %opt<color-values>;
+    my CSS::Writer $writer .= new: :$terse, |%opt;
+    $writer.write: $ast;
 }
 
 =begin pod
