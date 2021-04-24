@@ -34,12 +34,12 @@ method ast(|c) {
     :ruleset(%ast);
 }
 
-method Str(:$optimize = True, :$terse = True, Str :$indent = '', *%opt --> Str) {
+method Str(:$optimize = True, :$terse = True, *%opt --> Str) {
     my %ast = $.ast: :$optimize;
     %opt<color-names> //= True
         unless %opt<color-masks> || %opt<color-values>;
-    my CSS::Writer $writer .= new: :$terse, :$indent, |%opt;
-    $indent ~ $writer.write(%ast);
+    my CSS::Writer $writer .= new: :$terse, |%opt;
+    $writer.write(%ast);
 }
 
 =begin pod
