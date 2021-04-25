@@ -55,25 +55,24 @@ is-deeply $css.Str.lines, (
     'div { font-size:10pt; }'
 ), 'filtered lines';
 
-todo "issue #5";
 is-deeply $css.Str(:!terse).lines, (
     'body {',
-    '  background:powderblue;',
-    '  font-size:12pt;',
+    '  background: powderblue;',
+    '  font-size: 12pt;',
     '}',
     '',
     '@media screen {',
     '  h1:first-child {',
-    '    color:blue;',
+    '    color: blue;',
     '  }',
     '}',
     '',
     'p {',
-    '  color:red;',
+    '  color: red;',
     '}',
     '',
     'div {',
-    '  font-size:10pt;',
+    '  font-size: 10pt;',
     '}'
 ), 'pretty lines';
 
