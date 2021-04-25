@@ -65,22 +65,20 @@ method parse($css!, Bool :$lax, Bool :$warn = True, |c) {
 
 method ast(|c) {
     my @stylesheet;
-    my %at-rules{CSS::Ruleset};
+    my %at-rules{List};
 
     for @!rules -> $rule {
         my $rule-ast = $rule.ast(|c);
 
         with %!rule-media{$rule} -> $media-list {
-            my Hash $at-rule;
-            with %at-rules{$rule} {
-                $at-rule = .<at-rule>;
-            }
-            else {
-                $at-rule = %(:at-keyw<media>, :$media-list, :rule-list[]);
-                %at-rules{$rule} = $at-rule;
+            given %at-rules{$media-list} //= do {
+               my $at-rule = %(:at-keyw<media>, :$media-list, :rule-list[]);
+                %at-rules{$media-list} = $at-rule;
                 @stylesheet.push: (:$at-rule);
+                $at-rule;
+            } {
+                .<rule-list>.push: $rule-ast;
             }
-            $at-rule<rule-list>.push: $rule-ast;
         }
         else {
             @stylesheet.push: $rule-ast;

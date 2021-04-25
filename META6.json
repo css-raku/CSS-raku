@@ -9,6 +9,7 @@
     "CSS::Module:ver<0.5.3+>",
     "CSS::Properties:ver<0.6.6+>",
     "CSS::Selector::To::XPath",
+    "CSS::Writer:ver<0.2.7>",
     "LibXML:ver<0.5.14+>",
     "Method::Also"
   ],
