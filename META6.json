@@ -6,7 +6,7 @@
   "build-depends": [
   ],
   "depends": [
-    "CSS::Module:ver<0.5.3+>",
+    "CSS::Module:ver<0.5.8+>",
     "CSS::Properties:ver<0.6.6+>",
     "CSS::Selector::To::XPath",
     "CSS::Writer:ver<0.2.7>",
@@ -42,5 +42,5 @@
   ],
   "test-depends": [
   ],
-  "version": "0.0.14"
+  "version": "0.0.15"
 }

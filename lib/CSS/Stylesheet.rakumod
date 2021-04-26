@@ -87,7 +87,7 @@ method ast(|c) {
     :@stylesheet;
 }
 
-method Str($optimize = True, Bool :$terse = True, *%opt) is also<gist> {
+method Str(:$optimize = True, Bool :$terse = True, *%opt) is also<gist> {
     my Pair $ast = self.ast: :$optimize;
     %opt<color-names> //= True
         unless %opt<color-masks> || %opt<color-values>;
