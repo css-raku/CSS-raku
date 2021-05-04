@@ -17,6 +17,7 @@ my $string = q:to<\_(ツ)_/>;
       @media print { h2 {color: green;} }
       p    {color: red;}
       div {font-size: 10pt }
+      empty {} /* should be optimized away */
     </style>
   </head>
 

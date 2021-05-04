@@ -63,25 +63,26 @@ method parse($css!, Bool :$lax, Bool :$warn = True, |c) {
     $obj;
 }
 
-method ast(|c) {
+method ast(Bool :$optimize = True, |c) {
     my @stylesheet;
     my %at-rules{List};
 
     for @!rules -> $rule {
-        my $rule-ast = $rule.ast(|c);
-
-        with %!rule-media{$rule} -> $media-list {
-            given %at-rules{$media-list} //= do {
-               my $at-rule = %(:at-keyw<media>, :$media-list, :rule-list[]);
-                %at-rules{$media-list} = $at-rule;
-                @stylesheet.push: (:$at-rule);
-                $at-rule;
-            } {
-                .<rule-list>.push: $rule-ast;
+        my $rule-ast = $rule.ast(:$optimize, |c);
+        unless $optimize && !$rule-ast<ruleset><declarations> {
+            with %!rule-media{$rule} -> $media-list {
+                given %at-rules{$media-list} //= do {
+                   my $at-rule = %(:at-keyw<media>, :$media-list, :rule-list[]);
+                    %at-rules{$media-list} = $at-rule;
+                    @stylesheet.push: (:$at-rule);
+                    $at-rule;
+                } {
+                    .<rule-list>.push: $rule-ast;
+                }
             }
-        }
-        else {
-            @stylesheet.push: $rule-ast;
+            else {
+                @stylesheet.push: $rule-ast;
+            }
         }
     }
     :@stylesheet;

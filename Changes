@@ -1,6 +1,7 @@
 {{$NEXT}}
     - Refactor of CSS::TagSet::Pango custom properties build
     - Fix :inherit option to work without a tag-set
+    - Optimize away rule-sets with empty property lists
 
 0.0.15  2021-04-26T14:42:19+12:00
     - Fix Str(:optimize) option
