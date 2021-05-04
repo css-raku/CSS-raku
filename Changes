@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.0.16  2021-05-05T10:17:41+12:00
     - Refactor of CSS::TagSet::Pango custom properties build
     - Fix :inherit option to work without a tag-set
     - Optimize away rule-sets with empty property lists
