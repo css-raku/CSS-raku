@@ -41,9 +41,6 @@ my CSS::TagSet::Pango $tag-set .= new;
 my LibXML::Document::XML $doc .= parse: :$string;
 my CSS $css .= new: :$doc, :$tag-set, :inherit;
 
-my $todo = 'CSS::Module.^ver >= v0.5.6'
-    unless CSS::Module.^ver >= v0.5.6;
-
 is $tag-set.tag-style('i'), 'font-style:italic;', '.tag-style()';
 
 is $css.style('/span/b'), 'color:purple; font-weight:bold;', '<b/>';
@@ -63,14 +60,12 @@ is $css.style('/span/span[1]'), '-pango-fallback:1; -pango-rise:50; color:purple
 is $css.style('/span/span[2]'), 'color:purple; font-family:sans;', 'span font_family';
 is $css.style('/span/span[3]'), 'color:purple; font-family:sans;', 'span face';
 is $css.style('/span/span[4]'), 'color:purple; font-size:x-small;', 'span size, named';
-todo $_,2  with $todo;
 is $css.style('/span/span[5]'), 'color:purple; font-size:9.5pt;', 'span size, numeric';
 is $css.style('/span/span[6]'), 'color:purple; font-variant:small-caps;', 'span variant';
 is $css.style('/span/span[7]'), 'color:purple; font-stretch:condensed;', 'span stretch';
 is $css.style('/span/span[9]'), 'color:red;', 'span foreground';
 is $css.style('/span/span[10]'), 'background:lime; color:purple;', 'span background';
 is $css.style('/span/span[11]'), '-pango-rise:50; color:purple;', 'span rise';
-todo $_  with $todo;
 is $css.style('/span/span[12]'), 'color:purple; text-decoration:line-through;', 'strikethrough="true"';
 is $css.style('/span/span[13]'), 'color:purple;', 'strikethrough="false"';
 

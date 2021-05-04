@@ -78,11 +78,12 @@ class CSS::TagSet::XHTML does CSS::TagSet {
     multi sub tweak-style($, $,) is default {
     }
 
+    method external-stylesheets($doc) {
+        $doc.findnodes('html/head/link[@rel="stylesheet"]');
+    }
+
     method internal-stylesheets($doc) {
-        with $doc.first('html/head/link[@link="stylesheet" or @rel="stylesheet"]') {
-            warn "todo: this document has linked stylesheets - ignoring";
-        }
-        $doc.findnodes('html/head/style')
+        $doc.findnodes('html/head/style');
     }
 
     # method to extract inline styling

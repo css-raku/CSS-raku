@@ -120,7 +120,7 @@ Classes
 Utility Scripts
 ---------------
 
-  * `css-rewriter.raku [--/optimize] [--/terse] [--/warn] [--lax] [--color=names|values] <file> [<output>]`
+  * `css-tidy.raku [--/optimize] [--/terse] [--/warn] [--lax] [--color=names|values|masks] <file> [<output>]`
 
 Rebuild a CSS Style-sheet with various checks and optimizations.
 

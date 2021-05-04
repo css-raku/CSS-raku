@@ -105,28 +105,32 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
     $props;
 }
 
+method !add-tag-styling(LibXML::Element:D $elem, CSS::Properties $style) {
+    with $!tag-set {
+        # apply tag style properties in isolation; they don't inherit
+        my %attrs = $elem.properties.map: { .tag => .value };
+        my CSS::Properties $tag-style = .tag-style($elem.tag, |%attrs)
+            if $!tags || $!inherit;
+
+        with $tag-style {
+            for .properties {
+                unless $style.property-exists($_) {
+                    $style."$_"() = $tag-style."$_"();
+                }
+            }
+        }
+    }
+}
+
 # styling, including any tag-specific styling
 multi method style(LibXML::Element:D $elem) {
     my $path = $elem.nodePath;
 
     %!style{$path} //= do {
-        my CSS::Properties $style = self!base-style($elem, :$path);
-        with $!tag-set -> $tag-set {
-            # apply tag style properties in isolation; they don't inherit
-            my %attrs = $elem.properties.map: { .tag => .value };
-            my CSS::Properties $tag-style = $tag-set.tag-style($elem.tag, |%attrs)
-                if $!tags || $!inherit;
-
-            with $tag-style {
-                for .properties {
-                    unless $style.property-exists($_) {
-                        $style."$_"() = $tag-style."$_"();
-                    }
-                }
-            }
-            if $!inherit {
-                $style.inherit($_) with %!parent{$elem.nodePath};
-            }
+        my CSS::Properties:D $style = self!base-style($elem, :$path);
+        self!add-tag-styling($elem, $style);
+        if $!inherit {
+            $style.inherit($_) with %!parent{$elem.nodePath};
         }
         $style;
     }
@@ -283,7 +287,7 @@ By default, this method acts on the root element of the associated $.doc XML doc
 
 =head2 Utility Scripts
 
-=item `css-rewriter.raku [--/optimize] [--/terse] [--/warn] [--lax] [--color=names|values] <file> [<output>]`
+=item `css-tidy.raku [--/optimize] [--/terse] [--/warn] [--lax] [--color=names|values|masks] <file> [<output>]`
 
 Rebuild a CSS Style-sheet with various checks and optimizations.
 

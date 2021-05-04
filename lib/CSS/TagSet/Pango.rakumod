@@ -21,35 +21,29 @@ class CSS::TagSet::Pango does CSS::TagSet {
     }
 
     # mapping of Pango attributes to CSS properties
-    constant %SpanProp = %(
-        background    => 'background-color',
-        face          => 'font-family',
-        fallback      => '-pango-fallback',
-        font_family   => 'font-family',
-        foreground    => 'color',
-        rise          => '-pango-rise',
-        size          => 'font-size',
-        stretch       => 'font-stretch',
-        strikethrough => 'text-decoration',
-        style         => 'font-style',
-        variant       => 'font-variant',
-        weight        => 'font-weight',
+    has %!SpanProp = %(
+        background => 'background-color',
+        'face'|'font_family' => 'font-family',
+        foreground => 'color',
+        stretch => 'font-stretch',
+        style => 'font-style',
+        weight => 'font-weight',
     );
     method init(CSS::Module:D :$!module!, LibXML::XPath::Context :$xpath-context!) {
 
         my %CustomProps = %(
-            '-pango-rise' => %(
+            rise => '-pango-rise' => %(
                 :synopsis<integer>,
                 :default(0),
                 :coerce(-> Int:D() $num { :$num }),
             ),
-            '-pango-fallback' => %(
-                :synopsis<True>,
+            fallback => '-pango-fallback' => %(
+                :synopsis('True | False'),
                 :default<False>,
-                :coerce(-> Str:D $att { my $num = ($att eq 'True') ?? 1 !! 0; :$num }),
+                :coerce(-> Str:D $att { my $num = ($att ~~ /:i 'True'/) ?? 1 !! 0; :$num }),
             ),
-            'font-size' => %(
-                # convert Pango `size` attribute to a standard CSS `font-size` property
+            size => 'font-size' => %(
+                # map Pango `size` attribute to CSS `font-size` property
                 :like<font-size>,
                 :synopsis("<num> | xx-small | x-small | small | medium | large | x-large | xx-large | smaller | larger"),
                 :coerce(
@@ -64,7 +58,7 @@ class CSS::TagSet::Pango does CSS::TagSet {
                         }
                     }),
             ),
-            'font-variant' => %(
+            variant => 'font-variant' => %(
                 :like<font-variant>,
                 :synopsis("normal | smallcaps"),
                 :coerce(
@@ -75,7 +69,7 @@ class CSS::TagSet::Pango does CSS::TagSet {
                             if $keyw ∈ set <normal small-caps>;
                         }),
             ),
-            'text-decoration' => %(
+            strikethrough => 'text-decoration' => %(
                 :like<text-decoration>,
                 :synopsis("true | false"),
                 :coerce(
@@ -89,7 +83,11 @@ class CSS::TagSet::Pango does CSS::TagSet {
         );
 
         for %CustomProps.pairs {
-            $!module.extend(:name(.key), |.value);
+            my $att := .key;
+            my Str  $name := .value.key;
+            my Hash $meta := .value.value;
+            $!module.extend(:$name, |$meta);
+            %!SpanProp{$att} = $name;
         }
     }
 
@@ -103,8 +101,8 @@ class CSS::TagSet::Pango does CSS::TagSet {
         my CSS::Properties $css = self!base-property($tag).clone;
 
         if $tag eq 'span' {
-            for %attrs.keys.grep({%SpanProp{$_}:exists}) {
-                my $name = %SpanProp{$_};
+            for %attrs.keys.grep({%!SpanProp{$_}:exists}) {
+                my $name = %!SpanProp{$_};
                 $css."$name"() = %attrs{$_};
             }
         }
