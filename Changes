@@ -1,4 +1,6 @@
 {{$NEXT}}
+    - Factor out CSS::Stylesheet as a seperate module.
+      CSS::Media has been moved to CSS::Stylesheet::Media
 
 0.0.16  2021-05-05T10:17:41+12:00
     - Refactor of CSS::TagSet::Pango custom properties build

@@ -101,14 +101,6 @@ By default, this method acts on the root element of the associated $.doc XML doc
 Classes
 -------
 
-  * [CSS::Media](https://css-raku.github.io/CSS-raku/Media) - CSS Media class
-
-  * [CSS::Ruleset](https://css-raku.github.io/CSS-raku/Ruleset) - CSS Ruleset class
-
-  * [CSS::Selectors](https://css-raku.github.io/CSS-raku/Selectors) - CSS DOM attribute class
-
-  * [CSS::Stylesheet](https://css-raku.github.io/CSS-raku/Stylesheet) - CSS Stylesheet class
-
   * [CSS::TagSet](https://css-raku.github.io/CSS-raku/TagSet) - CSS TagSet Role
 
   * [CSS::TagSet::XHTML](https://css-raku.github.io/CSS-raku/TagSet/XHTML) - Implements XHTML specific styling
@@ -130,6 +122,8 @@ Apply internal or external stylesheets to per-element 'style' attributes
 
 See Also
 --------
+
+  * [CSS::Style](https://css-raku.github.io/CSS-raku/Style) - CSS Stylesheet representations
 
   * [CSS::Module](https://css-raku.github.io/CSS-Module-raku) - CSS Module Raku module
 

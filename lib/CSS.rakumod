@@ -269,14 +269,6 @@ By default, this method acts on the root element of the associated $.doc XML doc
 
 =head2 Classes
 
-=item L<CSS::Media> - CSS Media class
-
-=item L<CSS::Ruleset> - CSS Ruleset class
-
-=item L<CSS::Selectors> - CSS DOM attribute class
-
-=item L<CSS::Stylesheet> - CSS Stylesheet class
-
 =item L<CSS::TagSet> - CSS TagSet Role
 
 =item L<CSS::TagSet::XHTML> - Implements XHTML specific styling
@@ -297,6 +289,7 @@ Apply internal or external stylesheets to per-element 'style' attributes
 
 =head2 See Also
 
+=item L<CSS::Style> - CSS Stylesheet representations
 =item L<CSS::Module> - CSS Module Raku module
 =item L<CSS::Properties> - CSS Properties Raku module
 =item L<LibXML> - LibXML Raku module

@@ -9,6 +9,7 @@
     "CSS::Module:ver<0.5.8+>",
     "CSS::Properties:ver<0.6.6+>",
     "CSS::Selector::To::XPath",
+    "CSS::Stylesheet:ver<0.1.17+>",
     "CSS::Writer:ver<0.2.7>",
     "LibXML:ver<0.5.14+>",
     "Method::Also"
@@ -19,10 +20,6 @@
   "perl": "6.c",
   "provides": {
     "CSS": "lib/CSS.rakumod",
-    "CSS::Media": "lib/CSS/Media.rakumod",
-    "CSS::Ruleset": "lib/CSS/Ruleset.rakumod",
-    "CSS::Selectors": "lib/CSS/Selectors.rakumod",
-    "CSS::Stylesheet": "lib/CSS/Stylesheet.rakumod",
     "CSS::TagSet": "lib/CSS/TagSet.rakumod",
     "CSS::TagSet::Pango": "lib/CSS/TagSet/Pango.rakumod",
     "CSS::TagSet::TaggedPDF": "lib/CSS/TagSet/TaggedPDF.rakumod",
