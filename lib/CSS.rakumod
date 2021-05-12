@@ -289,7 +289,7 @@ Apply internal or external stylesheets to per-element 'style' attributes
 
 =head2 See Also
 
-=item L<CSS::Style> - CSS Stylesheet representations
+=item L<CSS::Stylesheet> - CSS Stylesheet representations
 =item L<CSS::Module> - CSS Module Raku module
 =item L<CSS::Properties> - CSS Properties Raku module
 =item L<LibXML> - LibXML Raku module

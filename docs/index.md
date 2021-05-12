@@ -1,5 +1,8 @@
 [![Build Status](https://travis-ci.org/css-raku/CSS-raku.svg?branch=master)](https://travis-ci.org/css-raku/CSS-raku)
 
+[[Raku CSS Project]](https://css-raku.github.io)
+ / [[CSS Module]](https://css-raku.github.io/CSS-raku)
+
 class CSS
 ---------
 
@@ -101,13 +104,13 @@ By default, this method acts on the root element of the associated $.doc XML doc
 Classes
 -------
 
-  * [CSS::TagSet](https://css-raku.github.io/CSS-raku/TagSet) - CSS TagSet Role
+  * [CSS::TagSet](https://css-raku.github.io/CSS-raku/CSS/TagSet) - CSS TagSet Role
 
-  * [CSS::TagSet::XHTML](https://css-raku.github.io/CSS-raku/TagSet/XHTML) - Implements XHTML specific styling
+  * [CSS::TagSet::XHTML](https://css-raku.github.io/CSS-raku/CSS/TagSet/XHTML) - Implements XHTML specific styling
 
-  * [CSS::TagSet::Pango](https://css-raku.github.io/CSS-raku/TagSet/Pango) - Implements Pango styling
+  * [CSS::TagSet::Pango](https://css-raku.github.io/CSS-raku/CSS/TagSet/Pango) - Implements Pango styling
 
-  * [CSS::TagSet::TaggedPDF](https://css-raku.github.io/CSS-raku/TagSet/TaggedPDF) - (*UNDER CONSTRUCTION*) Implements Taged PDF styling
+  * [CSS::TagSet::TaggedPDF](https://css-raku.github.io/CSS-raku/CSS/TagSet/TaggedPDF) - (*UNDER CONSTRUCTION*) Implements Taged PDF styling
 
 Utility Scripts
 ---------------
@@ -123,13 +126,13 @@ Apply internal or external stylesheets to per-element 'style' attributes
 See Also
 --------
 
-  * [CSS::Style](https://css-raku.github.io/CSS-raku/Style) - CSS Stylesheet representations
+  * [CSS::Stylesheet](https://css-raku.github.io/CSS-Stylesheet-raku/CSS/Stylesheet) - CSS Stylesheet representations
 
   * [CSS::Module](https://css-raku.github.io/CSS-Module-raku) - CSS Module Raku module
 
-  * [CSS::Properties](https://css-raku.github.io/CSS-Properties-raku) - CSS Properties Raku module
+  * [CSS::Properties](https://css-raku.github.io/CSS-Properties-raku/CSS/Properties) - CSS Properties Raku module
 
-  * [LibXML](https://libxml-raku.github.io/LibXML-raku/) - LibXML Raku module
+  * [LibXML](https://css-raku.github.io/https://libxml-raku.github.io/LibXML-raku/) - LibXML Raku module
 
 Todo
 ----
