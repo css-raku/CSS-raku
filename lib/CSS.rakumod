@@ -21,7 +21,7 @@ use LibXML::XPath::Context;
 
 has LibXML::_ParentNode:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
-method stylesheet handles <Str gist ast> { $!stylesheet }
+method stylesheet handles <Str gist ast page> { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Module:D $.module = CSS::Module::CSS3.module;
 has CSS::Properties %.style;        # per node-path styling, including tags
@@ -79,20 +79,13 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
 
     $_ .= new(:$!module) without $props;
 
-    my %seen  = $props.properties.map(* => 1);
-    my %vital = $props.important;
 
     # Apply CSS Selector styles. Lower precedence than inline rules
-    my CSS::Properties @prop-sets = .sort(*.specificity).reverse.map: *.properties
+    my CSS::Properties @prop-sets = .sort(*.specificity).map: *.properties
         with %!rulesets{$path};
 
-    for @prop-sets -> CSS::Properties $prop-set {
-        my %important = $prop-set.important;
-        for $prop-set.properties {
-            $props."$_"() = $prop-set."$_"()
-                if !%seen{$_}++ || (%important{$_} && !%vital{$_});
-        }
-    }
+
+    CSS::Stylesheet::merge-properties(@prop-sets, $props);
 
     with $elem.parent {
         when LibXML::Element {
@@ -185,6 +178,7 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
       <html>
         <head>
           <style>
+            @page :first { margin:4pt; }
             body {background-color: powderblue; font-size: 12pt}
             @media screen { h1:first-child {color: blue !important;} }
             @media print { h2 {color: green;} }
@@ -212,8 +206,7 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
 
     my CSS $css .= new: :$doc, :$tag-set, :$media, :inherit;
 
-    # show some computed styles, based on CSS Selectors, media, inline styles and xhtml tags
-
+    # -- show some computed styles, based on CSS Selectors, media, inline styles and xhtml tags
     my CSS::Properties $body-props = $css.style('/html/body');
     say $body-props.font-size; # 12pt
     say $body-props;           # background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;
@@ -224,6 +217,9 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
     say $css.style($doc.first('/html/body/div'));
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
+
+    # -- get styling for the first page
+    say $css.page(:first);     # margin:4pt;
 
 =head2 Description
 
@@ -236,28 +232,42 @@ inline styling and the application of HTML specific styling (based on tags and a
 =head2 Methods
 
 =head3 method new
-
-    method new(
-        LibXML::Document :$doc!,       # document to be styled.
-        CSS::Stylesheet :$stylesheet!, # stylesheet to apply
-        CSS::TagSet :$tag-set,         # tag-specific styling
-        CSS::Media :$media,            # target media
-        Bool :$inherit = True,         # perform property inheritance
-    ) returns CSS;
-
+=begin code :lang<raku>
+method new(
+    LibXML::Document :$doc!,       # document to be styled.
+    CSS::Stylesheet :$stylesheet!, # stylesheet to apply
+    CSS::TagSet :$tag-set,         # tag-specific styling
+    CSS::Media :$media,            # target media
+    Bool :$inherit = True,         # perform property inheritance
+) returns CSS;
+=end code
 In particular, the `CSS::TagSet :$tag-set` options specifies a tag-specific styler; For example CSS::TagSet::XHTML. 
 
 =head3 method style
-
-    multi method style(LibXML::Element:D $elem) returns CSS::Properties;
-    multi method style(Str:D $xpath) returns CSS::Properties;
-
+=begin code :lang<raku>
+multi method style(LibXML::Element:D $elem) returns CSS::Properties;
+multi method style(Str:D $xpath) returns CSS::Properties;
+=end code
 Computes a style for an individual element, or XPath to an element.
 
+=head3 method page
+
+=begin code :lang<raku>
+method page(Bool :$first, Bool :$right, Bool :$left,
+            Str :$margin-box --> CSS::Properties)
+=end code
+Extract and manipulate `@page` at rules.
+
+The `:first`, `:right` and `:left` flags can be used to select rules applicable
+to a given logical page.
+
+In addition, the `:margin-box` can be used to select a specific L<Page Margin Box|https://www.w3.org/TR/css-page-3/#margin-boxes>. For example given the at-rule `@page { margin:2cm; size:a4; @top-center { content: 'Page ' counter(page); } }`,
+the top-center page box properties can be selected with `$stylesheet.page(:margin-box<top-center>)`.
+
 =head3 method prune
-
-    method prune(LibXML::Element $node? --> LibXML::Element)
-
+=begin code :lang<raku>    
+method prune(LibXML::Element $node? --> LibXML::Element)
+=end code
 Removes all XML nodes with CSS property `display:none;`, giving an
 approximate representation of a CSS rendering tree.
 

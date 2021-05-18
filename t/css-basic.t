@@ -1,6 +1,6 @@
 use v6;
 use Test;
-plan 12;
+plan 13;
 use CSS;
 use CSS::TagSet::XHTML;
 use CSS::Units :px;
@@ -12,6 +12,7 @@ my $string = q:to<\_(ツ)_/>;
 <html>
   <head>
     <style>
+      @page { margin:4pt }
       body {background-color: powderblue; font-size: 12pt}
       @media screen { h1:first-child {color: blue;} }
       @media print { h2 {color: green;} }
@@ -49,7 +50,10 @@ is $css.style('/html/body/h2[2]'), 'direction:rtl; display:table; font-size:1.5e
 is $css.style('/html/body/hr'), '-xhtml-align:center; border:1px inset; display:block; font-size:12pt; unicode-bidi:embed;';
 is $css.style('/html/body/p'), 'color:red; display:none; font-size:12pt; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;';
 
+is $css.page, 'margin:4pt;', '@page';
+
 is-deeply $css.Str(:!optimize).lines, (
+    '@page { margin-bottom:4pt; margin-left:4pt; margin-right:4pt; margin-top:4pt; }',
     'body { background-color:powderblue; font-size:12pt; }',
     '@media screen { h1:first-child { color:blue; } }',
     'p { color:red; }',
@@ -58,6 +62,7 @@ is-deeply $css.Str(:!optimize).lines, (
 ), 'unoptimized lines';
 
 is-deeply $css.Str.lines, (
+    '@page { margin:4pt; }',
     'body { background:powderblue; font-size:12pt; }',
     '@media screen { h1:first-child { color:blue; } }',
     'p { color:red; }',
@@ -65,6 +70,10 @@ is-deeply $css.Str.lines, (
 ), 'optimized lines';
 
 is-deeply $css.Str(:!terse).lines, (
+    '@page {',
+    '  margin: 4pt;',
+    '}',
+    '',
     'body {',
     '  background: powderblue;',
     '  font-size: 12pt;',
