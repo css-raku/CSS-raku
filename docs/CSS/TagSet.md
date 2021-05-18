@@ -1,5 +1,5 @@
 [[Raku CSS Project]](https://css-raku.github.io)
- / [[CSS Module]](https://css-raku.github.io/CSS-raku)
+ / [[CSS]](https://css-raku.github.io/CSS-raku)
  / [CSS::TagSet](https://css-raku.github.io/CSS-raku/CSS/TagSet)
 
 Name

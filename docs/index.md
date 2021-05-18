@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/css-raku/CSS-raku.svg?branch=master)](https://travis-ci.org/css-raku/CSS-raku)
 
 [[Raku CSS Project]](https://css-raku.github.io)
- / [[CSS Module]](https://css-raku.github.io/CSS-raku)
+ / [[CSS]](https://css-raku.github.io/CSS-raku)
 
 class CSS
 ---------
@@ -22,6 +22,7 @@ Synopsis
       <html>
         <head>
           <style>
+            @page :first { margin:4pt; }
             body {background-color: powderblue; font-size: 12pt}
             @media screen { h1:first-child {color: blue !important;} }
             @media print { h2 {color: green;} }
@@ -49,8 +50,7 @@ Synopsis
 
     my CSS $css .= new: :$doc, :$tag-set, :$media, :inherit;
 
-    # show some computed styles, based on CSS Selectors, media, inline styles and xhtml tags
-
+    # -- show some computed styles, based on CSS Selectors, media, inline styles and xhtml tags
     my CSS::Properties $body-props = $css.style('/html/body');
     say $body-props.font-size; # 12pt
     say $body-props;           # background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;
@@ -61,6 +61,9 @@ Synopsis
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
     say $css.style($doc.first('/html/body/div'));
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
+
+    # -- get styling for the first page
+    say $css.page(:first);     # margin:4pt;
 
 Description
 -----------
@@ -74,26 +77,45 @@ Methods
 
 ### method new
 
-    method new(
-        LibXML::Document :$doc!,       # document to be styled.
-        CSS::Stylesheet :$stylesheet!, # stylesheet to apply
-        CSS::TagSet :$tag-set,         # tag-specific styling
-        CSS::Media :$media,            # target media
-        Bool :$inherit = True,         # perform property inheritance
-    ) returns CSS;
+```raku
+method new(
+    LibXML::Document :$doc!,       # document to be styled.
+    CSS::Stylesheet :$stylesheet!, # stylesheet to apply
+    CSS::TagSet :$tag-set,         # tag-specific styling
+    CSS::Media :$media,            # target media
+    Bool :$inherit = True,         # perform property inheritance
+) returns CSS;
+```
 
 In particular, the `CSS::TagSet :$tag-set` options specifies a tag-specific styler; For example CSS::TagSet::XHTML. 
 
 ### method style
 
-    multi method style(LibXML::Element:D $elem) returns CSS::Properties;
-    multi method style(Str:D $xpath) returns CSS::Properties;
+```raku
+multi method style(LibXML::Element:D $elem) returns CSS::Properties;
+multi method style(Str:D $xpath) returns CSS::Properties;
+```
 
 Computes a style for an individual element, or XPath to an element.
 
+### method page
+
+```raku
+method page(Bool :$first, Bool :$right, Bool :$left,
+            Str :$margin-box --> CSS::Properties)
+```
+
+Extract and manipulate `@page` at rules.
+
+The `:first`, `:right` and `:left` flags can be used to select rules applicable to a given logical page.
+
+In addition, the `:margin-box` can be used to select a specific [Page Margin Box](https://www.w3.org/TR/css-page-3/#margin-boxes). For example given the at-rule `@page { margin:2cm; size:a4; @top-center { content: 'Page ' counter(page); } }`, the top-center page box properties can be selected with `$stylesheet.page(:margin-box<top-center>)`.
+
 ### method prune
 
-    method prune(LibXML::Element $node? --> LibXML::Element)
+```raku
+method prune(LibXML::Element $node? --> LibXML::Element)
+```
 
 Removes all XML nodes with CSS property `display:none;`, giving an approximate representation of a CSS rendering tree.
 
