@@ -38,13 +38,12 @@ method !build(
         if $!doc.isa(LibXML::Document);
 
     $!tag-set //= $!doc ~~ LibXML::Document::HTML
-        ?? CSS::TagSet::XHTML.new
-        !! CSS::TagSet.new;
+                      ?? CSS::TagSet::XHTML.new: :$!module
+                      !! CSS::TagSet.new;
 
     $!stylesheet //= $!tag-set.stylesheet($!doc, :$media);
-
     my LibXML::XPath::Context $xpath-context .= new: :$!doc;
-    $!tag-set.init(:$!module, :$xpath-context);
+    $!tag-set.xpath-init($xpath-context);
 
     # evaluate selectors. associate rule-sets with nodes by path
     for $!stylesheet.rules -> CSS::Ruleset $rule {
@@ -276,16 +275,6 @@ along with any other elements that have had `display:none;' applied
 to them via inline CSS or CSS Selectors.
 
 By default, this method acts on the root element of the associated $.doc XML document.
-
-=head2 Classes
-
-=item L<CSS::TagSet> - CSS TagSet Role
-
-=item L<CSS::TagSet::XHTML> - Implements XHTML specific styling
-
-=item L<CSS::TagSet::Pango> - Implements Pango styling
-
-=item L<CSS::TagSet::TaggedPDF> - (*UNDER CONSTRUCTION*) Implements Taged PDF styling
 
 =head2 Utility Scripts
 

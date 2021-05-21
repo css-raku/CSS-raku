@@ -13,7 +13,7 @@ loudtest : all
 $(DocLinker) :
 	(cd .. && git clone $(DocRepo) $(DocProj))
 
-doc : $(DocLinker) docs/index.md docs/CSS/TagSet.md docs/CSS/TagSet/XHTML.md docs/CSS/TagSet/Pango.md docs/CSS/TagSet/TaggedPDF.md
+doc : $(DocLinker) docs/index.md
 
 docs/index.md : lib/CSS.rakumod
 	(\

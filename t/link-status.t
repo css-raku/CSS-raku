@@ -5,6 +5,7 @@ use CSS;
 use CSS::TagSet::XHTML;
 use LibXML;
 use LibXML::Document;
+use LibXML::XPath::Context;
 
 my $string = q:to<\_(ツ)_/>;
 <!DOCTYPE html>
@@ -27,17 +28,17 @@ my $string = q:to<\_(ツ)_/>;
 \_(ツ)_/
 
 my LibXML::Document $doc .= parse: :$string, :html;
-
+my LibXML::XPath::Context $xpath-context .= new: :$doc;
 my $link =  $doc.first('//*[@href="link"]');
 my $visited =  $doc.first('//*[@href="visited"]');
 my $hover =  $doc.first('//*[@href="hover"]');
 
-my CSS::TagSet::XHTML $tag-set .= new();
+my CSS::TagSet::XHTML $tag-set .= new(:$xpath-context);
 
 $tag-set.link-pseudo('visited', $visited) = True;
 $tag-set.link-pseudo('hover', $hover) = True;
 
-my CSS $css .= new: :$doc, :$tag-set;
+my CSS $css .= new: :$doc, :$tag-set, :$xpath-context;
 
 ok $css.link-pseudo('visited', $visited);
 ok $css.link-pseudo('hover', $hover);

@@ -123,17 +123,6 @@ For example, for a XHTML tag-set the `head` element will be removed, along with 
 
 By default, this method acts on the root element of the associated $.doc XML document.
 
-Classes
--------
-
-  * [CSS::TagSet](https://css-raku.github.io/CSS-raku/CSS/TagSet) - CSS TagSet Role
-
-  * [CSS::TagSet::XHTML](https://css-raku.github.io/CSS-raku/CSS/TagSet/XHTML) - Implements XHTML specific styling
-
-  * [CSS::TagSet::Pango](https://css-raku.github.io/CSS-raku/CSS/TagSet/Pango) - Implements Pango styling
-
-  * [CSS::TagSet::TaggedPDF](https://css-raku.github.io/CSS-raku/CSS/TagSet/TaggedPDF) - (*UNDER CONSTRUCTION*) Implements Taged PDF styling
-
 Utility Scripts
 ---------------
 
