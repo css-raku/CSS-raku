@@ -1,5 +1,7 @@
 {{$NEXT}}
-    - Factor out CSS::Tagset as a seperator module
+
+0.0.20  2021-05-22T06:34:41+12:00
+    - Factor out CSS::Tagset as a seperate module
 
 0.0.19  2021-05-18T17:14:40+12:00
     - Add support for @page at-rules (CSS::Stylesheet v0.0.18+)
