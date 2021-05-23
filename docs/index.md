@@ -62,7 +62,7 @@ Synopsis
     say $css.style($doc.first('/html/body/div'));
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
 
-    # -- get styling for the first page
+    # -- query first page properties (from @page rules)
     say $css.page(:first);     # margin:4pt;
 
 Description
@@ -105,7 +105,7 @@ method page(Bool :$first, Bool :$right, Bool :$left,
             Str :$margin-box --> CSS::Properties)
 ```
 
-Extract and manipulate `@page` at rules.
+Query and extract `@page` at rules.
 
 The `:first`, `:right` and `:left` flags can be used to select rules applicable to a given logical page.
 
@@ -119,7 +119,7 @@ method prune(LibXML::Element $node? --> LibXML::Element)
 
 Removes all XML nodes with CSS property `display:none;`, giving an approximate representation of a CSS rendering tree.
 
-For example, for a XHTML tag-set the `head` element will be removed, along with any other elements that have had `display:none;' applied to them via inline CSS or CSS Selectors.
+For example, if an HTML document with an XHTML tag-set is pruned the `head` element will be removed because it has the property `display:none;`. Any other elements that have had `display:none;' applied to them via the tag-set, inline CSS, or CSS Selectors are also removed.
 
 By default, this method acts on the root element of the associated $.doc XML document.
 
@@ -139,9 +139,11 @@ See Also
 
   * [CSS::Stylesheet](https://css-raku.github.io/CSS-Stylesheet-raku/CSS/Stylesheet) - CSS Stylesheet representations
 
-  * [CSS::Module](https://css-raku.github.io/CSS-Module-raku) - CSS Module Raku module
+  * [CSS::Module](https://css-raku.github.io/CSS-Module-raku) - CSS Module module
 
-  * [CSS::Properties](https://css-raku.github.io/CSS-Properties-raku/CSS/Properties) - CSS Properties Raku module
+  * [CSS::Properties](https://css-raku.github.io/CSS-Properties-raku/CSS/Properties) - CSS Properties module
+
+  * [CSS::TagSet](https://css-raku.github.io/CSS-TagSet-raku/CSS/TagSet) - CSS tag-sets (XHTML, Pango, Tagged PDF)
 
   * [LibXML](https://css-raku.github.io/https://libxml-raku.github.io/LibXML-raku/) - LibXML Raku module
 

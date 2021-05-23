@@ -217,7 +217,7 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
     say $css.style($doc.first('/html/body/div'));
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
 
-    # -- get styling for the first page
+    # -- query first page properties (from @page rules)
     say $css.page(:first);     # margin:4pt;
 
 =head2 Description
@@ -255,7 +255,7 @@ Computes a style for an individual element, or XPath to an element.
 method page(Bool :$first, Bool :$right, Bool :$left,
             Str :$margin-box --> CSS::Properties)
 =end code
-Extract and manipulate `@page` at rules.
+Query and extract `@page` at rules.
 
 The `:first`, `:right` and `:left` flags can be used to select rules applicable
 to a given logical page.
@@ -270,9 +270,7 @@ method prune(LibXML::Element $node? --> LibXML::Element)
 Removes all XML nodes with CSS property `display:none;`, giving an
 approximate representation of a CSS rendering tree.
 
-For example, for a XHTML tag-set the `head` element will be removed,
-along with any other elements that have had `display:none;' applied
-to them via inline CSS or CSS Selectors.
+For example, if an HTML document with an XHTML tag-set is pruned the `head` element will be removed because it has the property `display:none;`. Any other elements that have had `display:none;' applied to them via the tag-set, inline CSS, or CSS Selectors are also removed.
 
 By default, this method acts on the root element of the associated $.doc XML document.
 
@@ -284,14 +282,16 @@ Rebuild a CSS Style-sheet with various checks and optimizations.
 
 =item `css-inliner.raku input.xml [output.xml] --style=file.css --prune --tags --type=html|pango|pdf --inherit
 
-Apply internal or external stylesheets to per-element 'style' attributes
+Apply internal or external style-sheets to per-element 'style' attributes
 
 =head2 See Also
 
 =item L<CSS::Stylesheet> - CSS Stylesheet representations
-=item L<CSS::Module> - CSS Module Raku module
-=item L<CSS::Properties> - CSS Properties Raku module
+=item L<CSS::Module> - CSS Module module
+=item L<CSS::Properties> - CSS Properties module
+=item L<CSS::TagSet> - CSS tag-sets (XHTML, Pango, Tagged PDF)
 =item L<LibXML> - LibXML Raku module
+=item L<DOM::Tiny|https://github.com/zostay/raku-DOM-Tiny> - A lightweight, self-contained DOM parser/manipulator
 
 =head2 Todo
 
