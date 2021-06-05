@@ -280,7 +280,7 @@ By default, this method acts on the root element of the associated $.doc XML doc
 
 Rebuild a CSS Style-sheet with various checks and optimizations.
 
-=item `css-inliner.raku input.xml [output.xml] --style=file.css --prune --tags --type=html|pango|pdf --inherit
+=item `css-inliner.raku input.xml [output.xml] --style=file.css --prune --tags --type=html|pango|pdf --inherit`
 
 Apply internal or external style-sheets to per-element 'style' attributes
 

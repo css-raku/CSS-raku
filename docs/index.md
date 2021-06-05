@@ -130,9 +130,9 @@ Utility Scripts
 
 Rebuild a CSS Style-sheet with various checks and optimizations.
 
-  * `css-inliner.raku input.xml [output.xml] --style=file.css --prune --tags --type=html|pango|pdf --inherit
+  * `css-inliner.raku input.xml [output.xml] --style=file.css --prune --tags --type=html|pango|pdf --inherit`
 
-Apply internal or external stylesheets to per-element 'style' attributes
+Apply internal or external style-sheets to per-element 'style' attributes
 
 See Also
 --------
@@ -146,6 +146,8 @@ See Also
   * [CSS::TagSet](https://css-raku.github.io/CSS-TagSet-raku/CSS/TagSet) - CSS tag-sets (XHTML, Pango, Tagged PDF)
 
   * [LibXML](https://css-raku.github.io/https://libxml-raku.github.io/LibXML-raku/) - LibXML Raku module
+
+  * [DOM::Tiny](https://github.com/zostay/raku-DOM-Tiny) - A lightweight, self-contained DOM parser/manipulator
 
 Todo
 ----
