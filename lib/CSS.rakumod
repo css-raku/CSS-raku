@@ -1,5 +1,5 @@
 #| CSS Stylesheet processing
-unit class CSS:ver<0.0.20>;
+unit class CSS:ver<0.0.21>;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
 
