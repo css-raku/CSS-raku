@@ -8,8 +8,8 @@
   "depends": [
     "CSS::Module:ver<0.5.8+>",
     "CSS::Properties:ver<0.6.6+>",
-    "CSS::Stylesheet:ver<0.0.19+>",
-    "CSS::TagSet:ver<0.0.20+>",
+    "CSS::Stylesheet:ver<0.0.22+>",
+    "CSS::TagSet:ver<0.0.22+>",
     "LibXML:ver<0.5.14+>",
     "Method::Also"
   ],

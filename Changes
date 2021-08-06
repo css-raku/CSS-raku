@@ -1,4 +1,7 @@
 {{$NEXT}}
+    - Implement @font-face rules. Fonts properties can be
+      accessed by font-face(), which returns a list, or
+      font-face($family), to select by family name.
 
 0.0.20  2021-05-22T06:34:41+12:00
     - Factor out CSS::Tagset as a seperate module

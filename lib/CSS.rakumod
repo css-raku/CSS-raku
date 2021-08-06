@@ -21,7 +21,7 @@ use LibXML::XPath::Context;
 
 has LibXML::_ParentNode:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
-method stylesheet handles <Str gist ast page> { $!stylesheet }
+method stylesheet handles <Str gist ast page font-face> { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Module:D $.module = CSS::Module::CSS3.module;
 has CSS::Properties %.style;        # per node-path styling, including tags
@@ -72,15 +72,16 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
 
     # merge in inline styles
     my CSS::Properties $props = do with $!tag-set {
-        my %attrs = $elem.properties.map: { .tag => .value };
-        .inline-style($elem.tag, |%attrs);
+        my Str $style = $elem.getAttribute($_)
+            with .inline-style-attribute;
+        .inline-style($elem.tag, :$style);
     }
 
     $_ .= new(:$!module) without $props;
 
 
     # Apply CSS Selector styles. Lower precedence than inline rules
-    my CSS::Properties @prop-sets = .sort(*.specificity).map: *.properties
+    my CSS::Properties @prop-sets = .sort(*.specificity)».properties
         with %!rulesets{$path};
 
 
@@ -181,8 +182,12 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
             body {background-color: powderblue; font-size: 12pt}
             @media screen { h1:first-child {color: blue !important;} }
             @media print { h2 {color: green;} }
-            p    {color: red;}
+            p    {color: red; font-family:'Para';}
             div {font-size: 10pt }
+            @font-face {
+              font-family:'Para';
+              src:url('/myfonts/para.otf') format('opentype');
+            }
           </style>
         </head>
         <body>
@@ -219,6 +224,11 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
 
     # -- query first page properties (from @page rules)
     say $css.page(:first);     # margin:4pt;
+
+    # -- look-up a @font-face declared font
+    say $css.font-face('Para');  # font-family:'Para'; ...
+                                 # src:url('/myfonts/para.otf') ...
+                                 # format('opentype');
 
 =head2 Description
 
@@ -263,6 +273,16 @@ to a given logical page.
 In addition, the `:margin-box` can be used to select a specific L<Page Margin Box|https://www.w3.org/TR/css-page-3/#margin-boxes>. For example given the at-rule `@page { margin:2cm; size:a4; @top-center { content: 'Page ' counter(page); } }`,
 the top-center page box properties can be selected with `$stylesheet.page(:margin-box<top-center>)`.
 
+=head3 method font-face
+=begin code :lang<raku>    
+multi method font-face() returns Array
+multi method font-face($family) returns CSS::Properties
+=end code
+
+=item `font-face()` returns a list of all fonts declared with `@font-face` at-rules
+=item `font-face($family)` returns font-properties for the given font-family;
+
+
 =head3 method prune
 =begin code :lang<raku>    
 method prune(LibXML::Element $node? --> LibXML::Element)
@@ -299,6 +319,6 @@ Apply internal or external style-sheets to per-element 'style' attributes
 
 - CSS imported style-sheets, e.g. `@import url("navigation.css")`
 
-- Other At-Rule variants (in addition to `@media` and `@import`) `@document`, `@page`, `@font-face`
+- Other At-Rule variants `@document`
 
 =end pod

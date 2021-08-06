@@ -26,8 +26,12 @@ Synopsis
             body {background-color: powderblue; font-size: 12pt}
             @media screen { h1:first-child {color: blue !important;} }
             @media print { h2 {color: green;} }
-            p    {color: red;}
+            p    {color: red; font-family:'Para';}
             div {font-size: 10pt }
+            @font-face {
+              font-family:'Para';
+              src:url('/myfonts/para.otf') format('opentype');
+            }
           </style>
         </head>
         <body>
@@ -64,6 +68,11 @@ Synopsis
 
     # -- query first page properties (from @page rules)
     say $css.page(:first);     # margin:4pt;
+
+    # -- look-up a @font-face declared font
+    say $css.font-face('Para');  # font-family:'Para'; ...
+                                 # src:url('/myfonts/para.otf') ...
+                                 # format('opentype');
 
 Description
 -----------
@@ -111,6 +120,17 @@ The `:first`, `:right` and `:left` flags can be used to select rules applicable 
 
 In addition, the `:margin-box` can be used to select a specific [Page Margin Box](https://www.w3.org/TR/css-page-3/#margin-boxes). For example given the at-rule `@page { margin:2cm; size:a4; @top-center { content: 'Page ' counter(page); } }`, the top-center page box properties can be selected with `$stylesheet.page(:margin-box<top-center>)`.
 
+### method font-face
+
+```raku
+multi method font-face() returns Array
+multi method font-face($family) returns CSS::Properties
+```
+
+  * `font-face()` returns a list of all fonts declared with `@font-face` at-rules
+
+  * `font-face($family)` returns font-properties for the given font-family;
+
 ### method prune
 
 ```raku
@@ -156,5 +176,5 @@ Todo
 
 - CSS imported style-sheets, e.g. `@import url("navigation.css")`
 
-- Other At-Rule variants (in addition to `@media` and `@import`) `@document`, `@page`, `@font-face`
+- Other At-Rule variants `@document`
 
