@@ -4,7 +4,8 @@ unit class CSS:ver<0.0.21>;
 # maintains associations between CSS Selectors and a XML/HTML DOM
 
 use CSS::Media;
-use CSS::Properties:ver<0.5.0+>;
+use CSS::Properties;
+use CSS::Font::Descriptor;
 use CSS::Ruleset;
 use CSS::Stylesheet;
 use CSS::TagSet;
@@ -21,7 +22,7 @@ use LibXML::XPath::Context;
 
 has LibXML::_ParentNode:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
-method stylesheet handles <Str gist ast page font-face> { $!stylesheet }
+method stylesheet handles <Str gist ast page font-face font-selector> { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Module:D $.module = CSS::Module::CSS3.module;
 has CSS::Properties %.style;        # per node-path styling, including tags
@@ -33,6 +34,7 @@ has Bool $.inherit;
 # apply selectors (no inheritance)
 method !build(
     CSS::Media :$media = CSS::Media.new: :type<screen>, :width(480px), :height(640px), :color
+    :$base-url = $!doc.URI,
 ) {
     $!doc.indexElements
         if $!doc.isa(LibXML::Document);
@@ -41,7 +43,7 @@ method !build(
                       ?? CSS::TagSet::XHTML.new: :$!module
                       !! CSS::TagSet.new;
 
-    $!stylesheet //= $!tag-set.stylesheet($!doc, :$media);
+    $!stylesheet //= $!tag-set.stylesheet($!doc, :$media, :$base-url);
     my LibXML::XPath::Context $xpath-context .= new: :$!doc;
     $!tag-set.xpath-init($xpath-context);
 
@@ -78,7 +80,6 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
     }
 
     $_ .= new(:$!module) without $props;
-
 
     # Apply CSS Selector styles. Lower precedence than inline rules
     my CSS::Properties @prop-sets = .sort(*.specificity)».properties
@@ -293,6 +294,12 @@ approximate representation of a CSS rendering tree.
 For example, if an HTML document with an XHTML tag-set is pruned the `head` element will be removed because it has the property `display:none;`. Any other elements that have had `display:none;' applied to them via the tag-set, inline CSS, or CSS Selectors are also removed.
 
 By default, this method acts on the root element of the associated $.doc XML document.
+
+=head3 method font-selector
+=begin code :lang<raku>    
+method font-selector(CSS::Font() $font) returns CSS::Font::Selector
+=end code
+Returns a L<CSS::Font::Selector> object for font querying and selection based on the stylehseet's `@font-face` rules.
 
 =head2 Utility Scripts
 
