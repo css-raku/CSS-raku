@@ -20,9 +20,11 @@ use LibXML::Element;
 use LibXML::_ParentNode;
 use LibXML::XPath::Context;
 
+use URI;
+
 has LibXML::_ParentNode:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
-method stylesheet handles <Str gist ast page font-face font-selector> { $!stylesheet }
+method stylesheet handles <Str gist ast page font-face font-sources> { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Module:D $.module = CSS::Module::CSS3.module;
 has CSS::Properties %.style;        # per node-path styling, including tags
@@ -33,8 +35,8 @@ has Bool $.inherit;
 
 # apply selectors (no inheritance)
 method !build(
-    CSS::Media :$media = CSS::Media.new: :type<screen>, :width(480px), :height(640px), :color
-    :$base-url = $!doc.URI,
+    CSS::Media :$media = CSS::Media.new(:type<screen>, :width(480px), :height(640px), :color),
+    URI() :$base-url = $!doc.baseURI // '.',
 ) {
     $!doc.indexElements
         if $!doc.isa(LibXML::Document);
@@ -295,11 +297,11 @@ For example, if an HTML document with an XHTML tag-set is pruned the `head` elem
 
 By default, this method acts on the root element of the associated $.doc XML document.
 
-=head3 method font-selector
-=begin code :lang<raku>    
-method font-selector(CSS::Font() $font) returns CSS::Font::Selector
+=head3 method font-sources
+=begin code :lang<raku>
+method font-sources(CSS::Font() $font) returns Array[CSS::Font::Resources::Source]
 =end code
-Returns a L<CSS::Font::Selector> object for font querying and selection based on the stylehseet's `@font-face` rules.
+Returns a list of L<CSS::Font::Resources::Source> object for source fonts, based `@font-face` rules and (as a fallback) the font's name and characterstics.
 
 =head2 Utility Scripts
 
