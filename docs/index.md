@@ -71,7 +71,7 @@ Synopsis
 
     # -- find a font using @font-face declarations
     say .Str    # /myfonts/para.otf
-        given $css.font-sources('Para').head;
+        with $css.font-sources('Para').head;
 
 Description
 -----------
@@ -122,21 +122,13 @@ In addition, the `:margin-box` can be used to select a specific [Page Margin Box
 ### method font-face
 
 ```raku
-method font-face() returns Array[CSS::Font::Descriptor]
+multi method font-face() returns Array
+multi method font-face($family) returns CSS::Properties
 ```
 
   * `font-face()` returns a list of all fonts declared with `@font-face` at-rules
 
   * `font-face($family)` returns font-properties for the given font-family;
-
-##m method font-resources
-```raku
-method font-resources(CSS::Font() $font, |c) returns Array[CSS:Font::Resources::Source].
-```
-Returns matching fonts, using `@font-face` rules in the stylesheet and the font definition itself. These are of type:
-
-- L<CSS:Font::Resources::Source::Local> - for `local()` font sources
-- L<CSS:Font::Resources::Source::Url> - for `url()` font sources
 
 ### method prune
 
@@ -150,13 +142,13 @@ For example, if an HTML document with an XHTML tag-set is pruned the `head` elem
 
 By default, this method acts on the root element of the associated $.doc XML document.
 
-### method font-resources
+### method font-sources
 
 ```raku
-method font-resources(CSS::Font() $font) returns CSS::Font::Resources
+method font-sources(CSS::Font() $font) returns Array[CSS::Font::Resources::Source]
 ```
 
-Returns a [CSS::Font::Resources](https://css-raku.github.io/CSS-Font-Resources-raku/CSS/Font/Resources) object for font querying and selection based on the stylehseet's `@font-face` rules.
+Returns a list of [CSS::Font::Resources::Source](https://css-raku.github.io/CSS-Font-Resources-raku/CSS/Font/Resources/Source) objects for natching source fonts, based on `@font-face` rules and (as a fallback) the font's name and characterstics.
 
 Utility Scripts
 ---------------

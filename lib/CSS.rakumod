@@ -228,10 +228,9 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
     # -- query first page properties (from @page rules)
     say $css.page(:first);     # margin:4pt;
 
-    # -- look-up a @font-face declared font
-    say $css.font-face('Para');  # font-family:'Para'; ...
-                                 # src:url('/myfonts/para.otf') ...
-                                 # format('opentype');
+    # -- find a font using @font-face declarations
+    say .Str    # /myfonts/para.otf
+        with $css.font-sources('Para').head;
 
 =head2 Description
 
@@ -301,7 +300,7 @@ By default, this method acts on the root element of the associated $.doc XML doc
 =begin code :lang<raku>
 method font-sources(CSS::Font() $font) returns Array[CSS::Font::Resources::Source]
 =end code
-Returns a list of L<CSS::Font::Resources::Source> object for source fonts, based `@font-face` rules and (as a fallback) the font's name and characterstics.
+Returns a list of L<CSS::Font::Resources::Source> objects for natching source fonts, based on `@font-face` rules and (as a fallback) the font's name and characterstics.
 
 =head2 Utility Scripts
 
