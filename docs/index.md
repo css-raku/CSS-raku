@@ -70,7 +70,7 @@ Synopsis
     say $css.page(:first);     # margin:4pt;
 
     # -- find a font using @font-face declarations
-    say .Str    # /myfonts/para.otf')
+    say .Str    # /myfonts/para.otf
         given $css.font-sources('Para').head;
 
 Description
