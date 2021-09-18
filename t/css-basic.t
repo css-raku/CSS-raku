@@ -73,7 +73,7 @@ is-deeply $css.Str.lines, (
      "\@font-face \{ font-family:'Para'; src:url('/myfonts/para.otf') format('opentype'); }",
 ), 'optimized lines';
 
-is-deeply $css.Str(:!terse).lines, (
+is-deeply $css.Str(:pretty).lines, (
     '@page {',
     '  margin: 4pt;',
     '}',

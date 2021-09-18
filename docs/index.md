@@ -92,6 +92,7 @@ method new(
     CSS::TagSet :$tag-set,         # tag-specific styling
     CSS::Media :$media,            # target media
     Bool :$inherit = True,         # perform property inheritance
+    Bool :$import = False,         # enable '@import' directives
 ) returns CSS;
 ```
 
@@ -122,8 +123,8 @@ In addition, the `:margin-box` can be used to select a specific [Page Margin Box
 ### method font-face
 
 ```raku
-multi method font-face() returns Array
-multi method font-face($family) returns CSS::Properties
+multi method font-face() returns Array[CSS::Font::Descriptor]
+multi method font-face($family) returns CSS::Font::Descriptor
 ```
 
   * `font-face()` returns a list of all fonts declared with `@font-face` at-rules
@@ -180,8 +181,6 @@ Todo
 ----
 
 - HTML linked style-sheets, e.g. `<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>`
-
-- CSS imported style-sheets, e.g. `@import url("navigation.css")`
 
 - Other At-Rule variants `@document`
 

@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Add :import option. Enables stylesheet '@import' rules
 
 0.0.22  2021-09-08T12:44:20+12:00
     - Use font-resources() method from latest CSS::Stylesheet. This enables
@@ -10,7 +11,7 @@
       font-face($family), to select by family name.
 
 0.0.20  2021-05-22T06:34:41+12:00
-    - Factor out CSS::Tagset as a seperate module
+    - Factor out CSS::Tagset as a separate module
 
 0.0.19  2021-05-18T17:14:40+12:00
     - Add support for @page at-rules (from CSS::Stylesheet v0.0.18+)
@@ -19,8 +20,8 @@
     - Documentation release
 
 0.0.17  2021-05-06T17:27:59+12:00
-    - Factor out CSS::Stylesheet as a seperate module.
-      CSS::Media has been moved to CSS::Stylesheet::Media
+    - Factor out CSS::Stylesheet as a separate module.
+      CSS::Media has also been moved to CSS::Stylesheet
 
 0.0.16  2021-05-05T10:17:41+12:00
     - Refactor of CSS::TagSet::Pango custom properties build

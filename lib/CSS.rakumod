@@ -37,6 +37,7 @@ has Bool $.inherit;
 method !build(
     CSS::Media :$media = CSS::Media.new(:type<screen>, :width(480px), :height(640px), :color),
     URI() :$base-url = $!doc.baseURI // '.',
+    Bool :$import = False,
 ) {
     $!doc.indexElements
         if $!doc.isa(LibXML::Document);
@@ -45,7 +46,7 @@ method !build(
                       ?? CSS::TagSet::XHTML.new: :$!module
                       !! CSS::TagSet.new;
 
-    $!stylesheet //= $!tag-set.stylesheet($!doc, :$media, :$base-url);
+    $!stylesheet //= $!tag-set.stylesheet($!doc, :$media, :$base-url, :$import);
     my LibXML::XPath::Context $xpath-context .= new: :$!doc;
     $!tag-set.xpath-init($xpath-context);
 
@@ -250,6 +251,7 @@ method new(
     CSS::TagSet :$tag-set,         # tag-specific styling
     CSS::Media :$media,            # target media
     Bool :$inherit = True,         # perform property inheritance
+    Bool :$import = False,         # enable '@import' directives
 ) returns CSS;
 =end code
 In particular, the `CSS::TagSet :$tag-set` options specifies a tag-specific styler; For example CSS::TagSet::XHTML. 
@@ -277,8 +279,8 @@ the top-center page box properties can be selected with `$stylesheet.page(:margi
 
 =head3 method font-face
 =begin code :lang<raku>    
-multi method font-face() returns Array
-multi method font-face($family) returns CSS::Properties
+multi method font-face() returns Array[CSS::Font::Descriptor]
+multi method font-face($family) returns CSS::Font::Descriptor
 =end code
 
 =item `font-face()` returns a list of all fonts declared with `@font-face` at-rules
@@ -324,8 +326,6 @@ Apply internal or external style-sheets to per-element 'style' attributes
 =head2 Todo
 
 - HTML linked style-sheets, e.g. `<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>`
-
-- CSS imported style-sheets, e.g. `@import url("navigation.css")`
 
 - Other At-Rule variants `@document`
 
