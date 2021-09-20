@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.0.24  2021-09-21T06:49:03+12:00
+    - Update to LibXML 0.6.9 for URI() method fix
+    - Restrict style() method to elements and paths
+
 0.0.23  2021-09-19T08:07:28+12:00
     - Add :import option. Enables stylesheet '@import' rules
 

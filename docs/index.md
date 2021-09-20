@@ -29,8 +29,7 @@ Synopsis
             p    {color: red; font-family:'Para';}
             div {font-size: 10pt }
             @font-face {
-              font-family:'Para';
-              src:url('/myfonts/para.otf') format('opentype');
+              font-family:'Para'; src:url('/fonts/para.otf');
             }
           </style>
         </head>
@@ -70,8 +69,8 @@ Synopsis
     say $css.page(:first);     # margin:4pt;
 
     # -- find a font using @font-face declarations
-    say .Str    # /myfonts/para.otf
-        with $css.font-sources('Para').head;
+    say .Str    # font-family:'Para'; src:url('/fonts/para.otf');
+        with $css.font-sources('12pt Para').head;
 
 Description
 -----------
