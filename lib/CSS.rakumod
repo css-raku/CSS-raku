@@ -24,7 +24,7 @@ use URI;
 
 has LibXML::_ParentNode:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
-method stylesheet handles <Str gist ast page font-face font-sources> { $!stylesheet }
+method stylesheet handles <Str gist ast page font-face font-sources base-url> { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Module:D $.module = CSS::Module::CSS3.module;
 has CSS::Properties %.style;        # per node-path styling, including tags
@@ -36,7 +36,7 @@ has Bool $.inherit;
 # apply selectors (no inheritance)
 method !build(
     CSS::Media :$media = CSS::Media.new(:type<screen>, :width(480px), :height(640px), :color),
-    URI() :$base-url = $!doc.baseURI // '.',
+    URI() :$base-url = $!doc.URI // './',
     Bool :$import = False,
 ) {
     $!doc.indexElements
@@ -132,8 +132,6 @@ multi method style(LibXML::Element:D $elem) {
         $style;
     }
 }
-
-multi method style(LibXML::Item) { CSS::Properties }
 
 multi method style(Str:D $xpath) {
     self.style: $!doc.first($xpath);
