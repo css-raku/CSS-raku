@@ -29,7 +29,8 @@ Synopsis
             p    {color: red; font-family:'Para';}
             div {font-size: 10pt }
             @font-face {
-              font-family:'Para'; src:url('/fonts/para.otf');
+              font-family:'Para';
+              src:url('/myfonts/para.otf');
             }
           </style>
         </head>
@@ -69,7 +70,7 @@ Synopsis
     say $css.page(:first);     # margin:4pt;
 
     # -- find a font using @font-face declarations
-    say .Str    # font-family:'Para'; src:url('/fonts/para.otf');
+    say .Str    # font-family:'Para'; src:url('/myfonts/para.otf')
         with $css.font-sources('12pt Para').head;
 
 Description
@@ -91,7 +92,10 @@ method new(
     CSS::TagSet :$tag-set,         # tag-specific styling
     CSS::Media :$media,            # target media
     Bool :$inherit = True,         # perform property inheritance
-    Bool :$import = False,         # enable '@import' directives
+    :%follow (                     # External stylesheet loading:
+        Bool :$imports = False,    # - enable '@import' directives
+        Bool :$links = False,      # - load <link../> tags (XHTML)
+    )
 ) returns CSS;
 ```
 

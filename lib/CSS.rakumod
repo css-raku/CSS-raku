@@ -37,7 +37,7 @@ has Bool $.inherit;
 method !build(
     CSS::Media :$media = CSS::Media.new(:type<screen>, :width(480px), :height(640px), :color),
     URI() :$base-url = $!doc.URI // './',
-    Bool :$import = False,
+    :%follow ( Bool :$imports = False, Bool :$links = False, )
 ) {
     $!doc.indexElements
         if $!doc.isa(LibXML::Document);
@@ -46,7 +46,7 @@ method !build(
                       ?? CSS::TagSet::XHTML.new: :$!module
                       !! CSS::TagSet.new;
 
-    $!stylesheet //= $!tag-set.stylesheet($!doc, :$media, :$base-url, :$import);
+    $!stylesheet //= $!tag-set.stylesheet($!doc, :$media, :$base-url, :$imports, :$links);
     my LibXML::XPath::Context $xpath-context .= new: :$!doc;
     $!tag-set.xpath-init($xpath-context);
 
@@ -188,7 +188,7 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
             div {font-size: 10pt }
             @font-face {
               font-family:'Para';
-              src:url('/myfonts/para.otf') format('opentype');
+              src:url('/myfonts/para.otf');
             }
           </style>
         </head>
@@ -228,8 +228,8 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
     say $css.page(:first);     # margin:4pt;
 
     # -- find a font using @font-face declarations
-    say .Str    # /myfonts/para.otf
-        with $css.font-sources('Para').head;
+    say .Str    # font-family:'Para'; src:url('/myfonts/para.otf')
+        with $css.font-sources('12pt Para').head;
 
 =head2 Description
 
@@ -249,7 +249,10 @@ method new(
     CSS::TagSet :$tag-set,         # tag-specific styling
     CSS::Media :$media,            # target media
     Bool :$inherit = True,         # perform property inheritance
-    Bool :$import = False,         # enable '@import' directives
+    :%follow (                     # External stylesheet loading:
+        Bool :$imports = False,    # - enable '@import' directives
+        Bool :$links = False,      # - load <link../> tags (XHTML)
+    )
 ) returns CSS;
 =end code
 In particular, the `CSS::TagSet :$tag-set` options specifies a tag-specific styler; For example CSS::TagSet::XHTML. 

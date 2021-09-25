@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @import "h2-blue.css" screen;
+      @import "para-red.css" print;
+      @import "does-not-exist.css" print;
+      h1 {
+          color:green;
+      }
+    </style>
+  </head>
+  <body>
+     <h1>Green (all) heading</h1>
+     <h2>blue (screen only) sub-heading</h2>
+     <p>Red (print only) paragraph</p>
+  </body>
+</html>
