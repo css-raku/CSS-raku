@@ -37,7 +37,7 @@ has Bool $.inherit;
 method !build(
     CSS::Media :$media = CSS::Media.new(:type<screen>, :width(480px), :height(640px), :color),
     URI() :$base-url = $!doc.URI // './',
-    :%follow ( Bool :$imports = False, Bool :$links = False, )
+    :%include ( Bool :$imports = False, Bool :$links = False, )
 ) {
     $!doc.indexElements
         if $!doc.isa(LibXML::Document);
@@ -249,7 +249,7 @@ method new(
     CSS::TagSet :$tag-set,         # tag-specific styling
     CSS::Media :$media,            # target media
     Bool :$inherit = True,         # perform property inheritance
-    :%follow (                     # External stylesheet loading:
+    :%include (                    # External stylesheet loading:
         Bool :$imports = False,    # - enable '@import' directives
         Bool :$links = False,      # - load <link../> tags (XHTML)
     )
@@ -325,8 +325,6 @@ Apply internal or external style-sheets to per-element 'style' attributes
 =item L<DOM::Tiny|https://github.com/zostay/raku-DOM-Tiny> - A lightweight, self-contained DOM parser/manipulator
 
 =head2 Todo
-
-- HTML linked style-sheets, e.g. `<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>`
 
 - Other At-Rule variants `@document`
 

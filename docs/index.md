@@ -92,7 +92,7 @@ method new(
     CSS::TagSet :$tag-set,         # tag-specific styling
     CSS::Media :$media,            # target media
     Bool :$inherit = True,         # perform property inheritance
-    :%follow (                     # External stylesheet loading:
+    :%include (                    # External stylesheet loading:
         Bool :$imports = False,    # - enable '@import' directives
         Bool :$links = False,      # - load <link../> tags (XHTML)
     )
@@ -182,8 +182,6 @@ See Also
 
 Todo
 ----
-
-- HTML linked style-sheets, e.g. `<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>`
 
 - Other At-Rule variants `@document`
 
