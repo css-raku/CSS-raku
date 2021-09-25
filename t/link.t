@@ -14,5 +14,7 @@ my CSS $css .= new: :$doc, :$tag-set, :!inherit, :include{:imports, :links}, :$m
 
 is $doc.URI, 't/css/link.html', 'doc.URI sanity';
 is $css.style('/html/body/h1[1]'), 'color:green;', 'basic rule';
+todo 'media filtering may not work on Rakudo < 2021.03'
+    unless $*RAKU.compiler.version >= v2021.03';
 is $css.style('/html/body/h2[1]'), 'color:blue;', 'link. matching media';
 is $css.style('/html/body/p[1]'), '', 'link non-matching media';
