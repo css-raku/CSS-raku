@@ -157,10 +157,6 @@ Returns a list of [CSS::Font::Resources::Source](https://css-raku.github.io/CSS-
 Utility Scripts
 ---------------
 
-  * `css-tidy.raku [--/optimize] [--/terse] [--/warn] [--lax] [--color=names|values|masks] <file> [<output>]`
-
-Rebuild a CSS Style-sheet with various checks and optimizations.
-
   * `css-inliner.raku input.xml [output.xml] --style=file.css --prune --tags --type=html|pango|pdf --inherit`
 
 Apply internal or external style-sheets to per-element 'style' attributes

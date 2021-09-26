@@ -8,7 +8,7 @@
   "depends": [
     "CSS::Module:ver<0.5.8+>",
     "CSS::Properties:ver<0.7.5+>",
-    "CSS::Stylesheet:ver<0.0.26+>",
+    "CSS::Stylesheet:ver<0.0.28+>",
     "CSS::TagSet:ver<0.0.23+>",
     "LibXML:ver<0.6.9+>",
     "Method::Also",
@@ -32,5 +32,5 @@
   ],
   "test-depends": [
   ],
-  "version": "0.0.25"
+  "version": "0.0.26"
 }

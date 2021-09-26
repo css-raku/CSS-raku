@@ -1,5 +1,5 @@
 #| CSS Stylesheet processing
-unit class CSS:ver<0.0.25>;
+unit class CSS:ver<0.0.26>;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
 
@@ -306,10 +306,6 @@ method font-sources(CSS::Font() $font) returns Array[CSS::Font::Resources::Sourc
 Returns a list of L<CSS::Font::Resources::Source> objects for natching source fonts, based on `@font-face` rules and (as a fallback) the font's name and characterstics.
 
 =head2 Utility Scripts
-
-=item `css-tidy.raku [--/optimize] [--/terse] [--/warn] [--lax] [--color=names|values|masks] <file> [<output>]`
-
-Rebuild a CSS Style-sheet with various checks and optimizations.
 
 =item `css-inliner.raku input.xml [output.xml] --style=file.css --prune --tags --type=html|pango|pdf --inherit`
 

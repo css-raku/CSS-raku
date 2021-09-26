@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+0.0.26  2021-09-27T07:56:45+13:00
+    - Export script css-rewriter.raku to CSS::Stylesheet module.
+
 0.0.25  2021-09-26T12:20:38+13:00
     - Add :include{ :links, :import } to activate and follow
       '<link rel=stylesheet .../>' links and '@import' rules.
