@@ -95,7 +95,8 @@ method new(
     :%include (                    # External stylesheet loading:
         Bool :$imports = False,    # - enable '@import' directives
         Bool :$links = False,      # - load <link../> tags (XHTML)
-    )
+    ),
+    URI() :$base-url = $doc.URI,   # base URL for imports and links
 ) returns CSS;
 ```
 

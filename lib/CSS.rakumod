@@ -28,7 +28,6 @@ method stylesheet handles <Str gist ast page font-face font-sources base-url> { 
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Module:D $.module = CSS::Module::CSS3.module;
 has CSS::Properties %.style;        # per node-path styling, including tags
-has CSS::Properties %!parent;
 has CSS::TagSet $.tag-set;
 has Bool $.tags;
 has Bool $.inherit;
@@ -43,8 +42,8 @@ method !build(
         if $!doc.isa(LibXML::Document);
 
     $!tag-set //= $!doc ~~ LibXML::Document::HTML
-                      ?? CSS::TagSet::XHTML.new: :$!module
-                      !! CSS::TagSet.new;
+                    ?? CSS::TagSet::XHTML.new: :$!module
+                    !! CSS::TagSet.new;
 
     $!stylesheet //= $!tag-set.stylesheet($!doc, :$media, :$base-url, :$imports, :$links);
     my LibXML::XPath::Context $xpath-context .= new: :$!doc;
@@ -71,15 +70,11 @@ multi method COERCE(Str:D $_) { self.new: :stylesheet($_); }
 multi method COERCE(CSS::Stylesheet:D $_) { self.new: :stylesheet($_); }
 
 # compute the style of an individual element
-method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
-    fail "document does not contain this element"
-        unless $!doc.isSameNode($elem.getOwner);
+method !base-style(Str:D $tag, Str :style-attr($style), Str :$path!) {
 
     # merge in inline styles
     my CSS::Properties $props = do with $!tag-set {
-        my Str $style = $elem.getAttribute($_)
-            with .inline-style-attribute;
-        .inline-style($elem.tag, :$style);
+        .inline-style($tag, :$style);
     }
 
     $_ .= new(:$!module) without $props;
@@ -88,25 +83,15 @@ method !base-style(LibXML::Element $elem, Str :$path = $elem.nodePath) {
     my CSS::Properties @prop-sets = .sort(*.specificity)».properties
         with %!rulesets{$path};
 
-
     CSS::Stylesheet::merge-properties(@prop-sets, $props);
-
-    with $elem.parent {
-        when LibXML::Element {
-            with self.style($_) -> $css {
-                %!parent{$elem.nodePath} = $css;
-            }
-        }
-    }
 
     $props;
 }
 
-method !add-tag-styling(LibXML::Element:D $elem, CSS::Properties $style) {
+method !add-tag-styling(Str:D $tag, CSS::Properties $style, :%attrs) {
     with $!tag-set {
         # apply tag style properties in isolation; they don't inherit
-        my %attrs = $elem.properties.map: { .tag => .value };
-        my CSS::Properties $tag-style = .tag-style($elem.tag, |%attrs)
+        my CSS::Properties $tag-style = .tag-style($tag, |%attrs)
             if $!tags || $!inherit;
 
         with $tag-style {
@@ -124,12 +109,22 @@ multi method style(LibXML::Element:D $elem) {
     my $path = $elem.nodePath;
 
     %!style{$path} //= do {
-        my CSS::Properties:D $style = self!base-style($elem, :$path);
-        self!add-tag-styling($elem, $style);
+        fail "document does not contain this element"
+            unless $!doc.isSameNode($elem.getOwner);
+        my Str %attrs = $elem.properties.map: { .tag => .value };
+        my Str $style-attr = %attrs{$_}
+            with $!tag-set.inline-style-attribute;
+        my CSS::Properties:D $props = self!base-style($elem.tag, :$style-attr, :$path);
+
+        self!add-tag-styling($elem.tag, :%attrs, $props);
         if $!inherit {
-            $style.inherit($_) with %!parent{$elem.nodePath};
+            with $elem.parent {
+                when LibXML::Element {
+                    $props.inherit($_) with self.style($_);
+                }
+            }
         }
-        $style;
+        $props;
     }
 }
 
@@ -153,7 +148,6 @@ method prune($node = $!doc.root) {
     if $unlink {
         my $node-path = $node.nodePath;
         %!style{$node-path}:delete;
-        %!parent{$node-path}:delete;
         $node.unlink
     }
     else {
@@ -252,7 +246,8 @@ method new(
     :%include (                    # External stylesheet loading:
         Bool :$imports = False,    # - enable '@import' directives
         Bool :$links = False,      # - load <link../> tags (XHTML)
-    )
+    ),
+    URI() :$base-url = $doc.URI,   # base URL for imports and links
 ) returns CSS;
 =end code
 In particular, the `CSS::TagSet :$tag-set` options specifies a tag-specific styler; For example CSS::TagSet::XHTML. 
