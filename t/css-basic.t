@@ -1,6 +1,6 @@
 use v6;
 use Test;
-plan 14;
+plan 17;
 use CSS;
 use CSS::TagSet::XHTML;
 use CSS::Units :px;
@@ -102,5 +102,12 @@ is-deeply $css.Str(:pretty).lines, (
     "  src: url('/myfonts/para.otf') format('opentype');",
     '}',
 ), 'pretty lines';
+
+ok $doc.find('html/head');
+
+$css.prune;
+
+ok $doc.find('html/body');
+nok $doc.find('html/head');
 
 done-testing();

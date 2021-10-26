@@ -24,7 +24,7 @@ use URI;
 
 has LibXML::_ParentNode:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
-method stylesheet handles <Str gist ast page font-face font-sources base-url> { $!stylesheet }
+method stylesheet handles <Str gist ast page font-face font-sources base-url margin-boxes> { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Module:D $.module = CSS::Module::CSS3.module;
 has CSS::Properties %.style;        # per node-path styling, including tags
@@ -114,17 +114,17 @@ multi method style(LibXML::Element:D $elem) {
         my Str %attrs = $elem.properties.map: { .tag => .value };
         my Str $style-attr = %attrs{$_}
             with $!tag-set.inline-style-attribute;
-        my CSS::Properties:D $props = self!base-style($elem.tag, :$style-attr, :$path);
+        my CSS::Properties:D $style = self!base-style($elem.tag, :$style-attr, :$path);
 
-        self!add-tag-styling($elem.tag, :%attrs, $props);
+        self!add-tag-styling($elem.tag, :%attrs, $style);
         if $!inherit {
             with $elem.parent {
                 when LibXML::Element {
-                    $props.inherit($_) with self.style($_);
+                    $style.inherit($_) with self.style($_);
                 }
             }
         }
-        $props;
+        $style;
     }
 }
 
@@ -146,8 +146,9 @@ method prune($node = $!doc.root) {
         with self.style($node);
 
     if $unlink {
-        my $node-path = $node.nodePath;
-        %!style{$node-path}:delete;
+        for $node.findnodes('descendant-or-self::*') {
+            %!style{.nodePath}:delete;
+        }
         $node.unlink
     }
     else {

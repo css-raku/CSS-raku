@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Refactoring of style() and prune() methods
 
 0.0.26  2021-09-27T07:56:45+13:00
     - Export script css-rewriter.raku to CSS::Stylesheet module.
