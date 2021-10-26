@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.0.27  2021-10-27T07:55:08+13:00
     - Refactoring of style() and prune() methods
 
 0.0.26  2021-09-27T07:56:45+13:00
