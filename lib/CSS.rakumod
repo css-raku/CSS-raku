@@ -24,7 +24,7 @@ use URI;
 
 has LibXML::_ParentNode:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
-method stylesheet handles <Str gist ast page font-face font-sources base-url margin-boxes> { $!stylesheet }
+method stylesheet handles <Str gist ast page page-properties font-face font-sources base-url> { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Module:D $.module = CSS::Module::CSS3.module;
 has CSS::Properties %.style;        # per node-path styling, including tags
@@ -260,11 +260,11 @@ multi method style(Str:D $xpath) returns CSS::Properties;
 =end code
 Computes a style for an individual element, or XPath to an element.
 
-=head3 method page
+=head3 method page-properties
 
 =begin code :lang<raku>
-method page(Bool :$first, Bool :$right, Bool :$left,
-            Str :$margin-box --> CSS::Properties)
+method page-properties(Bool :$first, Bool :$right, Bool :$left,
+                       Str :$margin-box --> CSS::Properties)
 =end code
 Query and extract `@page` at rules.
 

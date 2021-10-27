@@ -111,11 +111,11 @@ multi method style(Str:D $xpath) returns CSS::Properties;
 
 Computes a style for an individual element, or XPath to an element.
 
-### method page
+### method page-properties
 
 ```raku
-method page(Bool :$first, Bool :$right, Bool :$left,
-            Str :$margin-box --> CSS::Properties)
+method page-properties(Bool :$first, Bool :$right, Bool :$left,
+                       Str :$margin-box --> CSS::Properties)
 ```
 
 Query and extract `@page` at rules.
