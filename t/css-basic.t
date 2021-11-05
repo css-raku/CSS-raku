@@ -52,7 +52,7 @@ is $css.style('/html/body/hr'), '-xhtml-align:center; border:1px inset; display:
 is $css.style('/html/body/p'), 'color:red; display:none; font-size:12pt; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;';
 is $css.font-face('Para').Str, "font-family:'Para'; src:url('/myfonts/para.otf') format('opentype');";
 
-is $css.page, 'margin:4pt;', '@page';
+is $css.page-properties, 'margin:4pt;', '@page';
 
 is-deeply $css.Str(:!optimize).lines, (
     '@page { margin-bottom:4pt; margin-left:4pt; margin-right:4pt; margin-top:4pt; }',

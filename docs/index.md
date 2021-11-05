@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/css-raku/CSS-raku.svg?branch=master)](https://travis-ci.org/css-raku/CSS-raku)
 
 [[Raku CSS Project]](https://css-raku.github.io)
- / [[CSS]](https://css-raku.github.io/CSS-raku)
+ / [[CSS Module]](https://css-raku.github.io/CSS-raku)
 
 class CSS
 ---------
@@ -67,7 +67,7 @@ Synopsis
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
 
     # -- query first page properties (from @page rules)
-    say $css.page(:first);     # margin:4pt;
+    say $css.page-properties(:first);     # margin:4pt;
 
     # -- find a font using @font-face declarations
     say .Str    # font-family:'Para'; src:url('/myfonts/para.otf')

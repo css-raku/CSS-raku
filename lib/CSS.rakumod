@@ -17,14 +17,14 @@ use CSS::Module::CSS3;
 
 use LibXML::Document;
 use LibXML::Element;
-use LibXML::_ParentNode;
+use LibXML::_ParentNode; # document, element or document fragment
 use LibXML::XPath::Context;
 
 use URI;
 
 has LibXML::_ParentNode:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
-method stylesheet handles <Str gist ast page page-properties font-face font-sources base-url> { $!stylesheet }
+method stylesheet handles <Str gist ast page page-properties font-face font-sources font-family base-url> { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
 has CSS::Module:D $.module = CSS::Module::CSS3.module;
 has CSS::Properties %.style;        # per node-path styling, including tags
@@ -36,6 +36,7 @@ has Bool $.inherit;
 method !build(
     CSS::Media :$media = CSS::Media.new(:type<screen>, :width(480px), :height(640px), :color),
     URI() :$base-url = $!doc.URI // './',
+    Str :$font-family = 'times-roman',
     :%include ( Bool :$imports = False, Bool :$links = False, )
 ) {
     $!doc.indexElements
@@ -45,7 +46,7 @@ method !build(
                     ?? CSS::TagSet::XHTML.new: :$!module
                     !! CSS::TagSet.new;
 
-    $!stylesheet //= $!tag-set.stylesheet($!doc, :$media, :$base-url, :$imports, :$links);
+    $!stylesheet //= $!tag-set.stylesheet($!doc, :$media, :$base-url, :$imports, :$links, :$font-family);
     my LibXML::XPath::Context $xpath-context .= new: :$!doc;
     $!tag-set.xpath-init($xpath-context);
 
@@ -68,6 +69,7 @@ multi submethod TWEAK(CSS::Stylesheet :$!stylesheet, |c) {
 
 multi method COERCE(Str:D $_) { self.new: :stylesheet($_); }
 multi method COERCE(CSS::Stylesheet:D $_) { self.new: :stylesheet($_); }
+multi method COERCE(LibXML::_ParentNode:D $doc) { self.new: :$doc }
 
 # compute the style of an individual element
 method !base-style(Str:D $tag, Str :style-attr($style), Str :$path!) {
@@ -220,7 +222,7 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
 
     # -- query first page properties (from @page rules)
-    say $css.page(:first);     # margin:4pt;
+    say $css.page-properties(:first);     # margin:4pt;
 
     # -- find a font using @font-face declarations
     say .Str    # font-family:'Para'; src:url('/myfonts/para.otf')
