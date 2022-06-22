@@ -1,5 +1,5 @@
 #| CSS Stylesheet processing
-unit class CSS:ver<0.0.28>;
+unit class CSS:ver<0.1.0>;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
 
@@ -68,21 +68,19 @@ multi submethod TWEAK(CSS::Stylesheet :$!stylesheet, |c) {
 }
 
 multi method COERCE(Str:D $_) { self.new: :stylesheet($_); }
-multi method COERCE(CSS::Stylesheet:D $_) { self.new: :stylesheet($_); }
+multi method COERCE(CSS::Stylesheet:D $stylesheet) { self.new: :$stylesheet; }
 multi method COERCE(LibXML::_ParentNode:D $doc) { self.new: :$doc }
 
 # compute the style of an individual element
 method !base-style(Str:D $tag, Str :style-attr($style), Str :$path!) {
 
     # merge in inline styles
-    my CSS::Properties $props = do with $!tag-set {
+    my CSS::Properties:D $props = do with $!tag-set {
         .inline-style($tag, :$style);
-    }
-
-    $_ .= new(:$!module) without $props;
+    } // CSS::Properties.new: :$!module;
 
     # Apply CSS Selector styles. Lower precedence than inline rules
-    my CSS::Properties @prop-sets = .sort(*.specificity)».properties
+    my CSS::Properties:D @prop-sets = .sort(*.specificity)».properties
         with %!rulesets{$path};
 
     CSS::Stylesheet::merge-properties(@prop-sets, $props);
