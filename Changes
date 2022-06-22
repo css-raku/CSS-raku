@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+0.1.1  2022-06-22T13:50:04+12:00
+   - Fix tests for CSS::Properties 0.8.4+
+
 0.1.0  2022-06-22T12:24:52+12:00
    - Upload to zef ecosystem
 

@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/css-raku/CSS-raku.svg?branch=master)](https://travis-ci.org/css-raku/CSS-raku)
 
 [[Raku CSS Project]](https://css-raku.github.io)
- / [[CSS Module]](https://css-raku.github.io/CSS-raku)
+ / [[CSS]](https://css-raku.github.io/CSS-raku)
 
 class CSS
 ---------

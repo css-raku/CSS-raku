@@ -38,9 +38,9 @@ is $css.style('H1'),              'display:block; font-size:2em; font-weight:bol
 is $css.style('Document/H1'),     'display:block; font-size:2em; font-weight:bolder; margin-bottom:0.67em; margin-top:0.67em; unicode-bidi:embed;';
 is $css.style('Document/P'),      'display:block; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;';
 is $css.style('H2/Span'),         'font-size:18pt; font-weight:700;';
-is $css.style('Code'),            'font-family:monospace;';
-is $css.style('L/LI'),            'display:list-item; margin-left:40px;';
-is $css.style('L/LI/LBody/Code'), 'font-family:monospace;';
+is $css.style('Code'),            'font-family:monospace; white-space:pre;';
+is $css.style('L/LI'),            'display:list-item; list-style:none; margin-left:40px;';
+is $css.style('L/LI/LBody/Code'), 'font-family:monospace; white-space:pre;';
 is $css.style('Span[1]'),         'border:dotted;';
 is $css.style('Span[2]'),         '-pdf-space-before:5pt;';
 
