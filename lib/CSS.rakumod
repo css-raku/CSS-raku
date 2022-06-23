@@ -212,7 +212,7 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
     say $body-props.font-size; # 12pt
     say $body-props;           # background-color:powderblue; display:block; font-size:12pt; margin:8px; unicode-bidi:embed;
     say $css.style('/html/body/h1[1]');
-    # color:blue; display:block; font-size:12pt; font-weight:bolder; margin-bottom:0.67em; margin-top:0.67em; unicode-bidi:embed;
+    # color:blue; display:block; font-size:2em; font-weight:bolder; margin-bottom:0.67em; margin-top:0.67em; unicode-bidi:embed;
     say $css.style('/html/body/div');
 
     # color:green; display:block; font-size:10pt; unicode-bidi:embed;
@@ -222,8 +222,8 @@ method link-pseudo(|c) { $!tag-set.link-pseudo(|c) }
     # -- query first page properties (from @page rules)
     say $css.page-properties(:first);     # margin:4pt;
 
-    # -- find a font using @font-face declarations
-    say .Str    # font-family:'Para'; src:url('/myfonts/para.otf')
+    # -- find a font source using @font-face declarations
+    say .Str    # /myfonts/para.otf
         with $css.font-sources('12pt Para').head;
 
 =head2 Description
@@ -299,7 +299,7 @@ By default, this method acts on the root element of the associated $.doc XML doc
 =begin code :lang<raku>
 method font-sources(CSS::Font() $font) returns Array[CSS::Font::Resources::Source]
 =end code
-Returns a list of L<CSS::Font::Resources::Source> objects for natching source fonts, based on `@font-face` rules and (as a fallback) the font's name and characterstics.
+Returns a list of L<CSS::Font::Resources::Source> objects for matching source fonts, based on `@font-face` rules and (as a fallback) the font's name and characterstics.
 
 =head2 Utility Scripts
 
