@@ -13,9 +13,13 @@ loudtest : all
 $(DocLinker) :
 	(cd .. && git clone $(DocRepo) $(DocProj))
 
-doc : $(DocLinker) docs/index.md
+Pod-To-Markdown-installed :
+	@raku -M Pod::To::Markdown -c
+
+doc : $(DocLinker) Pod-To-Markdown-installed docs/index.md
 
 docs/index.md : lib/CSS.rakumod
+	@raku -I . -c $<
 	(\
 	    echo '[![Build Status](https://travis-ci.org/css-raku/CSS-raku.svg?branch=master)](https://travis-ci.org/css-raku/CSS-raku)'; \
             echo '';\
@@ -24,6 +28,7 @@ docs/index.md : lib/CSS.rakumod
        ) > $@
 
 docs/%.md : lib/%.rakumod
+	@raku -I . -c $<
 	raku -I . --doc=Markdown $< \
 	| TRAIL=$* raku -p -n $(DocLinker) \
          > $@
