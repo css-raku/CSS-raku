@@ -173,7 +173,7 @@ See Also
 
   * [CSS::TagSet](https://css-raku.github.io/CSS-TagSet-raku/CSS/TagSet) - CSS tag-sets (XHTML, Pango, Tagged PDF)
 
-  * [LibXML](https://css-raku.github.io/https://libxml-raku.github.io/LibXML-raku/) - LibXML Raku module
+  * [LibXML](https://libxml-raku.github.io/LibXML-raku/) - LibXML Raku module
 
   * [DOM::Tiny](https://github.com/zostay/raku-DOM-Tiny) - A lightweight, self-contained DOM parser/manipulator
 
