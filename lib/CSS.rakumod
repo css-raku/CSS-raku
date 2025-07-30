@@ -1,5 +1,5 @@
 #| CSS Stylesheet processing
-unit class CSS:ver<0.1.1>;
+unit class CSS:ver<0.1.2>;
 
 # maintains associations between CSS Selectors and a XML/HTML DOM
 
@@ -128,10 +128,7 @@ multi method style(LibXML::Element:D $elem) {
 multi method style(Str:D $xpath) {
     do with $!doc.first($xpath) {
         self.style: $_;
-    }
-    else {
-        CSS::Properties;
-    }
+    } // CSS::Properties;
 }
 
 method prune($node = $!doc.root) {
