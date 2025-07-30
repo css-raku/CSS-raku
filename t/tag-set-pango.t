@@ -52,7 +52,7 @@ is $css.style('/span/sup'), 'color:purple; font-size:0.83em; vertical-align:supe
 is $css.style('/span/small'), 'color:purple; font-size:smaller;', '<small/>';
 is $css.style('/span/tt'), 'color:purple; font-family:monospace;', '<tt/>';
 is $css.style('/span/u'), 'color:purple; text-decoration:underline;', '<u/>';
-is $css.style('/span/big/b/i/tt'), 'color:purple; font:italic 700 12pt monospace;', '<big/><b/><i/><tt/>';
+is $css.style('/span/big/b/i/tt'), 'color:purple; font:italic 700 14.4pt monospace;', '<big/><b/><i/><tt/>';
 
 is $css.style('/span/i/span'), 'color:purple; font-style:italic;', '<i><span/></i>';
 

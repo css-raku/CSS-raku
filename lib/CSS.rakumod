@@ -17,15 +17,14 @@ use CSS::Module::CSS3;
 
 use LibXML::Document;
 use LibXML::Element;
-use LibXML::_ParentNode; # document, element or document fragment
 use LibXML::XPath::Context;
 
 use URI;
-
-has LibXML::_ParentNode:D $.doc is required;
+has LibXML::Document:D $.doc is required;
 has CSS::Stylesheet $!stylesheet;
 method stylesheet handles <Str gist ast page page-properties font-face font-sources font-family base-url> { $!stylesheet }
 has Array[CSS::Ruleset] %.rulesets; # rulesets to node-path mapping
+has Array[CSS::Properties] %.propsets; # rulesets to node-path mapping
 has CSS::Module:D $.module = CSS::Module::CSS3.module;
 has CSS::Properties %.style;        # per node-path styling, including tags
 has CSS::TagSet $.tag-set;
@@ -43,8 +42,8 @@ method !build(
         if $!doc.isa(LibXML::Document);
 
     $!tag-set //= $!doc ~~ LibXML::Document::HTML
-                    ?? CSS::TagSet::XHTML.new: :$!module
-                    !! CSS::TagSet.new;
+        ?? CSS::TagSet::XHTML.new: :$!module
+        !! CSS::TagSet.new;
 
     $!stylesheet //= $!tag-set.stylesheet($!doc, :$media, :$base-url, :$imports, :$links, :$font-family);
     my LibXML::XPath::Context $xpath-context .= new: :$!doc;
@@ -56,20 +55,19 @@ method !build(
             %!rulesets{.nodePath}.push: $rule;
         }
     }
+ 
+    for %!rulesets {
+        my CSS::Properties @propsets = .value.sort(*.specificity)».properties;
+        %!propsets{.key} = @propsets;
+    }
 }
 
-multi submethod TWEAK(Str:D :stylesheet($string)!, |c) {
-    $!stylesheet .= parse($string);
+submethod TWEAK(CSS::Stylesheet() :$!stylesheet, |c) {
     self!build(|c);
 }
 
-multi submethod TWEAK(CSS::Stylesheet :$!stylesheet, |c) {
-    self!build(|c);
-}
-
-multi method COERCE(Str:D $_) { self.new: :stylesheet($_); }
-multi method COERCE(CSS::Stylesheet:D $stylesheet) { self.new: :$stylesheet; }
 multi method COERCE(LibXML::_ParentNode:D $doc) { self.new: :$doc }
+multi method COERCE(CSS::Stylesheet:D() $stylesheet) { self.new: :$stylesheet; }
 
 # compute the style of an individual element
 method !base-style(Str:D $tag, Str :style-attr($style), Str :$path!) {
@@ -80,8 +78,7 @@ method !base-style(Str:D $tag, Str :style-attr($style), Str :$path!) {
     } // CSS::Properties.new: :$!module;
 
     # Apply CSS Selector styles. Lower precedence than inline rules
-    my CSS::Properties:D @prop-sets = .sort(*.specificity)».properties
-        with %!rulesets{$path};
+    my CSS::Properties:D @prop-sets = .List with %!propsets{$path};
 
     CSS::Stylesheet::merge-properties(@prop-sets, $props);
 
@@ -106,7 +103,7 @@ method !add-tag-styling(Str:D $tag, CSS::Properties $style, :%attrs) {
 
 # styling, including any tag-specific styling
 multi method style(LibXML::Element:D $elem) {
-    my $path = $elem.nodePath;
+    my Str:D $path = $elem.nodePath;
 
     %!style{$path} //= do {
         fail "document does not contain this element"
@@ -129,7 +126,12 @@ multi method style(LibXML::Element:D $elem) {
 }
 
 multi method style(Str:D $xpath) {
-    self.style: $!doc.first($xpath);
+    do with $!doc.first($xpath) {
+        self.style: $_;
+    }
+    else {
+        CSS::Properties;
+    }
 }
 
 method prune($node = $!doc.root) {

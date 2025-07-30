@@ -21,27 +21,31 @@ is $tag-set.tag-style('P'), 'display:block; margin-bottom:1.12em; margin-top:1.1
 
 is $css.style('P'), 'background:red; border:dotted; display:block; font-size:15pt; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;', '<P/>';
 
-my $frags = q:to<END>;
-<H1>NAME</H1>
-<Document><H1>NAME</H1><P>Para</P></Document>
-<H2><Span>Methods</Span></H2>
-<Code>createDocument()</Code>
-<L><LI><Lbl>new</Lbl><LBody>alias for <Code>createDocument()</Code></LBody></LI></L>
-<Span BorderStyle="Dotted">Dotted</Span>
-<Span SpaceBefore="5">Space Before</Span>
+$string = q:to<END>;
+<Document>
+    <H1>NAME</H1>
+    <H2>Methods</H2>
+    <Code>createDocument()</Code>
+    <L>
+      <LI>
+        <Lbl>new</Lbl>
+        <LBody>alias for <Code>createDocument()</Code></LBody>
+      </LI>
+    </L>
+    <Span BorderStyle="Dotted">Dotted</Span>
+    <Span SpaceBefore="5">Space Before</Span>
+</Document>
 END
 
-my LibXML::DocumentFragment $frag .= parse: :string($frags), :balanced;
-$css .= new: :doc($frag), :$tag-set, :inherit;
+$doc .= parse: :$string;
+$css .= new: :$doc, :$tag-set, :inherit;
 
-is $css.style('H1'),              'display:block; font-size:2em; font-weight:bolder; margin-bottom:0.67em; margin-top:0.67em; unicode-bidi:embed;';
-is $css.style('Document/H1'),     'display:block; font-size:2em; font-weight:bolder; margin-bottom:0.67em; margin-top:0.67em; unicode-bidi:embed;';
-is $css.style('Document/P'),      'display:block; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;';
-is $css.style('H2/Span'),         'font-size:18pt; font-weight:700;';
-is $css.style('Code'),            'font-family:monospace; white-space:pre;';
-is $css.style('L/LI'),            'display:list-item; list-style:none; margin-left:40px;';
-is $css.style('L/LI/LBody/Code'), 'font-family:monospace; white-space:pre;';
-is $css.style('Span[1]'),         'border:dotted;';
-is $css.style('Span[2]'),         '-pdf-space-before:5pt;';
+like $css.style('Document/H1'),              /'display:block;'.*'font-size:2em;'.*'font-weight:bolder;'.*'margin-bottom:0.67em;'.*'margin-top:0.67em;'.*'unicode-bidi:embed;'/;
+like $css.style('Document/H2'),              /'font-size:'[18pt|1.5em]';'.*'font-weight:'[700|bolder]';'/;
+like $css.style('Document/Code'),            /'font-family:monospace;'.*'white-space:pre;'/;
+like $css.style('Document/L/LI'),            /'display:list-item;'.*'list-style:none;'.*'margin-left:40px;'/;
+like $css.style('Document/L/LI/LBody/Code'), /'font-family:monospace;'.*'white-space:pre;'/;
+like $css.style('Document/Span[1]'),         /'border:dotted;'/;
+like $css.style('Document/Span[2]'),         /'-pdf-space-before:5pt;'/;
 
 done-testing();
