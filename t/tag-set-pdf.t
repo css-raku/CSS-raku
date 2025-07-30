@@ -17,9 +17,9 @@ END
 my LibXML::Document::XML $doc .= parse: :$string;
 my CSS $css .= new: :$doc, :$tag-set, :inherit;
 
-is $tag-set.tag-style('P'), 'display:block; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;', '.tag-style()';
+like $tag-set.tag-style('P'), /'display:block;'.*'margin-bottom:1.12em;'.*'margin-top:1.12em;'.*'unicode-bidi:embed;'/, '.tag-style()';
 
-is $css.style('P'), 'background:red; border:dotted; display:block; font-size:15pt; margin-bottom:1.12em; margin-top:1.12em; unicode-bidi:embed;', '<P/>';
+like $css.style('P'), /'background:red;'.*'border:dotted;'.*'display:block;'.*'font-size:15pt;'.*'margin-bottom:1.12em;'.*'margin-top:1.12em;'.*'unicode-bidi:embed;'/, '<P/>';
 
 $string = q:to<END>;
 <Document>
@@ -42,10 +42,10 @@ $css .= new: :$doc, :$tag-set, :inherit;
 
 like $css.style('Document/H1'),              /'display:block;'.*'font-size:2em;'.*'font-weight:bolder;'.*'margin-bottom:0.67em;'.*'margin-top:0.67em;'.*'unicode-bidi:embed;'/;
 like $css.style('Document/H2'),              /'font-size:'[18pt|1.5em]';'.*'font-weight:'[700|bolder]';'/;
-like $css.style('Document/Code'),            /'font-family:monospace;'.*'white-space:pre;'/;
+like $css.style('Document/Code'),            /'monospace'.*'white-space:pre;'/;
 like $css.style('Document/L/LI'),            /'display:list-item;'.*'list-style:none;'.*'margin-left:40px;'/;
-like $css.style('Document/L/LI/LBody/Code'), /'font-family:monospace;'.*'white-space:pre;'/;
+like $css.style('Document/L/LI/LBody/Code'), /'monospace;'.*'white-space:pre;'/;
 like $css.style('Document/Span[1]'),         /'border:dotted;'/;
-like $css.style('Document/Span[2]'),         /'-pdf-space-before:5pt;'/;
+like $css.style('Document/Span[2]'),         /'margin-top:5pt'/;
 
 done-testing();

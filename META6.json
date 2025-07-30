@@ -9,7 +9,7 @@
     "CSS::Module:ver<0.5.8+>",
     "CSS::Properties:ver<0.7.7+>",
     "CSS::Stylesheet:ver<0.0.29+>",
-    "CSS::TagSet:ver<0.0.23+>",
+    "CSS::TagSet:ver<0.1.3+>",
     "LibXML:ver<0.6.9+>",
     "Method::Also",
     "URI"
